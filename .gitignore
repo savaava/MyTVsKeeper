@@ -5,5 +5,6 @@ html/
 mvnw
 mvnw.cmd
 
-./exeGenerator.sh
-./runtimeGenerator.sh
+custom-runtime
+exeGenerator.ps1
+runtimeGenerator.sh
