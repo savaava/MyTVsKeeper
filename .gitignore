@@ -4,3 +4,6 @@ html/
 .mvn/
 mvnw
 mvnw.cmd
+
+./exeGenerator.sh
+./runtimeGenerator.sh
