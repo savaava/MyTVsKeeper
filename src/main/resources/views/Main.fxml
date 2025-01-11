@@ -10,5 +10,6 @@
    <children>
        <Button fx:id="b" layoutX="97.0" layoutY="138.0" mnemonicParsing="false" onAction="#testIOExceptionMethod" text="GeneraEccezione" />
       <Button fx:id="btnProva" layoutX="127.0" layoutY="78.0" mnemonicParsing="false" onAction="#onSaveBin" text="Prova" />
+      <Label fx:id="lbl" layoutX="136.0" layoutY="217.0" text="Label" />
    </children>
 </AnchorPane>

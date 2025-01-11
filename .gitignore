@@ -1,9 +1,10 @@
-./target/
+# dirs to ignore:
 .idea/
-html/
 .mvn/
+html/
+target/
+executables/
+
+# files to ignore:
 mvnw
 mvnw.cmd
-
-executable
-MyTVsKeeper.ico
