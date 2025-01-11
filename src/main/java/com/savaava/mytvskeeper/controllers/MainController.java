@@ -1,7 +1,6 @@
 package com.savaava.mytvskeeper.controllers;
 
 import com.savaava.mytvskeeper.alerts.AlertError;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
