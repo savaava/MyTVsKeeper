@@ -1,7 +1,7 @@
 package com.savaava.mytvskeeper.main;
 
 /**
- * Main Class used to generate the executable file jar in 'src' dir.
+ * Main class is used to generate the executable file jar in 'src' dir.
  * Uses the static method of StartApplication to launch the application.
  * @see StartApplication
  */

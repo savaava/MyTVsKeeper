@@ -1,10 +1,9 @@
-target/
+./target/
 .idea/
 html/
 .mvn/
 mvnw
 mvnw.cmd
 
-custom-runtime
-exeGenerator.ps1
-runtimeGenerator.sh
+executable
+MyTVsKeeper.ico

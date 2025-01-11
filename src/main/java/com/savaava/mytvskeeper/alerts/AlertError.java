@@ -12,6 +12,10 @@ public class AlertError extends Alert {
         showAndWait();
     }
 
+    public AlertError(String header){
+        this(header, "This is a error message");
+    }
+
     public AlertError(){
         this("ERROR", "This is a error message");
     }
