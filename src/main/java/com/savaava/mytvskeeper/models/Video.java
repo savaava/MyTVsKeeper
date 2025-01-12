@@ -48,11 +48,11 @@ public abstract class Video implements java.io.Serializable {
     @Override
     public String toString() {
         return "Title="+title+
-                "Description"+description+
-                "Release Date="+releaseDate+
-                (started?"Started":"NotStarted")+
-                (terminated?"Terminated":"NotTerminated")+
-                "Rating="+rating+
-                "ID="+id;
+                " | Description(length)"+description.length()+
+                " | Release Date="+releaseDate+
+                (started?" | Started":" | NotStarted")+
+                (terminated?" | Terminated":" | NotTerminated")+
+                " | Rating="+rating+
+                " | ID="+id;
     }
 }
