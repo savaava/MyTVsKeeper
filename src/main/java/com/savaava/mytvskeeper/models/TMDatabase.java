@@ -1,4 +1,5 @@
 package com.savaava.mytvskeeper.models;
 
-public class SerieTv {
+public class TMDatabase {
+    
 }

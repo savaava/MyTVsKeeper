@@ -3,8 +3,12 @@
 .mvn/
 html/
 target/
-executables/
+bin/
 
 # files to ignore:
 mvnw
 mvnw.cmd
+MyTVsKeeper.ico
+
+# Da commentare quando l'applicazione è pronta:
+executables/

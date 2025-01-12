@@ -6,10 +6,45 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.MainController">
    <children>
-       <Button fx:id="b" layoutX="97.0" layoutY="138.0" mnemonicParsing="false" onAction="#testIOExceptionMethod" text="GeneraEccezione" />
-      <Button fx:id="btnProva" layoutX="127.0" layoutY="78.0" mnemonicParsing="false" onAction="#onSaveBin" text="Prova" />
-      <Label fx:id="lbl" layoutX="136.0" layoutY="217.0" text="Label" />
+      <VBox prefHeight="700.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onExport" text="Export" />
+                    <MenuItem mnemonicParsing="false" onAction="#onConfig" text="Config" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="View">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onMovies" text="Movies" />
+                        <MenuItem mnemonicParsing="false" onAction="#onTVSeries" text="TV Series" />
+                        <MenuItem mnemonicParsing="false" onAction="#onAnimeSeries" text="Anime Series" />
+                     </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TableView fx:id="tableViewMovies" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="titleColumnMovie" prefWidth="250.0" resizable="false" text="Title" />
+                <TableColumn fx:id="durationColumnMovie" prefWidth="100.0" resizable="false" text="Duration" />
+                  <TableColumn fx:id="releaseDateColumnMovie" prefWidth="150.0" resizable="false" text="Release Date" />
+                  <TableColumn fx:id="directorColumnMovie" prefWidth="150.0" resizable="false" text="Director" />
+                  <TableColumn fx:id="startedColumnMovie" prefWidth="75.0" resizable="false" text="Started" />
+                  <TableColumn fx:id="terminatedColumnMovie" prefWidth="75.0" resizable="false" text="Terminated" />
+                  <TableColumn fx:id="ratingColumnMovie" prefWidth="100.0" resizable="false" text="Rating" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
