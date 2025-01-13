@@ -1,7 +1,5 @@
 package com.savaava.mytvskeeper.models;
 
-import java.time.LocalDate;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
@@ -9,22 +7,24 @@ import java.util.HashSet;
 public class Movie extends Video {
     private final String duration;
     private final String director;
-    private final Set<Genre> genres;
+    private final Set<MovieGenres> genres;
 
-    public Movie(String title, String description, LocalDate releaseDate, boolean started, boolean terminated, int rating, String id, String duration, String director) {
+    public Movie(String title, String description, String releaseDate, boolean started, boolean terminated, int rating, String id, String duration, String director) {
         super(title, description, releaseDate, started, terminated, rating, id);
         this.duration = duration;
         this.director = director;
         genres = new HashSet<>();
     }
-
-    public Movie(String id){
-        this("","",LocalDate.of(2000,1,1),false,false,10,id,"","");
+    public Movie(String title, String description, String releaseDate, String id) {
+        this(title, description, releaseDate, false, false, -1, id, "", "");
+    }
+    public Movie(String id) {
+        this("","","",id);
     }
 
     public String getDuration() {return duration;}
     public String getDirector() {return director;}
-    public Collection<Genre> getGenres(){return genres;}
+    public Collection<MovieGenres> getGenres(){return genres;}
 
     public void addGenre(int id){
         if(!MovieGenres.hasGenre(id)) return;
@@ -38,8 +38,9 @@ public class Movie extends Video {
 
         strb.append(super.toString());
         strb.append(" | duration=").append(duration);
-        strb.append(" | director=").append(director);
-        genres.forEach(gi -> strb.append(" | ").append(gi));
+        strb.append(" | director=").append(director).append(" | ");
+        genres.forEach(gi -> strb.append(gi).append(", "));
+        strb.append("\n");
 
         return strb.toString();
     }

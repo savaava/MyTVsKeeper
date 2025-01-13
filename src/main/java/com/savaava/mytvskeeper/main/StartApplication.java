@@ -3,6 +3,7 @@ package com.savaava.mytvskeeper.main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class StartApplication extends Application {
         stage.setMinHeight(400);
         stage.setMinWidth(1000);
         stage.setTitle("My TVs Keeper");
+        stage.getIcons().add(new Image("/images/MyTVsKeeper.png"));
         stage.setScene(scene);
         stage.show();
     }

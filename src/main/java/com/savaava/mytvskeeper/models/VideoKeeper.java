@@ -2,9 +2,6 @@ package com.savaava.mytvskeeper.models;
 
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,6 +16,9 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class VideoKeeper {
     private static VideoKeeper instance;
@@ -65,7 +65,6 @@ public class VideoKeeper {
     public ObservableList<TVSerie> getAnimeSeries() {
         return animeSeries;
     }
-
 
     public void addMovie(Movie movie) throws IOException, VideoAlreadyExistsException {
         if(movies.contains(movie))
@@ -167,7 +166,7 @@ public class VideoKeeper {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathDest)))){
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2");
             pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"ID"));
-            for(Movie mi : movies){
+            for(Movie mi : movies) {
                 pw.append(mi.getTitle()).append(delim);
                 pw.append(mi.getDuration()).append(delim);
                 pw.append(mi.getReleaseDate().toString()).append(delim);
@@ -176,8 +175,8 @@ public class VideoKeeper {
                 pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(delim);
                 pw.append(Integer.toString(mi.getRating())).append(delim);
                 int i = 0;
-                for(Genre gi : mi.getGenres()){
-                    pw.append(gi.name()); i++;
+                for(MovieGenres gi : mi.getGenres()){
+                    pw.append(gi.getName()); i++;
                     if(i!=mi.numGenres())
                         pw.append(delimAux);
                 }
@@ -196,7 +195,7 @@ public class VideoKeeper {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathFileDest)))){
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2");
             pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"ID"));
-            for(TVSerie tvi : c){
+            for(TVSerie tvi : c) {
                 pw.append(tvi.getTitle()).append(delim);
                 pw.append(Integer.toString(tvi.getNumSeasons())).append(delimAux);
                 pw.append(Integer.toString(tvi.getNumEpisodes())).append(delim);
@@ -205,8 +204,8 @@ public class VideoKeeper {
                 pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(delim);
                 pw.append(Integer.toString(tvi.getRating())).append(delim);
                 int i = 0;
-                for(Genre gi : tvi.getGenres()){
-                    pw.append(gi.name()); i++;
+                for(TVGenres gi : tvi.getGenres()){
+                    pw.append(gi.getName()); i++;
                     if(i!=tvi.numGenres())
                         pw.append(delimAux);
                 }
@@ -222,11 +221,11 @@ public class VideoKeeper {
         StringBuilder strb = new StringBuilder("***** Stampa instanza video keeper *****\n");
 
         strb.append(movies.size()).append(" Movies:\n");
-        movies.forEach(m -> strb.append(m.toString()).append("\n"));
+        movies.forEach(m -> strb.append(m.toString()));
         strb.append(tvSeries.size()).append(" TV Series:\n");
-        tvSeries.forEach(t -> strb.append(t.toString()).append("\n"));
+        tvSeries.forEach(t -> strb.append(t.toString()));
         strb.append(animeSeries.size()).append(" Anime Series:\n");
-        animeSeries.forEach(a -> strb.append(a.toString()).append("\n"));
+        animeSeries.forEach(a -> strb.append(a.toString()));
 
         return strb.toString();
     }

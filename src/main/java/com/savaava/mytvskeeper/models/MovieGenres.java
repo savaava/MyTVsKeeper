@@ -1,52 +1,56 @@
 package com.savaava.mytvskeeper.models;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
+public enum MovieGenres {
+    ACTION(28, "Action"),
+    ADVENTURE(12, "Adventure"),
+    ANIMATION(16, "Animation"),
+    COMEDY(35, "Comedy"),
+    CRIME(80, "Crime"),
+    DOCUMENTARY(99, "Documentary"),
+    DRAMA(18, "Drama"),
+    FAMILY(10751, "Family"),
+    FANTASY(14, "Fantasy"),
+    HISTORY(36, "History"),
+    HORROR(27, "Horror"),
+    MUSIC(10402, "Music"),
+    MYSTERY(9648, "Mystery"),
+    ROMANCE(10749, "Romance"),
+    SCIENCE_FICTION(878, "Science Fiction"),
+    TV_MOVIE(10770, "TV Movie"),
+    THRILLER(53, "Thriller"),
+    WAR(10752, "War"),
+    WESTERN(37, "Western");
 
-public class MovieGenres {
-    private final static Map<Integer, Genre> genres = new HashMap<>();
+    private final int id;
+    private final String name;
 
-    static{
-        Genre genresVett[] = {
-                new Genre("Action", 28),
-                new Genre("Adventure", 12),
-                new Genre("Animation", 16),
-                new Genre("Comedy", 35),
-                new Genre("Crime", 80),
-                new Genre("Documentary", 99),
-                new Genre("Drama", 18),
-                new Genre("Family", 10751),
-                new Genre("Fantasy", 14),
-                new Genre("History", 36),
-                new Genre("Horror", 27),
-                new Genre("Music", 10402),
-                new Genre("Mystery", 9648),
-                new Genre("Romance", 10749),
-                new Genre("Science Fiction", 878),
-                new Genre("TV Movie", 10770),
-                new Genre("Thriller", 53),
-                new Genre("War", 10752),
-                new Genre("Western", 37)
-        };
-
-        for(Genre genre : genresVett)
-            genres.put(genre.id(), genre);
+    MovieGenres(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public static Collection<Genre> getAllGenres(){
-        return genres.values();
+    public int getId() {return id;}
+    public String getName() {return name;}
+
+    private static MovieGenres getById(int id) {
+        for (MovieGenres genre : values()) {
+            if (genre.getId() == id) {
+                return genre;
+            }
+        }
+        return null;
     }
 
     public static boolean hasGenre(int id){
-        return genres.containsKey(id);
+        return MovieGenres.getById(id) != null;
     }
 
-    public static Genre getGenre(int id){
-        return genres.get(id);
+    public static MovieGenres getGenre(int id) {
+        return MovieGenres.getById(id);
     }
 
-    public static String getGenreName(int id){
-        return genres.get(id).name();
+    @Override
+    public String toString(){
+        return "("+name+"-"+id+")";
     }
 }

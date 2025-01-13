@@ -2,53 +2,42 @@ package com.savaava.mytvskeeper.main;
 
 import com.savaava.mytvskeeper.models.*;
 
-import java.time.LocalDate;
 import java.util.Random;
 
 public class Test {
     private static final Random n = new Random(333);
-    private static final int vMovie[] = new int[19];
-    private static final int vTVSerie[] = new int[16];
-
-    static {
-        int i = 0;
-        for(Genre gi : MovieGenres.getAllGenres()){
-            vMovie[i] = gi.id(); i++;
-        }
-
-        i = 0;
-        for(Genre gi : TVGenres.getAllGenres()){
-            vTVSerie[i] = gi.id(); i++;
-        }
-    }
+    private static final int vMovie[] = {10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37};
+    private static final int vTVSerie[] = {28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37};
 
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
-        System.out.println(vk);
+//        System.out.println(vk);
 
-//        for(int i=0; i<2; i++){
+//        for(int i=0; i<3; i++){
 //            vk.addMovie(getRandomMovie());
 //            vk.addTVSerie(getRandomTVSerie());
 //            vk.addAnimeSerie(getRandomTVSerie());
 //        }
 //        System.out.println(vk);
-
+//
 //        vk.csvExportMovies("./bin/Movies.csv");
 //        vk.csvExportTVSeries("./bin/TVSeries.csv");
 //        vk.csvExportAnimeSeries("./bin/AnimeSeries.csv");
 
         TMDatabase tmdb = TMDatabase.getInstance();
-        tmdb.getMovieById("1893");
+
+        System.out.println(tmdb.getMoviesByName(" \nCowboy bebop \n  \n  "));
+        System.out.println(tmdb.getTVSeriesByName(" \nCowboy bebop \n  \n  "));
+
+//        vk.addMovie(tmdb.getMovieById("496243"));
+//        vk.addAnimeSerie(tmdb.getTVSerieById("62110"));
+//        System.out.println(vk);
     }
 
     private static Movie getRandomMovie(){
         String title = "Movie "+(n.nextInt(1000) + 1);
         String description = "Description for "+title;
-        LocalDate releaseDate = LocalDate.of(
-                n.nextInt(30) + 1990,
-                n.nextInt(12) + 1,
-                n.nextInt(28) + 1
-        );
+        String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
         boolean started = n.nextBoolean();
         boolean terminated = n.nextBoolean();
         int rating = n.nextInt(10) + 1;
@@ -69,11 +58,7 @@ public class Test {
     private static TVSerie getRandomTVSerie(){
         String title = "TVSerie "+(n.nextInt(1000) + 1);
         String description = "Description for "+title;
-        LocalDate releaseDate = LocalDate.of(
-                n.nextInt(30) + 1990,
-                n.nextInt(12) + 1,
-                n.nextInt(28) + 1
-        );
+        String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
         boolean started = n.nextBoolean();
         boolean terminated = n.nextBoolean();
         int rating = n.nextInt(10) + 1;

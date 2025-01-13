@@ -1,7 +1,5 @@
 package com.savaava.mytvskeeper.models;
 
-import java.time.LocalDate;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
@@ -9,22 +7,24 @@ import java.util.HashSet;
 public class TVSerie extends Video {
     private final int numSeasons;
     private final int numEpisodes;
-    private final Set<Genre> genres;
+    private final Set<TVGenres> genres;
 
-    public TVSerie(String title, String description, LocalDate releaseDate, boolean started, boolean terminated, int rating, String id, int numSeasons, int numEpisodes) {
+    public TVSerie(String title, String description, String releaseDate, boolean started, boolean terminated, int rating, String id, int numSeasons, int numEpisodes) {
         super(title, description, releaseDate, started, terminated, rating, id);
         this.numSeasons = numSeasons;
         this.numEpisodes = numEpisodes;
         genres = new HashSet<>();
     }
-
+    public TVSerie(String title, String description, String releaseDate, String id) {
+        this(title,description,releaseDate,false,false,-1,id,0,0);
+    }
     public TVSerie(String id) {
-        this("","",LocalDate.of(2000,1,1),false,false,10,id,0,0);
+        this("","","",id);
     }
 
     public int getNumSeasons() {return numSeasons;}
     public int getNumEpisodes() {return numEpisodes;}
-    public Collection<Genre> getGenres(){return genres;}
+    public Collection<TVGenres> getGenres(){return genres;}
 
     public void addGenre(int id){
         if(!TVGenres.hasGenre(id)) return;
@@ -38,8 +38,9 @@ public class TVSerie extends Video {
 
         strb.append(super.toString());
         strb.append(" | num Seasons=").append(numSeasons);
-        strb.append(" | num Episodes=").append(numEpisodes);
-        genres.forEach(gi -> strb.append(" | ").append(gi));
+        strb.append(" | num Episodes=").append(numEpisodes).append(" | ");
+        genres.forEach(gi -> strb.append(gi).append(", "));
+        strb.append("\n");
 
         return strb.toString();
     }

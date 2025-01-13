@@ -1,16 +1,14 @@
 package com.savaava.mytvskeeper.models;
 
-import java.time.LocalDate;
-
 public abstract class Video implements java.io.Serializable {
     private final String title;
     private final String description;
-    private final LocalDate releaseDate;
+    private final String releaseDate;
     private final boolean started,terminated;
     private final int rating;
     private final String id;
 
-    public Video(String title, String description, LocalDate releaseDate, boolean started, boolean terminated, int rating, String id) {
+    public Video(String title, String description, String releaseDate, boolean started, boolean terminated, int rating, String id) {
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -22,7 +20,7 @@ public abstract class Video implements java.io.Serializable {
 
     public String getTitle() {return title;}
     public String getDescription() {return description;}
-    public LocalDate getReleaseDate() {return releaseDate;}
+    public String getReleaseDate() {return releaseDate;}
     public boolean isStarted() {return started;}
     public boolean isTerminated() {return terminated;}
     public int getRating() {return rating;}
