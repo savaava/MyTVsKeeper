@@ -8,7 +8,7 @@ bin/
 # files to ignore:
 mvnw
 mvnw.cmd
-MyTVsKeeper.ico
+jarToExe.txt
 
 # Da commentare quando l'applicazione è pronta:
 executables/
