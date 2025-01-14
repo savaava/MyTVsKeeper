@@ -25,7 +25,7 @@ public class StartApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setMinHeight(400);
         stage.setMinWidth(1000);
-        stage.setTitle("My TVs Keeper");
+        stage.setTitle("MyTVsKeeper");
         stage.getIcons().add(new Image("/images/MyTVsKeeper.png"));
         stage.setScene(scene);
         stage.show();

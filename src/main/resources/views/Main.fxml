@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
@@ -26,6 +28,13 @@
                         <MenuItem mnemonicParsing="false" onAction="#onAnimeSeries" text="Anime Series" />
                      </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="New">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="New Movie" />
+                        <MenuItem mnemonicParsing="false" text="New TV Serie" />
+                        <MenuItem mnemonicParsing="false" text="New Anime Serie" />
+                    </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About" />
@@ -33,7 +42,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <TableView fx:id="tableViewMovies" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tableViewMovies" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="titleColumnMovie" prefWidth="250.0" resizable="false" text="Title" />
                 <TableColumn fx:id="durationColumnMovie" prefWidth="100.0" resizable="false" text="Duration" />
@@ -43,6 +52,15 @@
                   <TableColumn fx:id="terminatedColumnMovie" prefWidth="75.0" resizable="false" text="Terminated" />
                   <TableColumn fx:id="ratingColumnMovie" prefWidth="100.0" resizable="false" text="Rating" />
               </columns>
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
          </children>
       </VBox>
