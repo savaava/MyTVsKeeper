@@ -5,10 +5,10 @@ public abstract class Video implements java.io.Serializable {
     private final String description;
     private final String releaseDate;
     private final boolean started,terminated;
-    private final int rating;
+    private final String rating;
     private final String id;
 
-    public Video(String title, String description, String releaseDate, boolean started, boolean terminated, int rating, String id) {
+    public Video(String title, String description, String releaseDate, boolean started, boolean terminated, String rating, String id) {
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -23,7 +23,7 @@ public abstract class Video implements java.io.Serializable {
     public String getReleaseDate() {return releaseDate;}
     public boolean isStarted() {return started;}
     public boolean isTerminated() {return terminated;}
-    public int getRating() {return rating;}
+    public String getRating() {return rating;}
     public String getId(){return id;}
 
     @Override

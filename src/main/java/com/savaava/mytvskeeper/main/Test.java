@@ -11,27 +11,32 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
-//        System.out.println(vk);
+        System.out.println(vk);
 
 //        for(int i=0; i<3; i++){
 //            vk.addMovie(getRandomMovie());
 //            vk.addTVSerie(getRandomTVSerie());
 //            vk.addAnimeSerie(getRandomTVSerie());
 //        }
-//        System.out.println(vk);
-//
-//        vk.csvExportMovies("./bin/Movies.csv");
-//        vk.csvExportTVSeries("./bin/TVSeries.csv");
-//        vk.csvExportAnimeSeries("./bin/AnimeSeries.csv");
 
         TMDatabase tmdb = TMDatabase.getInstance();
 
-        System.out.println(tmdb.getMoviesByName(" \nCowboy bebop \n  \n  "));
-        System.out.println(tmdb.getTVSeriesByName(" \nCowboy bebop \n  \n  "));
+//        System.out.println(tmdb.getMoviesByName(" \nCowboy bebop \n  \n  "));
+//        System.out.println(tmdb.getTVSeriesByName(" \nCowboy bebop \n  \n  "));
 
 //        vk.addMovie(tmdb.getMovieById("496243"));
+//        vk.addMovie(tmdb.getMovieById("19995"));
+//        vk.addMovie(tmdb.getMovieById("1022789"));
+//        vk.addTVSerie(tmdb.getTVSerieById("94605"));
+//        vk.addTVSerie(tmdb.getTVSerieById("146176"));
+//        vk.addTVSerie(tmdb.getTVSerieById("76479"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("62110"));
+//        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
+//        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 //        System.out.println(vk);
+//        vk.csvExportMovies("./bin/Movies.csv");
+//        vk.csvExportTVSeries("./bin/TVSeries.csv");
+//        vk.csvExportAnimeSeries("./bin/AnimeSeries.csv");
     }
 
     private static Movie getRandomMovie(){
@@ -40,7 +45,7 @@ public class Test {
         String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
         boolean started = n.nextBoolean();
         boolean terminated = n.nextBoolean();
-        int rating = n.nextInt(10) + 1;
+        String rating = n.nextInt(10) + 1+"";
         String id = Integer.toString(n.nextInt(100000)+1);
         String duration = (n.nextInt(120)+60)+" min";
         String director = "Director "+(n.nextInt(100)+1);
@@ -61,7 +66,7 @@ public class Test {
         String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
         boolean started = n.nextBoolean();
         boolean terminated = n.nextBoolean();
-        int rating = n.nextInt(10) + 1;
+        String rating = n.nextInt(10) + 1+"";
         String id = Integer.toString(n.nextInt(100000)+1);
         int numSeasons = n.nextInt(10)+1;
         int numEpisodes = n.nextInt(10)*numSeasons;

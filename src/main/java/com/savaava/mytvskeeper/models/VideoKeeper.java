@@ -32,7 +32,7 @@ public class VideoKeeper {
     private final String delimAux = ",";
 
 
-    private VideoKeeper() throws Exception {
+    private VideoKeeper() throws IOException, ClassNotFoundException {
         movies = FXCollections.observableArrayList();
         tvSeries = FXCollections.observableArrayList();
         animeSeries = FXCollections.observableArrayList();
@@ -48,7 +48,7 @@ public class VideoKeeper {
     }
 
 
-    public static VideoKeeper getInstance() throws Exception {
+    public static VideoKeeper getInstance() throws IOException, ClassNotFoundException {
         if(instance == null) {
             instance = new VideoKeeper();
         }
@@ -86,42 +86,48 @@ public class VideoKeeper {
     }
 
     public void removeMovie(Movie movie) throws IOException {
-        movies.remove(movie);
+        if(! movies.remove(movie))
+            return ;
         if(movies.isEmpty())
             fileDataMovies.delete();
         else
             saveMovies();
     }
     public void removeMovie(String id) throws IOException {
-        movies.remove(new Movie(id));
+        if(! movies.remove(new Movie(id)))
+            return ;
         if(movies.isEmpty())
             fileDataMovies.delete();
         else
             saveMovies();
     }
     public void removeTVSerie(TVSerie tvSerie) throws IOException {
-        tvSeries.remove(tvSerie);
+        if(! tvSeries.remove(tvSerie))
+            return ;
         if(tvSeries.isEmpty())
             fileDataTv.delete();
         else
             saveTVSeries();
     }
     public void removeTVSerie(String id) throws IOException {
-        tvSeries.remove(new TVSerie(id));
+        if(! tvSeries.remove(new TVSerie(id)))
+            return ;
         if(tvSeries.isEmpty())
             fileDataTv.delete();
         else
             saveTVSeries();
     }
     public void removeAnimeSerie(TVSerie anime) throws IOException {
-        animeSeries.remove(anime);
+        if (! animeSeries.remove(anime))
+            return ;
         if(animeSeries.isEmpty())
             fileDataAnime.delete();
         else
             saveAnimeSeries();
     }
     public void removeAnimeSerie(String id) throws IOException {
-        animeSeries.remove(new TVSerie(id));
+        if(! animeSeries.remove(new TVSerie(id)))
+            return ;
         if(animeSeries.isEmpty())
             fileDataAnime.delete();
         else
@@ -173,7 +179,7 @@ public class VideoKeeper {
                 pw.append(mi.getDirector()).append(delim);
                 pw.append(mi.isStarted()?"Started":"Not Started").append(delim);
                 pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(delim);
-                pw.append(Integer.toString(mi.getRating())).append(delim);
+                pw.append(mi.getRating()).append(delim);
                 int i = 0;
                 for(MovieGenres gi : mi.getGenres()){
                     pw.append(gi.getName()); i++;
@@ -202,7 +208,7 @@ public class VideoKeeper {
                 pw.append(tvi.getReleaseDate().toString()).append(delim);
                 pw.append(tvi.isStarted()?"Started":"Not Started").append(delim);
                 pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(delim);
-                pw.append(Integer.toString(tvi.getRating())).append(delim);
+                pw.append(tvi.getRating()).append(delim);
                 int i = 0;
                 for(TVGenres gi : tvi.getGenres()){
                     pw.append(gi.getName()); i++;

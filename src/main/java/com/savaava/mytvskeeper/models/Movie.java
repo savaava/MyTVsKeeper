@@ -9,14 +9,17 @@ public class Movie extends Video {
     private final String director;
     private final Set<MovieGenres> genres;
 
-    public Movie(String title, String description, String releaseDate, boolean started, boolean terminated, int rating, String id, String duration, String director) {
+    public Movie(String title, String description, String releaseDate, boolean started, boolean terminated, String rating, String id, String duration, String director) {
         super(title, description, releaseDate, started, terminated, rating, id);
         this.duration = duration;
         this.director = director;
         genres = new HashSet<>();
     }
+    public Movie(String title, String description, String releaseDate, String id, String duration, String director) {
+        this(title, description, releaseDate, false, false, "", id, duration, director);
+    }
     public Movie(String title, String description, String releaseDate, String id) {
-        this(title, description, releaseDate, false, false, -1, id, "", "");
+        this(title, description, releaseDate, false, false, "", id, "", "");
     }
     public Movie(String id) {
         this("","","",id);

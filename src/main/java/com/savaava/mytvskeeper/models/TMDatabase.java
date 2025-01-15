@@ -29,14 +29,16 @@ public class TMDatabase {
     private HttpRequest request;
     private HttpResponse<String> response;
 
-    private TMDatabase() throws IOException {
+    private TMDatabase() throws IOException,ConfigNotExistsException {
         if(fileConfig.exists())
             loadConfig();
+        else
+            throw new ConfigNotExistsException();
 
         client = HttpClient.newHttpClient();
     }
 
-    public static TMDatabase getInstance() throws IOException {
+    public static TMDatabase getInstance() throws IOException,ConfigNotExistsException {
         if(instance == null)
             instance = new TMDatabase();
         return instance;
@@ -48,10 +50,7 @@ public class TMDatabase {
 
     /* Movie's Main Constructor:
     title, description, releaseDate, started, terminated, rating, id, duration, director */
-    public Collection<Movie> getMoviesByName(String name) throws ConfigNotExistsException, IOException, InterruptedException {
-        if(apiKey == null)
-            throw new ConfigNotExistsException();
-
+    public Collection<Movie> getMoviesByName(String name) throws IOException, InterruptedException {
         Collection<Movie> out = new ArrayList<>();
 
         /* to format the string written by the user for the https request: */
@@ -85,10 +84,7 @@ public class TMDatabase {
         return out;
     }
 
-    public Movie getMovieById(String id) throws ConfigNotExistsException, IOException, InterruptedException {
-        if(apiKey == null)
-            throw new ConfigNotExistsException();
-
+    public Movie getMovieById(String id) throws IOException, InterruptedException {
         String url = "https://api.themoviedb.org/3/movie/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
         String urlCredits = "https://api.themoviedb.org/3/movie/"+id+"/credits?language=en-US&include_adult=true&api_key="+apiKey;
 
@@ -114,13 +110,19 @@ public class TMDatabase {
                 director = crewMateVett.getString("name");
         }
 
+        int min = jsonMovie.getInt("runtime");
+        int h = 0;
+        while(min >= 60) {
+            h++;
+            min-=60;
+        }
+        String duration = h==0 ? min+"min" : h+"h "+min+"min";
         Movie out = new Movie(
                 jsonMovie.getString("title"),
                 jsonMovie.getString("overview"),
                 jsonMovie.getString("release_date"),
-                false,false,-1,
                 Integer.toString(jsonMovie.getInt("id")),
-                Integer.toString(jsonMovie.getInt("runtime")),
+                duration,
                 director);
         for(int i=0; i<genresVett.length(); i++){
             out.addGenre(genresVett.getJSONObject(i).getInt("id"));
@@ -131,10 +133,7 @@ public class TMDatabase {
 
     /* TVSerie's Main Constructor:
     * title, description, releaseDate, started, terminated, rating, id, numSeasons, numEpisodes */
-    public Collection<TVSerie> getTVSeriesByName(String name) throws ConfigNotExistsException, IOException, InterruptedException {
-        if(apiKey == null)
-            throw new ConfigNotExistsException();
-
+    public Collection<TVSerie> getTVSeriesByName(String name) throws IOException, InterruptedException {
         Collection<TVSerie> out = new ArrayList<>();
 
         name = name.trim();
@@ -167,10 +166,7 @@ public class TMDatabase {
         return out;
     }
 
-    public TVSerie getTVSerieById(String id) throws ConfigNotExistsException, IOException, InterruptedException {
-        if(apiKey == null)
-            throw new ConfigNotExistsException();
-
+    public TVSerie getTVSerieById(String id) throws IOException, InterruptedException {
         String url = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
@@ -185,7 +181,6 @@ public class TMDatabase {
                 jsonTVSerie.getString("name"),
                 jsonTVSerie.getString("overview"),
                 jsonTVSerie.getString("first_air_date"),
-                false,false,-1,
                 Integer.toString(jsonTVSerie.getInt("id")),
                 jsonTVSerie.getInt("number_of_seasons"),
                 jsonTVSerie.getInt("number_of_episodes"));
