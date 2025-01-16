@@ -32,7 +32,7 @@ public class VideoKeeper {
     private final String delimAux = ",";
 
 
-    private VideoKeeper() throws IOException, ClassNotFoundException {
+    private VideoKeeper() throws Exception {
         movies = FXCollections.observableArrayList();
         tvSeries = FXCollections.observableArrayList();
         animeSeries = FXCollections.observableArrayList();
@@ -48,7 +48,7 @@ public class VideoKeeper {
     }
 
 
-    public static VideoKeeper getInstance() throws IOException, ClassNotFoundException {
+    public static VideoKeeper getInstance() throws Exception {
         if(instance == null) {
             instance = new VideoKeeper();
         }
@@ -140,7 +140,7 @@ public class VideoKeeper {
             oos.writeObject(new ArrayList<>(movies));
         }
     }
-    public void loadMovies() throws IOException, ClassNotFoundException {
+    public void loadMovies() throws Exception {
         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataMovies)))){
             movies.setAll((Collection<Movie>)ois.readObject());
         }
@@ -151,7 +151,7 @@ public class VideoKeeper {
             oos.writeObject(new ArrayList<>(tvSeries));
         }
     }
-    public void loadTVSeries() throws IOException, ClassNotFoundException {
+    public void loadTVSeries() throws Exception {
         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataTv)))){
             tvSeries.setAll((Collection<TVSerie>)ois.readObject());
         }
@@ -162,7 +162,7 @@ public class VideoKeeper {
             oos.writeObject(new ArrayList<>(animeSeries));
         }
     }
-    public void loadAnimeSeries() throws IOException, ClassNotFoundException {
+    public void loadAnimeSeries() throws Exception {
         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataAnime)))){
             animeSeries.setAll((Collection<TVSerie>)ois.readObject());
         }

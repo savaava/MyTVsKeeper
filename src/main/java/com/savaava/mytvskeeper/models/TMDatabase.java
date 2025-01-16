@@ -115,8 +115,8 @@ public class TMDatabase {
         }
         String duration = h==0 ? min+"min" : h+"h "+min+"min";
         Movie out = new Movie(
-                jsonMovie.getString("title"),
-                jsonMovie.getString("overview"),
+                FormatString.compactTitle(jsonMovie.getString("title")),
+                FormatString.compactDescription(jsonMovie.getString("overview")),
                 jsonMovie.getString("release_date"),
                 Integer.toString(jsonMovie.getInt("id")),
                 duration,
@@ -147,8 +147,8 @@ public class TMDatabase {
             JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
 
             TVSerie tvSerie = new TVSerie(
-                    currTVSerie.getString("name"),
-                    currTVSerie.getString("overview"),
+                    FormatString.compactTitle(currTVSerie.getString("name")),
+                    FormatString.compactDescription(currTVSerie.getString("overview")),
                     currTVSerie.getString("first_air_date"),
                     Integer.toString(currTVSerie.getInt("id")));
             for(int j=0; j<genresVett.length(); j++)
@@ -172,8 +172,8 @@ public class TMDatabase {
         JSONArray genresVett = jsonTVSerie.getJSONArray("genres");
 
         TVSerie out = new TVSerie(
-                jsonTVSerie.getString("name"),
-                jsonTVSerie.getString("overview"),
+                FormatString.compactTitle(jsonTVSerie.getString("name")),
+                FormatString.compactDescription(jsonTVSerie.getString("overview")),
                 jsonTVSerie.getString("first_air_date"),
                 Integer.toString(jsonTVSerie.getInt("id")),
                 jsonTVSerie.getInt("number_of_seasons"),

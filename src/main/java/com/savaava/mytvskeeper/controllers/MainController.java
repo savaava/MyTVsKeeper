@@ -67,8 +67,8 @@ public class MainController implements Initializable {
 
         try{
             vk = VideoKeeper.getInstance();
-        }catch(IOException | ClassNotFoundException ex){
-            new AlertError("Failed to load Videos","Error Details: "+ex.getMessage());
+        }catch(Exception ex){
+            new AlertError("Error reading saving data files","Error's details: "+ex.getMessage());
         }
 
         tableViewMovies.setVisible(true);

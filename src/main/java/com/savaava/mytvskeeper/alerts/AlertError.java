@@ -17,6 +17,6 @@ public class AlertError extends Alert {
     }
 
     public AlertError(){
-        this("ERROR", "This is a error message");
+        this("ERROR !", "This is a error message");
     }
 }

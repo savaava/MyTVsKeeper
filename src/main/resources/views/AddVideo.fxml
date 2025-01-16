@@ -24,13 +24,13 @@
                   <Insets bottom="10.0" left="200.0" right="200.0" top="5.0" />
                </VBox.margin>
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="TEXT" />
                </cursor>
             </TextField>
             <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="100.0">
                <children>
-                  <Button fx:id="searchBtn" mnemonicParsing="false" text="Search" textAlignment="CENTER" />
-                  <Button fx:id="insertBtn" mnemonicParsing="false" text="Insert" textAlignment="CENTER" />
+                  <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#onSearch" text="Search" textAlignment="CENTER" />
+                  <Button fx:id="insertBtn" mnemonicParsing="false" onAction="#onInsert" text="Insert" textAlignment="CENTER" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
