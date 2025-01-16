@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -257,25 +258,39 @@ public class MainController implements Initializable {
     public void onNewMovie() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
         Parent root = loader.load();
-        AddVideoController imageController = loader.getController();
+        AddVideoController addController = loader.getController();
+        addController.setVideoToAdd(1);
 
-        Scene scene = new Scene(root, 600, 600);
+        showPopup(root, "New Movie");
+    }
+    @FXML
+    public void onNewTv() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
+        Parent root = loader.load();
+        AddVideoController addController = loader.getController();
+        addController.setVideoToAdd(2);
+
+        showPopup(root, "New TV Serie");
+    }
+    @FXML
+    public void onNewAnime() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
+        Parent root = loader.load();
+        AddVideoController addController = loader.getController();
+        addController.setVideoToAdd(3);
+
+        showPopup(root, "New Anime Serie");
+    }
+
+    private void showPopup(Parent root, String title) {
+        Scene scene = new Scene(root, 950, 600);
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle("New Movie");
+        popup.setTitle(title);
         popup.getIcons().add(new Image("/images/MyTVsKeeper.png"));
         popup.setResizable(false);
         popup.setScene(scene);
-//        imageController.setVideoToAdd(1);
         popup.showAndWait();
-    }
-    @FXML
-    public void onNewTv() {
-
-    }
-    @FXML
-    public void onNewAnime() {
-
     }
 
 

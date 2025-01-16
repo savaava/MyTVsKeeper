@@ -18,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import com.savaava.mytvskeeper.utility.FormatString;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -53,11 +54,7 @@ public class TMDatabase {
     public Collection<Movie> getMoviesByName(String name) throws IOException, InterruptedException {
         Collection<Movie> out = new ArrayList<>();
 
-        /* to format the string written by the user for the https request: */
-        name = name.trim();
-        name = name.replaceAll("\\s+", " ");
-        name = String.join("%20", name.split(" "));
-        String url = "https://api.themoviedb.org/3/search/movie?query="+name+"&include_adult=true&language=en-EN&page=1'&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/search/movie?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-EN&page=1'&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -71,8 +68,8 @@ public class TMDatabase {
             JSONArray genresVett = currMovie.getJSONArray("genre_ids");
 
             Movie movie = new Movie(
-                    currMovie.getString("title"),
-                    currMovie.getString("overview"),
+                    FormatString.compactTitle(currMovie.getString("title")),
+                    FormatString.compactDescription(currMovie.getString("overview")),
                     currMovie.getString("release_date"),
                     Integer.toString(currMovie.getInt("id")));
             for(int j=0; j<genresVett.length(); j++)
@@ -136,10 +133,7 @@ public class TMDatabase {
     public Collection<TVSerie> getTVSeriesByName(String name) throws IOException, InterruptedException {
         Collection<TVSerie> out = new ArrayList<>();
 
-        name = name.trim();
-        name = name.replaceAll("\\s+", " ");
-        name = String.join("%20", name.split(" "));
-        String url = "https://api.themoviedb.org/3/search/tv?query="+name+"&include_adult=true&language=en-US&page=1'&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/search/tv?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-US&page=1'&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()

@@ -7,8 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.AddVideoController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
@@ -22,18 +21,33 @@
                   <Insets />
                </opaqueInsets>
                <VBox.margin>
-                  <Insets bottom="30.0" left="50.0" right="50.0" top="5.0" />
+                  <Insets bottom="10.0" left="200.0" right="200.0" top="5.0" />
                </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </TextField>
-            <TableView fx:id="table" fixedCellSize="35.0" prefHeight="617.0" prefWidth="560.0" tableMenuButtonVisible="true">
+            <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="100.0">
+               <children>
+                  <Button fx:id="searchBtn" mnemonicParsing="false" text="Search" textAlignment="CENTER" />
+                  <Button fx:id="insertBtn" mnemonicParsing="false" text="Insert" textAlignment="CENTER" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <TableView fx:id="table" prefWidth="660.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn prefWidth="-1.0" resizable="false" text="Title" />
-                <TableColumn prefWidth="100.0" resizable="false" text="Release Date" />
-                  <TableColumn prefWidth="-1.0" resizable="false" text="Description" />
+                <TableColumn fx:id="titleColumn" prefWidth="250.0" resizable="false" text="Title" />
+                <TableColumn fx:id="dateColumn" prefWidth="100.0" resizable="false" text="Release Date" />
+                  <TableColumn fx:id="descriptionColumn" prefWidth="545.0" resizable="false" text="Description" />
               </columns>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </TableView>
          </children>
       </VBox>
