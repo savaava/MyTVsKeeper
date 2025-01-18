@@ -58,10 +58,10 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        File dir = new File("bin\\");
+        File dir = new File("bin");
         if(!dir.exists() || !dir.isDirectory()) {
-            if(!dir.mkdir()){
-                new AlertError("Failed bin","Failed to create bin directory in current directory");
+            if(!dir.mkdir()) {
+                new AlertError("No directory bin","Failed to create bin directory in current directory");
             }
         }
 
