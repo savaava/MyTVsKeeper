@@ -1,10 +1,10 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.models.VideoKeeper;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.Movie;
-
 import com.savaava.mytvskeeper.models.TVSerie;
-import com.savaava.mytvskeeper.models.VideoKeeper;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,12 +18,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.File;
+
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
+    private VideoKeeper vk;
+
     @FXML
     public TableView<Movie> tableViewMovies;
     @FXML
@@ -53,8 +56,6 @@ public class MainController implements Initializable {
             startedColumnTv,terminatedColumnTv,
             startedColumnAnime,terminatedColumnAnime;
 
-    private VideoKeeper vk;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,15 +68,30 @@ public class MainController implements Initializable {
 
         try{
             vk = VideoKeeper.getInstance();
-        }catch(Exception ex){
-            new AlertError("Error reading saving data files","Error's details: "+ex.getMessage());
+        }catch(Exception ex) {
+            new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
         }
 
         tableViewMovies.setVisible(true);
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(false);
 
+        initMoviesTable();
+        initTVsTable();
+        initAnimesTable();
+
+        setHeightsCells();
+
+        tableViewMovies.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount()==2) {
+                System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+            }
+        });
+    }
+
+    private void initMoviesTable() {
         tableViewMovies.setItems(vk.getMovies());
+
         titleColumnMovie.setCellValueFactory(new PropertyValueFactory<>("title"));
         durationColumnMovie.setCellValueFactory(new PropertyValueFactory<>("duration"));
         releaseDateColumnMovie.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
@@ -83,6 +99,7 @@ public class MainController implements Initializable {
         startedColumnMovie.setCellValueFactory(new PropertyValueFactory<>("started"));
         terminatedColumnMovie.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnMovie.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
         startedColumnMovie.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
@@ -124,7 +141,8 @@ public class MainController implements Initializable {
             }
         });
 
-
+    }
+    private void initTVsTable() {
         tableViewTvs.setItems(vk.getTvSeries());
         titleColumnTv.setCellValueFactory(new PropertyValueFactory<>("title"));
         seasonsColumnTv.setCellValueFactory(new PropertyValueFactory<>("numSeasons"));
@@ -173,9 +191,10 @@ public class MainController implements Initializable {
                 }
             }
         });
-
-
+    }
+    private void initAnimesTable() {
         tableViewAnimes.setItems(vk.getAnimeSeries());
+
         titleColumnAnime.setCellValueFactory(new PropertyValueFactory<>("title"));
         seasonsColumnAnime.setCellValueFactory(new PropertyValueFactory<>("numSeasons"));
         episodesColumnAnime.setCellValueFactory(new PropertyValueFactory<>("numEpisodes"));
@@ -183,6 +202,7 @@ public class MainController implements Initializable {
         startedColumnAnime.setCellValueFactory(new PropertyValueFactory<>("started"));
         terminatedColumnAnime.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnAnime.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
         startedColumnAnime.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
@@ -223,11 +243,48 @@ public class MainController implements Initializable {
                 }
             }
         });
+    }
 
+    private void setHeightsCells() {
+        tableViewMovies.setRowFactory(movie -> new TableRow<>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
 
-        tableViewMovies.setOnMousePressed((MouseEvent e) -> {
-            if (e.isPrimaryButtonDown() && e.getClickCount()==2) {
-                System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+                if (empty || movie == null) {
+                    setPrefHeight(26);
+                } else {
+                    int titleLines = movie.getTitle().split("\n").length;
+                    setPrefHeight(titleLines * 26);
+                }
+            }
+        });
+
+        tableViewTvs.setRowFactory(tv -> new TableRow<>(){
+            @Override
+            protected void updateItem(TVSerie tv, boolean empty) {
+                super.updateItem(tv, empty);
+
+                if (empty || tv == null) {
+                    setPrefHeight(26);
+                } else {
+                    int titleLines = tv.getTitle().split("\n").length;
+                    setPrefHeight(titleLines * 26);
+                }
+            }
+        });
+
+        tableViewAnimes.setRowFactory(anime -> new TableRow<>(){
+            @Override
+            protected void updateItem(TVSerie anime, boolean empty) {
+                super.updateItem(anime, empty);
+
+                if (empty || anime == null) {
+                    setPrefHeight(26);
+                } else {
+                    int titleLines = anime.getTitle().split("\n").length;
+                    setPrefHeight(titleLines * 26);
+                }
             }
         });
     }
@@ -238,21 +295,18 @@ public class MainController implements Initializable {
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(false);
     }
-
     @FXML
     public void onTVSeries() {
         tableViewMovies.setVisible(false);
         tableViewTvs.setVisible(true);
         tableViewAnimes.setVisible(false);
     }
-
     @FXML
     public void onAnimeSeries() {
         tableViewMovies.setVisible(false);
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(true);
     }
-
 
     @FXML
     public void onNewMovie() throws IOException {

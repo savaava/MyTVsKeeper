@@ -5,6 +5,7 @@ import com.savaava.mytvskeeper.alerts.AlertWarning;
 import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
+
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,9 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -101,8 +105,8 @@ public class AddVideoController implements Initializable {
                 if (empty || video == null) {
                     setPrefHeight(26);
                 } else {
-                    int titleLines = video.getTitle()!=null ? video.getTitle().split("\n").length : 0;
-                    int descriptionLines = video.getDescription()!=null ? video.getDescription().split("\n").length : 0;
+                    int titleLines = video.getTitle().split("\n").length;
+                    int descriptionLines = video.getDescription().split("\n").length;
                     int maxLines = Math.max(titleLines, descriptionLines);
                     if(maxLines == 2)
                         setPrefHeight(maxLines * 26);
@@ -140,7 +144,7 @@ public class AddVideoController implements Initializable {
     }
 
     @FXML
-    public void onInsert() {
+    public void onInsert(ActionEvent event) {
         Video videoToAdd = table.getSelectionModel().getSelectedItem();
 
         if(videoIndex == 1){
@@ -186,5 +190,12 @@ public class AddVideoController implements Initializable {
             }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected Anime - Error's details: "+ex.getMessage());}
 
         }
+
+        onCancel(event);
+    }
+
+    public void onCancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 }
