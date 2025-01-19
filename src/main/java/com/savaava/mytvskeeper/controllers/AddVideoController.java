@@ -6,27 +6,32 @@ import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 
+import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
+
+import java.io.IOException;
+
 import java.util.ResourceBundle;
 
 public class AddVideoController implements Initializable {
-    @FXML
-    public Label lbl;
+    private int videoIndex;
+    private StringProperty strBinding = new SimpleStringProperty("");
+    private ObservableList<Video> list;
+    private TMDatabase tmdb;
+    private VideoKeeper vk;
+
     @FXML
     public TextField tfd;
     @FXML
@@ -37,36 +42,48 @@ public class AddVideoController implements Initializable {
             dateColumn,
             descriptionColumn;
     @FXML
-    public Button searchBtn, insertBtn;
+    public Button searchBtn, insertBtn, cancelBtn;
 
-    private int videoIndex;
-    private StringProperty str = new SimpleStringProperty("");
-    private ObservableList<Video> list;
-    private TMDatabase tmdb;
-    private VideoKeeper vk;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try{
-            vk = VideoKeeper.getInstance();
-        }catch(Exception ex){
-            new AlertError("Error reading saving data files","Error's details: "+ex.getMessage());
-            return ;
-        }
+        /* method runLater to be able to exit in cathes, otherwise (Stage)table.getScene() would be null, and
+        * because the stage is not initialized */
+        Platform.runLater(() -> {
+            try {
+                vk = VideoKeeper.getInstance();
+            } catch (Exception ex) {
+                new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
+                onExit();
+            }
 
-        try {
-            tmdb = TMDatabase.getInstance();
-        } catch(ConfigNotExistsException ex) {
-            new AlertError("Config file doesn't Exists !","Please configure the application");
-            return ;
-        } catch(IOException ex) {
-            new AlertError("Error reading config file","Error's details: "+ex.getMessage());
-            return ;
-        }
+            try {
+                tmdb = TMDatabase.getInstance();
+            } catch (ConfigNotExistsException ex) {
+                new AlertError("Config file doesn't Exists !", "Please configure the application in File -> Configure application");
+                onExit();
+            } catch (IOException ex) {
+                new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
+                onExit();
+            }
 
-        list = FXCollections.observableArrayList();
+            list = FXCollections.observableArrayList();
 
+            initTable();
+
+            BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
+            searchBtn.disableProperty().bind(searchDisableCond);
+
+            BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
+            insertBtn.disableProperty().bind(insertDisableCond);
+
+            cancelBtn.setStyle("-fx-background-color: #ff7a7a");
+        });
+    }
+
+    private void initTable() {
         table.setItems(list);
+
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -97,6 +114,7 @@ public class AddVideoController implements Initializable {
                 }
             }
         });
+
         table.setRowFactory(video -> new TableRow<>() {
             @Override
             protected void updateItem(Video video, boolean empty) {
@@ -115,14 +133,7 @@ public class AddVideoController implements Initializable {
                 }
             }
         });
-
-        BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(str));
-        searchBtn.disableProperty().bind(searchDisableCond);
-
-        BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
-        insertBtn.disableProperty().bind(insertDisableCond);
     }
-
 
     public void setVideoToAdd(int videoIndex){
         this.videoIndex = videoIndex;
@@ -131,7 +142,7 @@ public class AddVideoController implements Initializable {
     @FXML
     public void onSearch() {
         String nameVideo = tfd.getText();
-        str.setValue(nameVideo);
+        strBinding.setValue(nameVideo);
 
         try{
             if(videoIndex == 1)
@@ -144,8 +155,9 @@ public class AddVideoController implements Initializable {
     }
 
     @FXML
-    public void onInsert(ActionEvent event) {
+    public void onInsert() {
         Video videoToAdd = table.getSelectionModel().getSelectedItem();
+        boolean flagAlreadyExists = false;
 
         if(videoIndex == 1){
             Movie movieToAdd;
@@ -159,6 +171,7 @@ public class AddVideoController implements Initializable {
             try{ vk.addMovie(movieToAdd); }
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("Movie already exists","The selected movie already exists in your movie list");
+                flagAlreadyExists = true;
             }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected Movie - Error's details: "+ex.getMessage());}
 
         }else if(videoIndex == 2){
@@ -173,6 +186,7 @@ public class AddVideoController implements Initializable {
             try{ vk.addTVSerie(tvToAdd); }
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("TV Serie already exists","The selected TV Serie already exists in your TV Serie list");
+                flagAlreadyExists = true;
             }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected TV Serie - Error's details: "+ex.getMessage());}
 
         }else{
@@ -187,15 +201,18 @@ public class AddVideoController implements Initializable {
             try{ vk.addAnimeSerie(animeToAdd); }
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("Anime already exists","The selected Anime already exists in your Anime list");
+                flagAlreadyExists = true;
             }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected Anime - Error's details: "+ex.getMessage());}
 
         }
 
-        onCancel(event);
+        if(!flagAlreadyExists)
+            onExit();
     }
 
-    public void onCancel(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    @FXML
+    public void onExit() {
+        Stage stage = (Stage)table.getScene().getWindow();
         stage.close();
     }
 }

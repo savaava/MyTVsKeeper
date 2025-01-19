@@ -5,6 +5,7 @@ import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,10 +19,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.net.URL;
+
 import java.io.IOException;
 import java.io.File;
 
-import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -59,37 +61,39 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        File dir = new File("bin");
-        if(!dir.exists() || !dir.isDirectory()) {
-            if(!dir.mkdir()) {
-                new AlertError("No directory bin","Failed to create bin directory in current directory");
+        Platform.runLater(() -> {
+            File dir = new File("bin");
+            if (!dir.exists() || !dir.isDirectory()) {
+                if (!dir.mkdir()) {
+                    new AlertError("No directory bin", "Failed to create bin directory in current directory");
+                    onExit();
+                }
             }
-        }
 
-        try{
-            vk = VideoKeeper.getInstance();
-        }catch(Exception ex) {
-            new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
-        }
-
-        tableViewMovies.setVisible(true);
-        tableViewTvs.setVisible(false);
-        tableViewAnimes.setVisible(false);
-
-        initMoviesTable();
-        initTVsTable();
-        initAnimesTable();
-
-        setHeightsCells();
-
-        tableViewMovies.setOnMousePressed((MouseEvent e) -> {
-            if (e.isPrimaryButtonDown() && e.getClickCount()==2) {
-                System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+            try {
+                vk = VideoKeeper.getInstance();
+            } catch (Exception ex) {
+                new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
+                onExit();
             }
+
+            initMoviesTable();
+            initTVsTable();
+            initAnimesTable();
+
+            setHeightsCells();
+
+            tableViewMovies.setOnMousePressed((MouseEvent e) -> {
+                if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                    System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+                }
+            });
         });
     }
 
     private void initMoviesTable() {
+        tableViewMovies.setVisible(true);
+
         tableViewMovies.setItems(vk.getMovies());
 
         titleColumnMovie.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -143,7 +147,10 @@ public class MainController implements Initializable {
 
     }
     private void initTVsTable() {
+        tableViewTvs.setVisible(false);
+
         tableViewTvs.setItems(vk.getTvSeries());
+
         titleColumnTv.setCellValueFactory(new PropertyValueFactory<>("title"));
         seasonsColumnTv.setCellValueFactory(new PropertyValueFactory<>("numSeasons"));
         episodesColumnTv.setCellValueFactory(new PropertyValueFactory<>("numEpisodes"));
@@ -193,6 +200,8 @@ public class MainController implements Initializable {
         });
     }
     private void initAnimesTable() {
+        tableViewAnimes.setVisible(false);
+
         tableViewAnimes.setItems(vk.getAnimeSeries());
 
         titleColumnAnime.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -289,6 +298,7 @@ public class MainController implements Initializable {
         });
     }
 
+
     @FXML
     public void onMovies() {
         tableViewMovies.setVisible(true);
@@ -307,6 +317,7 @@ public class MainController implements Initializable {
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(true);
     }
+
 
     @FXML
     public void onNewMovie() throws IOException {
@@ -336,6 +347,27 @@ public class MainController implements Initializable {
         showPopup(root, "New Anime Serie");
     }
 
+
+    @FXML
+    public void onExport() {
+
+    }
+
+    @FXML
+    public void onConfig() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Config.fxml"));
+        Parent root = loader.load();
+        //AddVideoController addController = loader.getController();
+
+        showPopup(root, "Configuration");
+    }
+
+    @FXML
+    public void onAbout() {
+
+    }
+
+
     private void showPopup(Parent root, String title) {
         Scene scene = new Scene(root, 950, 600);
         Stage popup = new Stage();
@@ -349,22 +381,8 @@ public class MainController implements Initializable {
 
 
     @FXML
-    public void onExport() {
-
-    }
-
-    @FXML
-    public void onConfig() {
-
-    }
-
-    @FXML
-    public void onAbout() {
-
-    }
-
-    @FXML
     public void onExit() {
-
+        Stage stage = (Stage)tableViewMovies.getScene().getWindow();
+        stage.close();
     }
 }

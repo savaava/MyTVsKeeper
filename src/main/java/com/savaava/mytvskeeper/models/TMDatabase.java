@@ -199,4 +199,8 @@ public class TMDatabase {
             apiKey = br.readLine();
         }
     }
+
+    public static boolean verifyConfig() {
+        return false;
+    }
 }

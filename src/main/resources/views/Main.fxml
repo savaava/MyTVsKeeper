@@ -17,7 +17,7 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                         <MenuItem mnemonicParsing="false" onAction="#onExport" text="Export" />
-                    <MenuItem mnemonicParsing="false" onAction="#onConfig" text="Config" />
+                    <MenuItem mnemonicParsing="false" onAction="#onConfig" text="Configure application" />
                     <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
                   </items>
                 </Menu>
