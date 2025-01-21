@@ -18,10 +18,10 @@ public class AlertError extends Alert {
     }
 
     public AlertError(String header){
-        this(header, "This is a error message");
+        this(header, "");
     }
 
     public AlertError(){
-        this("ERROR !", "This is a error message");
+        this("ERROR !", "");
     }
 }

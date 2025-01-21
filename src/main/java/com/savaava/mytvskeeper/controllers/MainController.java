@@ -359,7 +359,7 @@ public class MainController implements Initializable {
         Parent root = loader.load();
         //AddVideoController addController = loader.getController();
 
-        showPopup(root, "Configuration");
+        showPopup(root, "Configuration", 500, 300);
     }
 
     @FXML
@@ -368,8 +368,8 @@ public class MainController implements Initializable {
     }
 
 
-    private void showPopup(Parent root, String title) {
-        Scene scene = new Scene(root, 950, 600);
+    private void showPopup(Parent root, String title, int w, int h) {
+        Scene scene = new Scene(root, w, h);
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle(title);
@@ -377,6 +377,9 @@ public class MainController implements Initializable {
         popup.setResizable(false);
         popup.setScene(scene);
         popup.showAndWait();
+    }
+    private void showPopup(Parent root, String title) {
+        showPopup(root, title, 950, 600);
     }
 
 

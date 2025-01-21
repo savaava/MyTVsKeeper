@@ -1,6 +1,7 @@
 package com.savaava.mytvskeeper.models;
 
 import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
+import com.savaava.mytvskeeper.utility.FormatString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import com.savaava.mytvskeeper.utility.FormatString;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -26,6 +26,7 @@ public class TMDatabase {
     private static TMDatabase instance;
     private final File fileConfig = new File("./bin/Config");
     private String apiKey;
+
     private final HttpClient client;
     private HttpRequest request;
     private HttpResponse<String> response;
@@ -201,7 +202,15 @@ public class TMDatabase {
     }
 
 
-    public static boolean verifyConfig() {
-        return false;
+    public boolean verifyConfig(String apiKey) throws IOException, InterruptedException {
+        String url = "https://api.themoviedb.org/3/authentication?api_key="+apiKey;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return new JSONObject(response.body()).getBoolean("success");
     }
 }

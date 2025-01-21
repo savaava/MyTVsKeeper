@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 public class AddVideoController implements Initializable {
     private int videoIndex;
-    private StringProperty strBinding = new SimpleStringProperty("");
+    private final StringProperty strBinding = new SimpleStringProperty("");
     private ObservableList<Video> list;
     private TMDatabase tmdb;
     private VideoKeeper vk;
