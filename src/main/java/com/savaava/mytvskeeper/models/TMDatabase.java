@@ -1,6 +1,5 @@
 package com.savaava.mytvskeeper.models;
 
-import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
 import com.savaava.mytvskeeper.utility.FormatString;
 
 import java.util.ArrayList;
@@ -31,16 +30,14 @@ public class TMDatabase {
     private HttpRequest request;
     private HttpResponse<String> response;
 
-    private TMDatabase() throws IOException,ConfigNotExistsException {
-        if(fileConfig.exists())
+    private TMDatabase() throws IOException {
+        if(hasConfiguration())
             loadConfig();
-        else
-            throw new ConfigNotExistsException();
 
         client = HttpClient.newHttpClient();
     }
 
-    public static TMDatabase getInstance() throws IOException,ConfigNotExistsException {
+    public static TMDatabase getInstance() throws IOException {
         if(instance == null)
             instance = new TMDatabase();
         return instance;
@@ -49,6 +46,9 @@ public class TMDatabase {
     public String getApiKey(){return apiKey;}
     public void setApiKey(String apiKey){this.apiKey = apiKey;}
 
+    public boolean hasConfiguration() {
+        return fileConfig.exists();
+    }
 
     /* Movie's Main Constructor:
     title, description, releaseDate, started, terminated, rating, id, duration, director */

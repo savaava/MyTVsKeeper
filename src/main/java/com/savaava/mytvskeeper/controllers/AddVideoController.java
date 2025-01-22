@@ -2,7 +2,6 @@ package com.savaava.mytvskeeper.controllers;
 
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertWarning;
-import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 
@@ -59,11 +58,14 @@ public class AddVideoController implements Initializable {
 
             try {
                 tmdb = TMDatabase.getInstance();
-            } catch (ConfigNotExistsException ex) {
-                new AlertError("Config file doesn't Exists !", "Please configure the application in File -> Configure application");
-                onExit();
             } catch (IOException ex) {
                 new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
+                onExit();
+            }
+
+            if(! tmdb.hasConfiguration()) {
+                new AlertWarning("Config file doesn't Exists !",
+                        "Please configure the application clicking: \nFile -> Configure application");
                 onExit();
             }
 

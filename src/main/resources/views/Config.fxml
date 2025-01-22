@@ -7,7 +7,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.ConfigController">
    <children>
-      <Label layoutX="101.0" layoutY="73.0" text="Please provide your API Key to configure the application" />
+      <Label layoutX="120.0" layoutY="80.0" text="Provide your API Key to configure the application" />
       <Hyperlink fx:id="hl" layoutX="137.0" layoutY="263.0" onAction="#handleHl" text="https://www.themoviedb.org/settings/api" underline="true" />
       <TextField fx:id="tfd" layoutX="133.0" layoutY="109.0" prefHeight="25.0" prefWidth="235.0" promptText="write API Key">
          <cursor>
@@ -17,7 +17,7 @@
       <Button layoutX="107.0" layoutY="150.0" mnemonicParsing="false" onAction="#onExit" text="Cancel" />
       <Button fx:id="checkBtn" layoutX="215.0" layoutY="150.0" mnemonicParsing="false" onAction="#onCheckKey" text="Check Key" />
       <Button fx:id="confirmBtn" layoutX="335.0" layoutY="150.0" mnemonicParsing="false" onAction="#onConfirmKey" text="Confirm" />
+      <Label layoutX="39.0" layoutY="190.0" text="Please check the Key first then confirm. The Key will be saved for future sessions" />
       <Label layoutX="136.0" layoutY="246.0" text="Find your API Key in your account TMDB at" />
-      <Label layoutX="148.0" layoutY="192.0" text="Please check the Key first then confirm" />
    </children>
 </AnchorPane>

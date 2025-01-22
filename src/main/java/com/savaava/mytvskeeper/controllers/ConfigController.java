@@ -2,7 +2,6 @@ package com.savaava.mytvskeeper.controllers;
 
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertInfo;
-import com.savaava.mytvskeeper.exceptions.ConfigNotExistsException;
 import com.savaava.mytvskeeper.models.TMDatabase;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
@@ -23,7 +22,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ConfigController implements Initializable {
-    private final StringProperty strBinding = new SimpleStringProperty("");
+    private final StringProperty strBindingCheck = new SimpleStringProperty("");
+    private final StringProperty strBindingConfirm = new SimpleStringProperty("");
     private TMDatabase tmdb;
 
     @FXML
@@ -36,19 +36,15 @@ public class ConfigController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            boolean flag = true;
-
             try {
                 tmdb = TMDatabase.getInstance();
-            } catch (ConfigNotExistsException ex) {
-                flag = false;
-            } catch (IOException ex) {
+            }catch(IOException ex) {
                 new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
                 onExit();
             }
 
             try {
-                if(flag) {
+                if(tmdb.hasConfiguration()) {
                     if (tmdb.verifyConfig(tmdb.getApiKey()))
                         new AlertInfo("Application already configured",
                                 "No need to configure it again. Your working API Key:\n" + tmdb.getApiKey());
@@ -59,13 +55,11 @@ public class ConfigController implements Initializable {
             }catch(Exception ex){System.out.println(ex.getMessage());}
         });
 
-        BooleanBinding condCheck = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
+        BooleanBinding condCheck = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBindingCheck));
         checkBtn.disableProperty().bind(condCheck);
 
-        confirmBtn.setDisable(true);
-        tfd.textProperty().addListener((observable, oldValue, newValue) -> {
-            confirmBtn.setDisable(true);
-        });
+        BooleanBinding condConfirm = tfd.textProperty().isEmpty().or(tfd.textProperty().isNotEqualTo(strBindingConfirm));
+        confirmBtn.disableProperty().bind(condConfirm);
 
         setCopyableLink();
     }
@@ -106,19 +100,26 @@ public class ConfigController implements Initializable {
 
     @FXML
     public void onCheckKey() throws IOException, InterruptedException {
-        strBinding.setValue(tfd.getText());
-        confirmBtn.setDisable(! tmdb.verifyConfig(tfd.getText()));
+        strBindingCheck.setValue(tfd.getText());
+
+        if(tmdb.verifyConfig(tfd.getText()))
+            strBindingConfirm.setValue(tfd.getText());
+        else
+            strBindingConfirm.setValue("");
     }
 
     @FXML
     public void onConfirmKey() {
         tmdb.setApiKey(tfd.getText());
+
         try {
             tmdb.saveConfig();
         }catch(IOException ex){
-            new AlertError("Error saving config file","Error's details: "+ex.getMessage());
+            new AlertError("Error saving config file", "Error's details: "+ex.getMessage());
         }
-        confirmBtn.setDisable(true);
+
+        new AlertInfo("Application is now configured", "Your working API Key: " + tmdb.getApiKey());
+        onExit();
     }
 
     @FXML
