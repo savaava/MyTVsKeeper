@@ -21,13 +21,6 @@
                     <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
                   </items>
                 </Menu>
-                  <Menu mnemonicParsing="false" text="View">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onMoviesView" text="Movies" />
-                        <MenuItem mnemonicParsing="false" onAction="#onTVSeriesView" text="TV Series" />
-                        <MenuItem mnemonicParsing="false" onAction="#onAnimeSeriesView" text="Anime Series" />
-                     </items>
-                  </Menu>
                   <Menu mnemonicParsing="false" text="New">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onNewMovie" text="New Movie" />
@@ -58,7 +51,11 @@
                         <Cursor fx:constant="TEXT" />
                      </cursor>
                   </TextField>
-                  <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="Video Details" />
+                  <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="Video Details">
+                     <HBox.margin>
+                        <Insets right="40.0" />
+                     </HBox.margin></Button>
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="Delete Video" />
                </children>
                <VBox.margin>
                   <Insets top="25.0" />
@@ -66,86 +63,104 @@
             </HBox>
          </children>
       </VBox>
-      <TableView fx:id="tableViewMovies" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
-        <columns>
-            <TableColumn prefWidth="75.0" text="Movies">
-               <columns>
-                <TableColumn fx:id="titleColumnMovie" prefWidth="250.0" resizable="false" text="Title" />
-                <TableColumn fx:id="durationColumnMovie" prefWidth="100.0" resizable="false" text="Duration" />
-                  <TableColumn fx:id="releaseDateColumnMovie" prefWidth="150.0" resizable="false" text="Release Date" />
-                  <TableColumn fx:id="directorColumnMovie" prefWidth="150.0" resizable="false" text="Director" />
-                  <TableColumn prefWidth="75.0" text="State">
-                     <columns>
-                        <TableColumn fx:id="startedColumnMovie" prefWidth="75.0" resizable="false" text="Started" />
-                        <TableColumn fx:id="terminatedColumnMovie" prefWidth="75.0" resizable="false" text="Terminated" />
-                     </columns>
-                  </TableColumn>
-                  <TableColumn fx:id="ratingColumnMovie" prefWidth="100.0" resizable="false" text="Rating" />
-               </columns>
-            </TableColumn>
-        </columns>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
-      <TableView fx:id="tableViewTvs" layoutX="30.0" layoutY="55.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-         <columns>
-            <TableColumn prefWidth="75.0" text="TV Series">
-               <columns>
-                  <TableColumn fx:id="titleColumnTv" prefWidth="250.0" resizable="false" text="Title" />
-                  <TableColumn prefWidth="100.0" resizable="false" text="Duration">
-                     <columns>
-                        <TableColumn fx:id="seasonsColumnTv" prefWidth="75.0" resizable="false" text="# Seasons" />
-                        <TableColumn fx:id="episodesColumnTv" prefWidth="75.0" resizable="false" text="# Episodes" />
-                     </columns></TableColumn>
-                  <TableColumn fx:id="releaseDateColumnTv" prefWidth="150.0" resizable="false" text="Release Date" />
-                  <TableColumn prefWidth="75.0" text="State">
-                     <columns>
-                        <TableColumn fx:id="startedColumnTv" prefWidth="75.0" resizable="false" text="Started" />
-                        <TableColumn fx:id="terminatedColumnTv" prefWidth="75.0" resizable="false" text="Terminated" />
-                     </columns>
-                  </TableColumn>
-                  <TableColumn fx:id="ratingColumnTv" prefWidth="100.0" resizable="false" text="Rating" />
-               </columns>
-            </TableColumn>
-         </columns>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </TableView>
-      <TableView fx:id="tableViewAnimes" layoutX="30.0" layoutY="55.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-         <columns>
-            <TableColumn prefWidth="75.0" text="Anime Series">
-               <columns>
-                  <TableColumn fx:id="titleColumnAnime" prefWidth="250.0" resizable="false" text="Title" />
-                  <TableColumn prefWidth="100.0" resizable="false" text="Duration">
-                     <columns>
-                        <TableColumn fx:id="seasonsColumnAnime" prefWidth="75.0" resizable="false" text="# Seasons" />
-                        <TableColumn fx:id="episodesColumnAnime" prefWidth="75.0" resizable="false" text="# Episodes" />
-                     </columns></TableColumn>
-                  <TableColumn fx:id="releaseDateColumnAnime" prefWidth="150.0" resizable="false" text="Release Date" />
-                  <TableColumn prefWidth="75.0" text="State">
-                     <columns>
-                        <TableColumn fx:id="startedColumnAnime" prefWidth="75.0" resizable="false" text="Started" />
-                        <TableColumn fx:id="terminatedColumnAnime" prefWidth="75.0" resizable="false" text="Terminated" />
-                     </columns>
-                  </TableColumn>
-                  <TableColumn fx:id="ratingColumnAnime" prefWidth="100.0" resizable="false" text="Rating" />
-               </columns>
-            </TableColumn>
-         </columns>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </TableView>
+      <TabPane layoutX="57.0" layoutY="116.0" prefHeight="200.0" prefWidth="604.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
+         <tabs>
+            <Tab fx:id="moviesTab" onSelectionChanged="#onTabViewSelection" text="Movies">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableViewMovies" prefHeight="761.0" prefWidth="1060.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="titleColumnMovie" prefWidth="250.0" resizable="false" text="Title" />
+                            <TableColumn fx:id="durationColumnMovie" prefWidth="100.0" resizable="false" text="Duration" />
+                              <TableColumn fx:id="releaseDateColumnMovie" prefWidth="150.0" resizable="false" text="Release Date" />
+                              <TableColumn fx:id="directorColumnMovie" prefWidth="150.0" resizable="false" text="Director" />
+                              <TableColumn prefWidth="75.0" text="State">
+                                 <columns>
+                                    <TableColumn fx:id="startedColumnMovie" prefWidth="75.0" resizable="false" text="Started" />
+                                    <TableColumn fx:id="terminatedColumnMovie" prefWidth="75.0" resizable="false" text="Terminated" />
+                                 </columns>
+                              </TableColumn>
+                              <TableColumn fx:id="ratingColumnMovie" prefWidth="100.0" resizable="false" text="Rating" />
+                          </columns>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tvsTab" onSelectionChanged="#onTabViewSelection" text="TV Series">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableViewTvs" prefHeight="761.0" prefWidth="1060.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <columns>
+                              <TableColumn fx:id="titleColumnTv" prefWidth="250.0" resizable="false" text="Title" />
+                              <TableColumn prefWidth="100.0" resizable="false" text="Duration">
+                                 <columns>
+                                    <TableColumn fx:id="seasonsColumnTv" prefWidth="75.0" resizable="false" text="# Seasons" />
+                                    <TableColumn fx:id="episodesColumnTv" prefWidth="75.0" resizable="false" text="# Episodes" />
+                                 </columns>
+                              </TableColumn>
+                              <TableColumn fx:id="releaseDateColumnTv" prefWidth="150.0" resizable="false" text="Release Date" />
+                              <TableColumn prefWidth="75.0" text="State">
+                                 <columns>
+                                    <TableColumn fx:id="startedColumnTv" prefWidth="75.0" resizable="false" text="Started" />
+                                    <TableColumn fx:id="terminatedColumnTv" prefWidth="75.0" resizable="false" text="Terminated" />
+                                 </columns>
+                              </TableColumn>
+                              <TableColumn fx:id="ratingColumnTv" prefWidth="100.0" resizable="false" text="Rating" />
+                           </columns>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="animesTab" onSelectionChanged="#onTabViewSelection" text="Anime Series">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableViewAnimes" prefHeight="761.0" prefWidth="1060.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <columns>
+                              <TableColumn fx:id="titleColumnAnime" prefWidth="250.0" resizable="false" text="Title" />
+                              <TableColumn prefWidth="100.0" resizable="false" text="Duration">
+                                 <columns>
+                                    <TableColumn fx:id="seasonsColumnAnime" prefWidth="75.0" resizable="false" text="# Seasons" />
+                                    <TableColumn fx:id="episodesColumnAnime" prefWidth="75.0" resizable="false" text="# Episodes" />
+                                 </columns>
+                              </TableColumn>
+                              <TableColumn fx:id="releaseDateColumnAnime" prefWidth="150.0" resizable="false" text="Release Date" />
+                              <TableColumn prefWidth="75.0" text="State">
+                                 <columns>
+                                    <TableColumn fx:id="startedColumnAnime" prefWidth="75.0" resizable="false" text="Started" />
+                                    <TableColumn fx:id="terminatedColumnAnime" prefWidth="75.0" resizable="false" text="Terminated" />
+                                 </columns>
+                              </TableColumn>
+                              <TableColumn fx:id="ratingColumnAnime" prefWidth="100.0" resizable="false" text="Rating" />
+                           </columns>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
    </children>
 </AnchorPane>

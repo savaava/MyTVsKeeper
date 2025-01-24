@@ -1,12 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.MainController">
-
+<AnchorPane prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
+   <children>
+      <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </Label>
+            <Separator />
+            <HBox alignment="CENTER">
+               <children>
+                  <VBox prefWidth="600.0">
+                     <children>
+                        <Label text="Overview:" />
+                        <Label fx:id="overviewLbl" text="Label" />
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Separator>
+                  <VBox alignment="CENTER" prefHeight="441.0" prefWidth="125.0">
+                     <children>
+                        <Label text="Select the state">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Label>
+                        <CheckBox fx:id="startedCheck" mnemonicParsing="false" prefHeight="17.0" prefWidth="82.0" text="Started">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin></CheckBox>
+                        <CheckBox fx:id="terminatedCheck" mnemonicParsing="false" text="Terminated">
+                           <VBox.margin>
+                              <Insets bottom="20.0" top="5.0" />
+                           </VBox.margin>
+                        </CheckBox>
+                        <Label fx:id="lblRate" text="Rate the Video" />
+                        <ChoiceBox fx:id="choiceBoxRating" prefHeight="25.0" prefWidth="92.0">
+                           <VBox.margin>
+                              <Insets bottom="285.0" />
+                           </VBox.margin>
+                        </ChoiceBox>
+                        <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteVideo" text="Delete Video">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onExit" text="Cancel" />
+                              <Button fx:id="confirmBtn" mnemonicParsing="false" onAction="#onConfirm" text="Confirm" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
 </AnchorPane>

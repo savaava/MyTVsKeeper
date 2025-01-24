@@ -85,14 +85,6 @@ public class VideoKeeper {
         saveAnimeSeries();
     }
 
-    public void removeMovie(Movie movie) throws IOException {
-        if(! movies.remove(movie))
-            return ;
-        if(movies.isEmpty())
-            fileDataMovies.delete();
-        else
-            saveMovies();
-    }
     public void removeMovie(String id) throws IOException {
         if(! movies.remove(new Movie(id)))
             return ;
@@ -101,14 +93,6 @@ public class VideoKeeper {
         else
             saveMovies();
     }
-    public void removeTVSerie(TVSerie tvSerie) throws IOException {
-        if(! tvSeries.remove(tvSerie))
-            return ;
-        if(tvSeries.isEmpty())
-            fileDataTv.delete();
-        else
-            saveTVSeries();
-    }
     public void removeTVSerie(String id) throws IOException {
         if(! tvSeries.remove(new TVSerie(id)))
             return ;
@@ -116,14 +100,6 @@ public class VideoKeeper {
             fileDataTv.delete();
         else
             saveTVSeries();
-    }
-    public void removeAnimeSerie(TVSerie anime) throws IOException {
-        if (! animeSeries.remove(anime))
-            return ;
-        if(animeSeries.isEmpty())
-            fileDataAnime.delete();
-        else
-            saveAnimeSeries();
     }
     public void removeAnimeSerie(String id) throws IOException {
         if(! animeSeries.remove(new TVSerie(id)))

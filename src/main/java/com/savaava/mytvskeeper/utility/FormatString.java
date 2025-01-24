@@ -3,7 +3,6 @@ package com.savaava.mytvskeeper.utility;
 public class FormatString {
     /**
      * format the string written by the user for the https request
-     * @param title
      * @return the same string with formatted with %20 and correct spacing
      */
     public static String nameForHTTP(String title) {
@@ -19,13 +18,15 @@ public class FormatString {
     }
 
     public static String compactDescription(String description) {
-        return compactString(description, 90);
+        return compactString(description,90);
     }
 
-    private static String compactString(String str, int lengthMax) {
-        if (str==null || str.isBlank()) {
+    public static String compactString(String str, int lengthMax) {
+        if (str==null || str.isEmpty()) {
             return "";
         }
+
+        str = str.trim().replace("\n", " ").replaceAll("\\s+", " ");
 
         StringBuilder out = new StringBuilder();
         String[] words = str.split(" ");
