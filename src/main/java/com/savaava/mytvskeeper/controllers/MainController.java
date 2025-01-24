@@ -1,11 +1,15 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.models.Video;
 import com.savaava.mytvskeeper.models.VideoKeeper;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -58,6 +62,12 @@ public class MainController implements Initializable {
             startedColumnTv,terminatedColumnTv,
             startedColumnAnime,terminatedColumnAnime;
 
+    @FXML
+    public TextField searchTfd;
+
+    @FXML
+    public Button detailsBtn;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,23 +87,25 @@ public class MainController implements Initializable {
                 onExit();
             }
 
+            onMoviesView();
+
             initMoviesTable();
             initTVsTable();
             initAnimesTable();
 
             setHeightsCells();
 
-            tableViewMovies.setOnMousePressed((MouseEvent e) -> {
-                if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
-                    System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
-                }
-            });
+            BooleanBinding detailsDisableCond1 = tableViewMovies.getSelectionModel().selectedItemProperty().isNull();
+            BooleanBinding detailsDisableCond2 = tableViewTvs.getSelectionModel().selectedItemProperty().isNull();
+            BooleanBinding detailsDisableCond3 = tableViewAnimes.getSelectionModel().selectedItemProperty().isNull();
+            detailsBtn.disableProperty().bind(Bindings.and(detailsDisableCond1,detailsDisableCond2).and(detailsDisableCond3));
+
+            initDoubleClickBind();
+
         });
     }
 
     private void initMoviesTable() {
-        tableViewMovies.setVisible(true);
-
         tableViewMovies.setItems(vk.getMovies());
 
         titleColumnMovie.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -147,8 +159,6 @@ public class MainController implements Initializable {
 
     }
     private void initTVsTable() {
-        tableViewTvs.setVisible(false);
-
         tableViewTvs.setItems(vk.getTvSeries());
 
         titleColumnTv.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -200,8 +210,6 @@ public class MainController implements Initializable {
         });
     }
     private void initAnimesTable() {
-        tableViewAnimes.setVisible(false);
-
         tableViewAnimes.setItems(vk.getAnimeSeries());
 
         titleColumnAnime.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -300,22 +308,40 @@ public class MainController implements Initializable {
 
 
     @FXML
-    public void onMovies() {
+    public void onMoviesView() {
+        searchTfd.setPromptText("Search a Movie");
+        detailsBtn.setText("Movie details");
+
         tableViewMovies.setVisible(true);
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(false);
+
+        tableViewTvs.getSelectionModel().clearSelection();
+        tableViewAnimes.getSelectionModel().clearSelection();
     }
     @FXML
-    public void onTVSeries() {
+    public void onTVSeriesView() {
+        searchTfd.setPromptText("Search a TV Serie");
+        detailsBtn.setText("TV Serie details");
+
         tableViewMovies.setVisible(false);
         tableViewTvs.setVisible(true);
         tableViewAnimes.setVisible(false);
+
+        tableViewMovies.getSelectionModel().clearSelection();
+        tableViewAnimes.getSelectionModel().clearSelection();
     }
     @FXML
-    public void onAnimeSeries() {
+    public void onAnimeSeriesView() {
+        searchTfd.setPromptText("Search an Anime");
+        detailsBtn.setText("Anime details");
+
         tableViewMovies.setVisible(false);
         tableViewTvs.setVisible(false);
         tableViewAnimes.setVisible(true);
+
+        tableViewMovies.getSelectionModel().clearSelection();
+        tableViewTvs.getSelectionModel().clearSelection();
     }
 
 
@@ -347,6 +373,56 @@ public class MainController implements Initializable {
         showPopup(root, "New Anime Serie");
     }
 
+    private void initDoubleClickBind() {
+        tableViewMovies.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                try {
+                    onDetailsClicked();
+                } catch (IOException ex) {
+                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
+                }
+            }
+        });
+
+        tableViewTvs.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                try {
+                    onDetailsClicked();
+                } catch (IOException ex) {
+                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
+                }
+            }
+        });
+
+        tableViewAnimes.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                try {
+                    onDetailsClicked();
+                } catch (IOException ex) {
+                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
+                }
+            }
+        });
+    }
+
+    @FXML
+    public void onDetailsClicked() throws IOException {
+        System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+        System.out.println(tableViewTvs.getSelectionModel().getSelectedItem());
+        System.out.println(tableViewAnimes.getSelectionModel().getSelectedItem());
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/VideoDetails.fxml"));
+//        Parent root = loader.load();
+//        VideoDetailsController vdController = loader.getController();
+//
+//        System.out.println(tableViewMovies.getSelectionModel().getSelectedItem());
+//        System.out.println(tableViewTvs.getSelectionModel().getSelectedItem());
+//        System.out.println(tableViewAnimes.getSelectionModel().getSelectedItem());
+//
+//        Video v = tableViewMovies.getSelectionModel().getSelectedItem();
+//        vdController.setVideoSelected(v);
+//        showPopup(root, "");
+    }
 
     @FXML
     public void onExport() {

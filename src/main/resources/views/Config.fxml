@@ -9,7 +9,7 @@
    <children>
       <Label layoutX="120.0" layoutY="80.0" text="Provide your API Key to configure the application" />
       <Hyperlink fx:id="hl" layoutX="137.0" layoutY="263.0" onAction="#handleHl" text="https://www.themoviedb.org/settings/api" underline="true" />
-      <TextField fx:id="tfd" layoutX="133.0" layoutY="109.0" prefHeight="25.0" prefWidth="235.0" promptText="write API Key">
+      <TextField fx:id="tfd" layoutX="133.0" layoutY="109.0" prefHeight="25.0" prefWidth="235.0" promptText="Write API Key">
          <cursor>
             <Cursor fx:constant="TEXT" />
          </cursor>
