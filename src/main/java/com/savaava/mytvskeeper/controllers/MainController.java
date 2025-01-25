@@ -81,11 +81,6 @@ public class MainController implements Initializable {
             "TV Serie details",
             "Anime details"
     };
-    private String promptBtnDelete[] = {
-            "Delete Movie",
-            "Delete TV Serie",
-            "Delete Anime"
-    };
 
 
     @Override
@@ -518,7 +513,7 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Export.fxml"));
         Parent root = loader.load();
 
-        showPopup(root, "Export Videos", 500, 300);
+        showPopup(root, "Export Videos", 480, 235);
     }
 
     @FXML

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -16,9 +17,9 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onExport" text="Export" />
-                    <MenuItem mnemonicParsing="false" onAction="#onConfig" text="Configure application" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
+                        <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
+                    <MenuItem mnemonicParsing="false" onAction="#onConfig" text="⚙ Configure application" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="🔚 Exit" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="New">
@@ -30,7 +31,7 @@
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="ℹ About" />
                   </items>
                 </Menu>
               </menus>
@@ -41,7 +42,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </MenuBar>
-            <HBox prefHeight="13.0" prefWidth="1100.0">
+            <HBox alignment="BOTTOM_LEFT" prefHeight="13.0" prefWidth="1100.0">
                <children>
                   <TextField fx:id="searchTfd" prefHeight="25.0" prefWidth="253.0" promptText="Search a video">
                      <HBox.margin>
@@ -54,11 +55,17 @@
                   <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="ⓘ">
                      <HBox.margin>
                         <Insets right="40.0" />
-                     </HBox.margin></Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="🗑" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="🗑">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
                </children>
                <VBox.margin>
-                  <Insets top="25.0" />
+                  <Insets top="15.0" />
                </VBox.margin>
             </HBox>
          </children>

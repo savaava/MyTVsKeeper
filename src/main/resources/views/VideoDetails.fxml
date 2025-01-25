@@ -10,26 +10,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
    <children>
-      <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER">
                <font>
-                  <Font name="System Bold" size="12.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
                <VBox.margin>
-                  <Insets bottom="20.0" />
+                  <Insets />
                </VBox.margin>
             </Label>
-            <Separator />
+            <Separator>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin></Separator>
             <HBox alignment="CENTER">
                <children>
                   <VBox prefHeight="463.0" prefWidth="634.0">
                      <children>
                         <Label text="Overview:">
                            <font>
-                              <Font name="System Bold" size="12.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font></Label>
                         <Label fx:id="overviewLbl" text="overview" />
                         <Separator prefWidth="200.0">
@@ -42,7 +45,7 @@
                               <Insets />
                            </VBox.margin>
                            <font>
-                              <Font name="System Bold" size="12.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="genresLbl" layoutX="10.0" layoutY="52.0" text="genres" />
@@ -56,17 +59,24 @@
                               <Insets />
                            </VBox.margin>
                            <font>
-                              <Font name="System Bold" size="12.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="199.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/comingSoon.jpg" />
+                                 </image>
+                              </ImageView>
+                           </children></VBox>
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL">
                      <HBox.margin>
-                        <Insets left="10.0" right="20.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" />
                      </HBox.margin></Separator>
-                  <VBox alignment="CENTER" prefHeight="441.0" prefWidth="125.0">
+                  <VBox alignment="CENTER" prefHeight="463.0" prefWidth="154.0">
                      <children>
                         <Label text="Select the state">
                            <VBox.margin>
@@ -88,12 +98,7 @@
                               <Insets bottom="285.0" />
                            </VBox.margin>
                         </ChoiceBox>
-                        <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteVideo" text="Delete Video">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </Button>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#onExit" text="Cancel" />
                               <Button fx:id="confirmBtn" mnemonicParsing="false" onAction="#onConfirm" text="Confirm" />

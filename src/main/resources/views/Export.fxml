@@ -1,12 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.ExportController">
-
+<AnchorPane prefHeight="235.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.ExportController">
+   <children>
+      <VBox alignment="TOP_CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label alignment="CENTER" text="Select the type of video you want to export">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="50.0">
+               <children>
+                  <VBox prefHeight="61.0" prefWidth="90.0" spacing="5.0">
+                     <children>
+                        <RadioButton fx:id="moviesBtn" mnemonicParsing="false" text="Movies">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="videosGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="tvBtn" mnemonicParsing="false" text="TV Series" toggleGroup="$videosGroup" />
+                        <RadioButton fx:id="animeBtn" mnemonicParsing="false" text="Anime Series" toggleGroup="$videosGroup" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="exportBtn" mnemonicParsing="false" onAction="#onExport" text="📤 Export">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets left="150.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <Separator prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
+      <VBox layoutX="200.0" layoutY="114.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <Label text="Export Details:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="numberLbl" text="• Number of" />
+            <Label fx:id="destLbl" text="• Destination path:" />
+            <Label fx:id="sizeLbl" text="• File Size:" />
+         </children>
+      </VBox>
+      <Button layoutX="393.0" layoutY="192.0" mnemonicParsing="false" onAction="#onExit" text="🔚 Exit" AnchorPane.rightAnchor="10.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>

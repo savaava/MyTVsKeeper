@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 
+import com.savaava.mytvskeeper.utility.FormatString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -47,7 +48,6 @@ public class VideoKeeper {
             loadAnimeSeries();
     }
 
-
     public static VideoKeeper getInstance() throws Exception {
         if(instance == null) {
             instance = new VideoKeeper();
@@ -65,6 +65,12 @@ public class VideoKeeper {
     public ObservableList<TVSerie> getAnimeSeries() {
         return animeSeries;
     }
+
+    public int moviesNumber() {
+        return movies.size();
+    }
+    public int tvsNumber() { return tvSeries.size(); }
+    public int animesNumber() { return animeSeries.size(); }
 
     public void addMovie(Movie movie) throws IOException, VideoAlreadyExistsException {
         if(movies.contains(movie))
@@ -146,10 +152,10 @@ public class VideoKeeper {
 
     public void csvExportMovies(String pathDest) throws IOException {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathDest)))){
-            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2");
+            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
             pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"ID"));
             for(Movie mi : movies) {
-                pw.append(mi.getTitle()).append(delim);
+                pw.append(FormatString.stringNormalize(mi.getTitle())).append(delim);
                 pw.append(mi.getDuration()).append(delim);
                 pw.append(mi.getReleaseDate().toString()).append(delim);
                 pw.append(mi.getDirector()).append(delim);
@@ -167,18 +173,12 @@ public class VideoKeeper {
             }
         }
     }
-    public void csvExportTVSeries(String pathFileDest) throws IOException {
-        csvExportTV(tvSeries, pathFileDest);
-    }
-    public void csvExportAnimeSeries(String pathFileDest) throws IOException {
-        csvExportTV(animeSeries, pathFileDest);
-    }
-    public void csvExportTV(Collection<TVSerie> c, String pathFileDest) throws IOException {
+    private void csvExportTV(Collection<TVSerie> c, String pathFileDest) throws IOException {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathFileDest)))){
-            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2");
+            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
             pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"ID"));
             for(TVSerie tvi : c) {
-                pw.append(tvi.getTitle()).append(delim);
+                pw.append(FormatString.stringNormalize(tvi.getTitle())).append(delim);
                 pw.append(Integer.toString(tvi.getNumSeasons())).append(delimAux);
                 pw.append(Integer.toString(tvi.getNumEpisodes())).append(delim);
                 pw.append(tvi.getReleaseDate().toString()).append(delim);
@@ -195,6 +195,12 @@ public class VideoKeeper {
                 pw.append(tvi.getId()).append("\n");
             }
         }
+    }
+    public void csvExportTVSeries(String pathFileDest) throws IOException {
+        csvExportTV(tvSeries, pathFileDest);
+    }
+    public void csvExportAnimeSeries(String pathFileDest) throws IOException {
+        csvExportTV(animeSeries, pathFileDest);
     }
 
 

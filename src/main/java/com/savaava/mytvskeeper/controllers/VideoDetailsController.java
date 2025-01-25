@@ -4,9 +4,9 @@ import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 import com.savaava.mytvskeeper.models.Video;
-
 import com.savaava.mytvskeeper.models.VideoKeeper;
 import com.savaava.mytvskeeper.utility.FormatString;
+
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -35,7 +35,7 @@ public class VideoDetailsController implements Initializable {
     @FXML
     public ChoiceBox<String> choiceBoxRating;
     @FXML
-    public Button confirmBtn, deleteBtn;
+    public Button confirmBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -63,9 +63,7 @@ public class VideoDetailsController implements Initializable {
     public void setVideoSelectedIndex(int i){ videoSelectedIndex = i; }
 
     private void initValues() {
-        System.out.println(videoSelected);
-
-        nameLbl.setText(FormatString.compactString(videoSelected.getTitle(),30));
+        nameLbl.setText(FormatString.compactString(videoSelected.getTitle(),60));
 
         if(videoSelected.getDescription().isEmpty())
             overviewLbl.setText("No overview detected");
@@ -90,13 +88,10 @@ public class VideoDetailsController implements Initializable {
         genresLbl.setText(genres.toString());
 
         if(videoSelectedIndex == 1){
-            deleteBtn.setText("Delete Movie");
             rateLbl.setText("Rate the Movie");
         }else if(videoSelectedIndex == 2) {
-            deleteBtn.setText("Delete TV Serie");
             rateLbl.setText("Rate the TV Serie");
         }else if(videoSelectedIndex == 3){
-            deleteBtn.setText("Delete Anime");
             rateLbl.setText("Rate the Anime");
         }
     }
@@ -140,10 +135,6 @@ public class VideoDetailsController implements Initializable {
         );
     }
 
-    @FXML
-    public void onDeleteVideo() {
-
-    }
 
     @FXML
     public void onConfirm() {
