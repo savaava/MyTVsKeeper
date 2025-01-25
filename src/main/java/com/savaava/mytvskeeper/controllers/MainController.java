@@ -78,11 +78,6 @@ public class MainController implements Initializable {
             "Search a TV Serie",
             "Search an Anime Serie"
     };
-    private String promptBtnDetails[] = {
-            "Movie details",
-            "TV Serie details",
-            "Anime details"
-    };
 
 
     @Override
@@ -443,15 +438,15 @@ public class MainController implements Initializable {
         int index;
         if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
             v = tableViewMovies.getSelectionModel().getSelectedItem();
-            title = promptBtnDetails[0];
+            title = "Movie details";
             index = 1;
         }else if(tableViewTvs.getSelectionModel().getSelectedItem() != null){
             v = tableViewTvs.getSelectionModel().getSelectedItem();
-            title = promptBtnDetails[1];
+            title = "TV Serie details";
             index = 2;
         }else if(tableViewAnimes.getSelectionModel().getSelectedItem() != null){
             v = tableViewAnimes.getSelectionModel().getSelectedItem();
-            title = promptBtnDetails[2];
+            title = "Anime details";
             index = 3;
         }else{
             v = null;
