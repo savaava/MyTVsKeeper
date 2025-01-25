@@ -1,5 +1,6 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.models.Video;
 import com.savaava.mytvskeeper.models.VideoKeeper;
 import com.savaava.mytvskeeper.alerts.AlertError;
@@ -7,7 +8,6 @@ import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -71,6 +71,22 @@ public class MainController implements Initializable {
     @FXML
     public Tab moviesTab, tvsTab, animesTab;
 
+    private String promptTfdSearch[] = {
+            "Search a Movie",
+            "Search a TV Serie",
+            "Search an Anime Serie"
+    };
+    private String promptBtnDetails[] = {
+            "Movie details",
+            "TV Serie details",
+            "Anime details"
+    };
+    private String promptBtnDelete[] = {
+            "Delete Movie",
+            "Delete TV Serie",
+            "Delete Anime"
+    };
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -89,6 +105,8 @@ public class MainController implements Initializable {
                 new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
                 onExit();
             }
+
+            searchTfd.setPromptText(promptTfdSearch[0]);
 
             initMoviesTable();
             initTVsTable();
@@ -312,6 +330,7 @@ public class MainController implements Initializable {
         BooleanBinding btnDisableCond2 = tableViewTvs.getSelectionModel().selectedItemProperty().isNull();
         BooleanBinding btnDisableCond3 = tableViewAnimes.getSelectionModel().selectedItemProperty().isNull();
         BooleanBinding btnDisableCond = btnDisableCond1.and(btnDisableCond2).and(btnDisableCond3);
+
         detailsBtn.disableProperty().bind(btnDisableCond);
         deleteBtn.disableProperty().bind(btnDisableCond);
     }
@@ -348,43 +367,33 @@ public class MainController implements Initializable {
         });
     }
 
+    private void clearAllSelection() {
+        tableViewMovies.getSelectionModel().clearSelection();
+        tableViewTvs.getSelectionModel().clearSelection();
+        tableViewAnimes.getSelectionModel().clearSelection();
+    }
+
 
     @FXML
     public void onTabViewSelection(Event event) {
         /* Necessary condition because when the application starts a tab is automatically selected */
         if(! isInitialized)
-            return ;
+            return;
 
         Tab selectedTab = (Tab) event.getSource();
         if (! selectedTab.isSelected())
-            return ;
-
-        String promptTfd = "";
-        String promptBtn1 = "";
-        String promptBtn2 = "";
+            return;
 
         if(selectedTab == moviesTab){
-            promptTfd = "Search a Movie";
-            promptBtn1 = "Movie details";
-            promptBtn2 = "Delete Movie";
+            searchTfd.setPromptText(promptTfdSearch[0]);
         }else if(selectedTab == tvsTab){
-            promptTfd = "Search a TV Serie";
-            promptBtn1 = "TV Serie details";
-            promptBtn2 = "Delete TV Serie";
+            searchTfd.setPromptText(promptTfdSearch[1]);
         }else if(selectedTab == animesTab){
-            promptTfd = "Search an Anime";
-            promptBtn1 = "Anime details";
-            promptBtn2 = "Delete Anime";
+            searchTfd.setPromptText(promptTfdSearch[2]);
         }else /* caso non previsto */
             System.err.println("Unexpected tab selected: "+selectedTab.getText());
 
-        searchTfd.setPromptText(promptTfd);
-        detailsBtn.setText(promptBtn1);
-        deleteBtn.setText(promptBtn2);
-
-        tableViewMovies.getSelectionModel().clearSelection();
-        tableViewTvs.getSelectionModel().clearSelection();
-        tableViewAnimes.getSelectionModel().clearSelection();
+        clearAllSelection();
     }
 
 
@@ -396,6 +405,8 @@ public class MainController implements Initializable {
         addController.setVideoToAdd(1);
 
         showPopup(root, "New Movie");
+
+        clearAllSelection();
     }
     @FXML
     public void onNewTv() throws IOException {
@@ -405,6 +416,8 @@ public class MainController implements Initializable {
         addController.setVideoToAdd(2);
 
         showPopup(root, "New TV Serie");
+
+        clearAllSelection();
     }
     @FXML
     public void onNewAnime() throws IOException {
@@ -414,6 +427,8 @@ public class MainController implements Initializable {
         addController.setVideoToAdd(3);
 
         showPopup(root, "New Anime Serie");
+
+        clearAllSelection();
     }
 
     @FXML
@@ -427,26 +442,65 @@ public class MainController implements Initializable {
         int index;
         if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
             v = tableViewMovies.getSelectionModel().getSelectedItem();
-            title = "Movie Details";
+            title = promptBtnDetails[0];
             index = 1;
         }else if(tableViewTvs.getSelectionModel().getSelectedItem() != null){
             v = tableViewTvs.getSelectionModel().getSelectedItem();
-            title = "TV Serie Details";
+            title = promptBtnDetails[1];
             index = 2;
-        }else{
+        }else if(tableViewAnimes.getSelectionModel().getSelectedItem() != null){
             v = tableViewAnimes.getSelectionModel().getSelectedItem();
-            title = "Anime Details";
+            title = promptBtnDetails[2];
             index = 3;
+        }else{
+            v = null;
+            title = "";
+            index = 0;
         }
 
         vdController.setVideoSelected(v);
         vdController.setVideoSelectedIndex(index);
+
         showPopup(root, title, 800, 550);
+
+        clearAllSelection();
+
+        if(index == 1)
+            initMoviesTable();
+        else if(index == 2)
+            initTVsTable();
+        else if(index == 3)
+            initAnimesTable();
     }
 
     @FXML
     public void onDeleteClicked() {
+        Video videoToDelete;
 
+        String header = "Are you sure to delete the ";
+        try {
+            if (tableViewMovies.getSelectionModel().getSelectedItem() != null) {
+
+                videoToDelete = tableViewMovies.getSelectionModel().getSelectedItem();
+                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                    vk.removeMovie(videoToDelete.getId());
+
+            } else if (tableViewTvs.getSelectionModel().getSelectedItem() != null) {
+
+                videoToDelete = tableViewTvs.getSelectionModel().getSelectedItem();
+                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                    vk.removeTVSerie(videoToDelete.getId());
+
+            } else if (tableViewAnimes.getSelectionModel().getSelectedItem() != null) {
+
+                videoToDelete = tableViewAnimes.getSelectionModel().getSelectedItem();
+                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                    vk.removeAnimeSerie(videoToDelete.getId());
+
+            }
+        } catch (Exception ex) {
+            new AlertError("Error deleting the Video","Error's details: "+ex.getMessage());
+        }
     }
 
 
@@ -454,15 +508,17 @@ public class MainController implements Initializable {
     public void onConfig() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Config.fxml"));
         Parent root = loader.load();
-        //AddVideoController addController = loader.getController();
 
         showPopup(root, "Configuration", 500, 300);
     }
 
 
     @FXML
-    public void onExport() {
+    public void onExport() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Export.fxml"));
+        Parent root = loader.load();
 
+        showPopup(root, "Export Videos", 500, 300);
     }
 
     @FXML

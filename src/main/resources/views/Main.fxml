@@ -45,17 +45,17 @@
                <children>
                   <TextField fx:id="searchTfd" prefHeight="25.0" prefWidth="253.0" promptText="Search a video">
                      <HBox.margin>
-                        <Insets left="40.0" right="40.0" />
+                        <Insets left="40.0" right="160.0" />
                      </HBox.margin>
                      <cursor>
                         <Cursor fx:constant="TEXT" />
                      </cursor>
                   </TextField>
-                  <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="Video Details">
+                  <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="ⓘ">
                      <HBox.margin>
                         <Insets right="40.0" />
                      </HBox.margin></Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="Delete Video" />
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="🗑" />
                </children>
                <VBox.margin>
                   <Insets top="25.0" />

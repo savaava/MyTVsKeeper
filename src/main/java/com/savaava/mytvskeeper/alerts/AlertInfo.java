@@ -22,6 +22,6 @@ public class AlertInfo extends Alert {
     }
 
     public AlertInfo() {
-        this("INFORMATION", "");
+        this("INFORMATION");
     }
 }

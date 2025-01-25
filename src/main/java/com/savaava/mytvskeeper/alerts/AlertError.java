@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class AlertError extends Alert {
     public AlertError(String header, String content){
-        super(Alert.AlertType.ERROR);
+        super(AlertType.ERROR);
 
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
 
@@ -22,6 +22,6 @@ public class AlertError extends Alert {
     }
 
     public AlertError(){
-        this("ERROR !", "");
+        this("ERROR !");
     }
 }

@@ -21,12 +21,16 @@ public class FormatString {
         return compactString(description,90);
     }
 
+    public static String stringNormalize(String str) {
+        return str.trim().replace("\n", " ").replaceAll("\\s+", " ");
+    }
+
     public static String compactString(String str, int lengthMax) {
         if (str==null || str.isEmpty()) {
             return "";
         }
 
-        str = str.trim().replace("\n", " ").replaceAll("\\s+", " ");
+        str = stringNormalize(str);
 
         StringBuilder out = new StringBuilder();
         String[] words = str.split(" ");

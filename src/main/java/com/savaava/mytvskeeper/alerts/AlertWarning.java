@@ -22,6 +22,6 @@ public class AlertWarning extends Alert {
     }
 
     public AlertWarning(){
-        this("WARNING !", "");
+        this("WARNING !");
     }
 }

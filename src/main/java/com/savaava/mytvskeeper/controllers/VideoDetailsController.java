@@ -28,7 +28,7 @@ public class VideoDetailsController implements Initializable {
     private int videoSelectedIndex;
 
     @FXML
-    public Label nameLbl, overviewLbl, lblRate;
+    public Label nameLbl, overviewLbl, genresLbl, rateLbl;
 
     @FXML
     public CheckBox startedCheck, terminatedCheck;
@@ -63,24 +63,41 @@ public class VideoDetailsController implements Initializable {
     public void setVideoSelectedIndex(int i){ videoSelectedIndex = i; }
 
     private void initValues() {
+        System.out.println(videoSelected);
+
         nameLbl.setText(FormatString.compactString(videoSelected.getTitle(),30));
 
-        overviewLbl.setText(FormatString.compactString(videoSelected.getDescription(),100));
+        if(videoSelected.getDescription().isEmpty())
+            overviewLbl.setText("No overview detected");
+        else
+            overviewLbl.setText(FormatString.compactString(videoSelected.getDescription(),110));
 
         startedCheck.setSelected(videoSelected.isStarted());
         terminatedCheck.setSelected(videoSelected.isTerminated());
 
         choiceBoxRating.setValue(videoSelected.getRating());
 
-        if(videoSelectedIndex==1){
+        StringBuilder genres = new StringBuilder();
+        if(videoSelected instanceof Movie) {
+            Movie movieSelected = (Movie)videoSelected;
+            movieSelected.getGenres().forEach(gi -> genres.append(gi.getName()).append("\n") );
+        }else if(videoSelected instanceof TVSerie){
+            TVSerie tvSelected = (TVSerie)videoSelected;
+            tvSelected.getGenres().forEach(gi -> genres.append(gi.getName()).append("\n") );
+        }else{
+            genres.append("No genres detected");
+        }
+        genresLbl.setText(genres.toString());
+
+        if(videoSelectedIndex == 1){
             deleteBtn.setText("Delete Movie");
-            lblRate.setText("Rate the Movie");
-        }else if(videoSelectedIndex==2) {
+            rateLbl.setText("Rate the Movie");
+        }else if(videoSelectedIndex == 2) {
             deleteBtn.setText("Delete TV Serie");
-            lblRate.setText("Rate the TV Serie");
-        }else {
+            rateLbl.setText("Rate the TV Serie");
+        }else if(videoSelectedIndex == 3){
             deleteBtn.setText("Delete Anime");
-            lblRate.setText("Rate the Anime");
+            rateLbl.setText("Rate the Anime");
         }
     }
 
@@ -105,7 +122,7 @@ public class VideoDetailsController implements Initializable {
                 "7 "+star,
                 "8 "+star,
                 "9 "+star,
-                "10 "+star);
+                star+" 10 "+star);
     }
 
     private void confirmBinding() {
@@ -144,6 +161,7 @@ public class VideoDetailsController implements Initializable {
                     movieSelected.getDuration(),
                     movieSelected.getDirector()
             );
+            movieSelected.getGenres().forEach(gi -> movieToAdd.addGenre(gi.getId()) );
 
             try {
                 vk.removeMovie(movieSelected.getId());
@@ -166,6 +184,7 @@ public class VideoDetailsController implements Initializable {
                     tvSelected.getNumSeasons(),
                     tvSelected.getNumEpisodes()
             );
+            tvSelected.getGenres().forEach(gi -> tvToAdd.addGenre(gi.getId()) );
 
             try{
                 if(videoSelectedIndex==2) {
