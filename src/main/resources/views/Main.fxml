@@ -62,7 +62,11 @@
                   <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="🗑">
                      <font>
                         <Font size="18.0" />
-                     </font></Button>
+                     </font>
+                     <HBox.margin>
+                        <Insets right="140.0" />
+                     </HBox.margin></Button>
+                  <Label fx:id="videoNumLbl" text="Number of Videos: n" />
                </children>
                <VBox.margin>
                   <Insets top="15.0" />

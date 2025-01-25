@@ -70,6 +70,8 @@ public class MainController implements Initializable {
     public Button detailsBtn, deleteBtn;
     @FXML
     public Tab moviesTab, tvsTab, animesTab;
+    @FXML
+    public Label videoNumLbl;
 
     private String promptTfdSearch[] = {
             "Search a Movie",
@@ -102,6 +104,7 @@ public class MainController implements Initializable {
             }
 
             searchTfd.setPromptText(promptTfdSearch[0]);
+            videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
 
             initMoviesTable();
             initTVsTable();
@@ -381,10 +384,13 @@ public class MainController implements Initializable {
 
         if(selectedTab == moviesTab){
             searchTfd.setPromptText(promptTfdSearch[0]);
+            videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
         }else if(selectedTab == tvsTab){
             searchTfd.setPromptText(promptTfdSearch[1]);
+            videoNumLbl.setText("Number of TV Series: "+vk.tvsNumber());
         }else if(selectedTab == animesTab){
             searchTfd.setPromptText(promptTfdSearch[2]);
+            videoNumLbl.setText("Number of Anime Series: "+vk.animesNumber());
         }else /* caso non previsto */
             System.err.println("Unexpected tab selected: "+selectedTab.getText());
 
