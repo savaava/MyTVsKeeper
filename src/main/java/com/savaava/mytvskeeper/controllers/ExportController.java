@@ -1,6 +1,8 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.alerts.AlertEasterEgg;
 import com.savaava.mytvskeeper.alerts.AlertError;
+import com.savaava.mytvskeeper.alerts.AlertInfo;
 import com.savaava.mytvskeeper.models.VideoKeeper;
 
 import javafx.application.Platform;
@@ -14,6 +16,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +35,7 @@ public class ExportController implements Initializable {
     @FXML
     public Button exportBtn;
     @FXML
-    public Label numberLbl, destLbl, sizeLbl;
+    public Label numberLbl1, numberLbl2, destLbl, sizeLbl;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,23 +73,26 @@ public class ExportController implements Initializable {
 
         String destPath = fileOut.getAbsolutePath();
 
-        destLbl.setText("• Destination path: "+destPath);
+        destLbl.setText(destPath);
 
         if(moviesBtn.isSelected()){
 
-            numberLbl.setText("• Number of Movies: "+vk.moviesNumber());
+            numberLbl1.setText("• Number of Movies:");
+            numberLbl2.setText(" "+vk.moviesNumber());
             try{ vk.csvExportMovies(destPath); }
             catch (IOException ex) { new AlertError("Error exporting Movies", "Error's details: "+ex.getMessage()); }
 
         }else if(tvBtn.isSelected()){
 
-            numberLbl.setText("• Number of TV Series: "+vk.tvsNumber());
+            numberLbl1.setText("• Number of TV Series:");
+            numberLbl2.setText(" "+vk.tvsNumber());
             try{ vk.csvExportTVSeries(destPath); }
             catch (IOException ex) { new AlertError("Error exporting TV Series", "Error's details: "+ex.getMessage()); }
 
         }else if(animeBtn.isSelected()){
 
-            numberLbl.setText("• Number of Anime Series: "+vk.animesNumber());
+            numberLbl1.setText("• Number of Anime Series:");
+            numberLbl2.setText(" "+vk.animesNumber());
             try{ vk.csvExportAnimeSeries(destPath); }
             catch (IOException ex) { new AlertError("Error exporting Anime Series", "Error's details: "+ex.getMessage()); }
 
@@ -100,14 +106,36 @@ public class ExportController implements Initializable {
         double sizeMb = sizeKb/1024.0;
 
         String sizeStr;
-        if(sizeMb > 1)
-            sizeStr = sizeMb+" MB";
-        else if(sizeKb > 1)
-            sizeStr = sizeKb+" KB";
+        if(sizeMb >= 1)
+            sizeStr = String.format("%.2f MB", sizeMb);
+        else if(sizeKb >= 1)
+            sizeStr = String.format("%.2f KB", sizeKb);
         else
-            sizeStr = sizeB+" Bytes";
+            sizeStr = String.format("%.0f Bytes", sizeB);
 
-        sizeLbl.setText("• File Size: "+sizeStr);
+        sizeLbl.setText(sizeStr);
+    }
+
+    @FXML
+    public void onPathClicked() {
+        if(destLbl.getText().isEmpty()) {
+            new AlertEasterEgg();
+            return;
+        }
+
+        if(! Desktop.isDesktopSupported()) {
+            new AlertError("Error opening directory","Desktop is not supported on the current platform");
+            return;
+        }
+
+        File directory = new File(destLbl.getText()).getParentFile();
+
+        if (directory.exists()) {
+            try{ Desktop.getDesktop().open(directory); }
+            catch(IOException ex){ new AlertError("Cannot open the directory","dir: "+directory); }
+        }else{
+            new AlertError("Directory does not exist");
+        }
     }
 
     @FXML

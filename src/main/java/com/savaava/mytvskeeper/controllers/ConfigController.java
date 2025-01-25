@@ -84,14 +84,17 @@ public class ConfigController implements Initializable {
     public void handleHl() {
         hl.setVisited(false);
 
+        if(! Desktop.isDesktopSupported())
+            return;
+
         try {
             URI uri = new URI(hl.getText());
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-                if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                    desktop.browse(uri);
-                }
+
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                desktop.browse(uri);
             }
+
         }catch(IOException | URISyntaxException ex) {
             new AlertError("Error to browse to link",
                     "browse manually at link "+hl.getText()+"\nError's details: "+ex.getMessage());
