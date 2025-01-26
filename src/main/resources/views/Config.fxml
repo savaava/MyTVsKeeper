@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -7,17 +10,72 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.ConfigController">
    <children>
-      <Label layoutX="120.0" layoutY="80.0" text="Provide your API Key to configure the application" />
-      <Hyperlink fx:id="hl" layoutX="137.0" layoutY="263.0" onAction="#handleHl" text="https://www.themoviedb.org/settings/api" underline="true" />
-      <TextField fx:id="tfd" layoutX="133.0" layoutY="109.0" prefHeight="25.0" prefWidth="235.0" promptText="Write API Key">
-         <cursor>
-            <Cursor fx:constant="TEXT" />
-         </cursor>
-      </TextField>
-      <Button layoutX="107.0" layoutY="150.0" mnemonicParsing="false" onAction="#onExit" text="Cancel" />
-      <Button fx:id="checkBtn" layoutX="215.0" layoutY="150.0" mnemonicParsing="false" onAction="#onCheckKey" text="Check Key" />
-      <Button fx:id="confirmBtn" layoutX="335.0" layoutY="150.0" mnemonicParsing="false" onAction="#onConfirmKey" text="Confirm" />
-      <Label layoutX="39.0" layoutY="190.0" text="Please check the Key first then confirm. The Key will be saved for future sessions" />
-      <Label layoutX="136.0" layoutY="246.0" text="Find your API Key in your account TMDB at" />
+      <MenuBar layoutX="163.0" layoutY="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onDeleteKey" text="Delete current Key" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <HBox alignment="TOP_CENTER">
+               <children>
+                  <Label text="Your current API Key: " />
+                  <Label fx:id="currentKeyLbl">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <Label text="Provide your API Key to configure the application" />
+            <TextField fx:id="tfd" maxWidth="350.0" promptText="Write API Key">
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
+            </TextField>
+            <HBox alignment="TOP_CENTER" spacing="50.0">
+               <children>
+                  <Button fx:id="checkBtn" mnemonicParsing="false" onAction="#onCheckKey" text="Check Key" />
+                  <Button fx:id="confirmBtn" mnemonicParsing="false" onAction="#onConfirmKey" text="Confirm" />
+               </children>
+            </HBox>
+            <Label text="Please check the Key first then confirm. The Key will be saved for future sessions">
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </Label>
+            <HBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Label text="Find your API Key in your account TMDB at" />
+                        <Label fx:id="linkLbl" onMouseClicked="#handleLinkLbl" text="https://www.themoviedb.org/settings/api" textFill="BLUE" underline="true">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#onCopyLink" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/copy-hyperlink-link-icon.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

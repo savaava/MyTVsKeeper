@@ -64,6 +64,10 @@ public class ExportController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV File", "*.csv"));
     }
 
+    private void clearSelection() {
+        videosGroup.getSelectedToggle().setSelected(false);
+    }
+
     @FXML
     public void onExport() {
         File fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
@@ -114,6 +118,8 @@ public class ExportController implements Initializable {
             sizeStr = String.format("%.0f Bytes", sizeB);
 
         sizeLbl.setText(sizeStr);
+
+        clearSelection();
     }
 
     @FXML

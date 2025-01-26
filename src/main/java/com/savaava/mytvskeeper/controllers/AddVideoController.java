@@ -41,7 +41,7 @@ public class AddVideoController implements Initializable {
             dateColumn,
             descriptionColumn;
     @FXML
-    public Button searchBtn, insertBtn, cancelBtn;
+    public Button searchBtn, insertBtn;
 
 
     @Override
@@ -78,8 +78,6 @@ public class AddVideoController implements Initializable {
 
             BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
             insertBtn.disableProperty().bind(insertDisableCond);
-
-            cancelBtn.setStyle("-fx-background-color: #ff7a7a");
         });
     }
 

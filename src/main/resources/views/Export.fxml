@@ -83,10 +83,5 @@
             </GridPane>
          </children>
       </VBox>
-      <Button layoutX="393.0" layoutY="192.0" mnemonicParsing="false" onAction="#onExit" text="🔚 Exit" AnchorPane.rightAnchor="10.0">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
    </children>
 </AnchorPane>

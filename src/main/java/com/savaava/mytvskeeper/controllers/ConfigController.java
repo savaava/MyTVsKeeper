@@ -1,5 +1,6 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertInfo;
 import com.savaava.mytvskeeper.models.TMDatabase;
@@ -29,9 +30,11 @@ public class ConfigController implements Initializable {
     @FXML
     public TextField tfd;
     @FXML
-    public Hyperlink hl;
+    public Label linkLbl, currentKeyLbl;
     @FXML
     public Button checkBtn, confirmBtn;
+
+    private final String noKeyStr = "No API Key provided";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,50 +48,49 @@ public class ConfigController implements Initializable {
 
             try {
                 if(tmdb.hasConfiguration()) {
-                    if (tmdb.verifyConfig(tmdb.getApiKey()))
+                    currentKeyLbl.setText(tmdb.getApiKey());
+
+                    if (tmdb.verifyConfig(tmdb.getApiKey())) {
                         new AlertInfo("Application already configured",
-                                "No need to configure it again. Your working API Key:\n" + tmdb.getApiKey());
-                    else
+                                "No need to configure it again.\nYour working API Key: "+tmdb.getApiKey());
+                    }else{
                         new AlertError("Existing Configuration doesn't work !",
-                                "Your current API Key is not valid:\n"+tmdb.getApiKey());
+                                "Your current API Key is not valid: "+tmdb.getApiKey());
+                    }
+                }else{
+                    currentKeyLbl.setText(noKeyStr);
                 }
             }catch(Exception ex){System.out.println(ex.getMessage());}
         });
 
+        btnBindings();
+
+
+    }
+
+    private void btnBindings() {
         BooleanBinding condCheck = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBindingCheck));
         checkBtn.disableProperty().bind(condCheck);
 
         BooleanBinding condConfirm = tfd.textProperty().isEmpty().or(tfd.textProperty().isNotEqualTo(strBindingConfirm));
         confirmBtn.disableProperty().bind(condConfirm);
-
-        setCopyableLink();
-    }
-
-    private void setCopyableLink() {
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem copyItem = new MenuItem("Copy link");
-        copyItem.setOnAction(event -> {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(hl.getText());
-            clipboard.setContent(content);
-        });
-        contextMenu.getItems().add(copyItem);
-
-        hl.setOnContextMenuRequested(event ->
-                contextMenu.show(hl, event.getScreenX(), event.getScreenY())
-        );
     }
 
     @FXML
-    public void handleHl() {
-        hl.setVisited(false);
+    private void onCopyLink() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(linkLbl.getText());
+        clipboard.setContent(content);
+    }
 
+    @FXML
+    public void handleLinkLbl() {
         if(! Desktop.isDesktopSupported())
             return;
 
         try {
-            URI uri = new URI(hl.getText());
+            URI uri = new URI(linkLbl.getText());
 
             Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -96,8 +98,8 @@ public class ConfigController implements Initializable {
             }
 
         }catch(IOException | URISyntaxException ex) {
-            new AlertError("Error to browse to link",
-                    "browse manually at link "+hl.getText()+"\nError's details: "+ex.getMessage());
+            new AlertError("Error browsing to link",
+                    "browse manually at link \nError's details: "+ex.getMessage());
         }
     }
 
@@ -115,18 +117,26 @@ public class ConfigController implements Initializable {
     public void onConfirmKey() {
         tmdb.setApiKey(tfd.getText());
 
-        try {
+        try{
             tmdb.saveConfig();
+            new AlertInfo("Application is now configured", "Your working API Key: "+tmdb.getApiKey());
         }catch(IOException ex){
             new AlertError("Error saving config file", "Error's details: "+ex.getMessage());
         }
 
-        new AlertInfo("Application is now configured", "Your working API Key: " + tmdb.getApiKey());
-        onExit();
+        currentKeyLbl.setText(tmdb.getApiKey());
     }
 
     @FXML
-    public void onExit() {
+    public void onDeleteKey() {
+        if(new AlertConfirmation("Are you sure to delete your configuration ?",
+                "You are about to delete the Key: "+tmdb.getApiKey()).getResultConfirmation()) {
+            tmdb.deleteConfig();
+            currentKeyLbl.setText(noKeyStr);
+        }
+    }
+
+    private void onExit() {
         Stage stage = (Stage)tfd.getScene().getWindow();
         stage.close();
     }

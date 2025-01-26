@@ -200,6 +200,10 @@ public class TMDatabase {
             apiKey = br.readLine();
         }
     }
+    public void deleteConfig() {
+        apiKey = "";
+        fileConfig.delete();
+    }
 
 
     public boolean verifyConfig(String apiKey) throws IOException, InterruptedException {
