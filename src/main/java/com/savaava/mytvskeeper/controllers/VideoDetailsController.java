@@ -35,7 +35,7 @@ public class VideoDetailsController implements Initializable {
     @FXML
     public ChoiceBox<String> choiceBoxRating;
     @FXML
-    public Button confirmBtn;
+    public Button saveBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,9 +98,12 @@ public class VideoDetailsController implements Initializable {
 
     private void checkBoxBinding() {
         BooleanBinding notStartedCond = Bindings.not(startedCheck.selectedProperty());
+
         terminatedCheck.disableProperty().bind(notStartedCond);
+
         notStartedCond.addListener((observable, oldValue, newValue) -> {
-            if(newValue){ terminatedCheck.setSelected(false); }
+            if(newValue)
+                terminatedCheck.setSelected(false);
         });
     }
 
@@ -121,14 +124,14 @@ public class VideoDetailsController implements Initializable {
     }
 
     private void confirmBinding() {
-        confirmBtn.setDisable(true);
+        saveBtn.setDisable(true);
 
         startedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
         terminatedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
         choiceBoxRating.valueProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
     }
     private void onInputChange() {
-        confirmBtn.setDisable(
+        saveBtn.setDisable(
                 startedCheck.isSelected() == videoSelected.isStarted() &&
                 terminatedCheck.isSelected() == videoSelected.isTerminated() &&
                 choiceBoxRating.getValue().equals(videoSelected.getRating())
@@ -137,7 +140,7 @@ public class VideoDetailsController implements Initializable {
 
 
     @FXML
-    public void onConfirm() {
+    public void onSave() {
         if(videoSelected instanceof Movie) {
 
             Movie movieSelected = (Movie)videoSelected;

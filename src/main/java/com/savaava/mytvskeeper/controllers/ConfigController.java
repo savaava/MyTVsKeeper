@@ -32,7 +32,7 @@ public class ConfigController implements Initializable {
     @FXML
     public Label linkLbl, currentKeyLbl;
     @FXML
-    public Button checkBtn, confirmBtn;
+    public Button checkBtn, saveBtn;
 
     private final String noKeyStr = "No API Key provided";
 
@@ -73,7 +73,7 @@ public class ConfigController implements Initializable {
         checkBtn.disableProperty().bind(condCheck);
 
         BooleanBinding condConfirm = tfd.textProperty().isEmpty().or(tfd.textProperty().isNotEqualTo(strBindingConfirm));
-        confirmBtn.disableProperty().bind(condConfirm);
+        saveBtn.disableProperty().bind(condConfirm);
     }
 
     @FXML
@@ -114,7 +114,7 @@ public class ConfigController implements Initializable {
     }
 
     @FXML
-    public void onConfirmKey() {
+    public void onSave() {
         tmdb.setApiKey(tfd.getText());
 
         try{

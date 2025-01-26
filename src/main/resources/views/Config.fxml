@@ -42,15 +42,15 @@
             <HBox alignment="TOP_CENTER" spacing="50.0">
                <children>
                   <Button fx:id="checkBtn" mnemonicParsing="false" onAction="#onCheckKey" text="Check Key" />
-                  <Button fx:id="confirmBtn" mnemonicParsing="false" onAction="#onConfirmKey" text="Confirm" />
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="Save" />
                </children>
             </HBox>
-            <Label text="Please check the Key first then confirm. The Key will be saved for future sessions">
+            <Label text="Please check the Key first then save. The Key will be saved for future sessions">
                <VBox.margin>
                   <Insets bottom="40.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="CENTER" spacing="10.0">
+            <HBox alignment="CENTER" spacing="15.0">
                <children>
                   <VBox alignment="TOP_CENTER">
                      <children>
@@ -65,9 +65,9 @@
                         </Label>
                      </children>
                   </VBox>
-                  <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#onCopyLink" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="32.0" fitWidth="35.0" onMouseClicked="#onCopyLink" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/copy-hyperlink-link-icon.png" />
+                        <Image url="@../images/copyLinkTMDB.png" />
                      </image>
                      <cursor>
                         <Cursor fx:constant="HAND" />

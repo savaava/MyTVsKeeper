@@ -8,7 +8,9 @@ import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -67,7 +70,7 @@ public class MainController implements Initializable {
     @FXML
     public TextField searchTfd;
     @FXML
-    public Button detailsBtn, deleteBtn;
+    public ImageView detailsBtnImage, deleteBtnImage;
     @FXML
     public Tab moviesTab, tvsTab, animesTab;
     @FXML
@@ -104,6 +107,7 @@ public class MainController implements Initializable {
             initMoviesTable();
             initTVsTable();
             initAnimesTable();
+            bindingSearchField();
 
             setHeightsCells();
 
@@ -118,7 +122,8 @@ public class MainController implements Initializable {
 
 
     private void initMoviesTable() {
-        tableViewMovies.setItems(vk.getMovies());
+        /* this is unecessary because of the tableViewMovies.setItems(movieFilteredList) */
+        //tableViewMovies.setItems(vk.getMovies());
 
         titleColumnMovie.setCellValueFactory(new PropertyValueFactory<>("title"));
         durationColumnMovie.setCellValueFactory(new PropertyValueFactory<>("duration"));
@@ -171,7 +176,7 @@ public class MainController implements Initializable {
 
     }
     private void initTVsTable() {
-        tableViewTvs.setItems(vk.getTvSeries());
+        //tableViewTvs.setItems(vk.getTvSeries());
 
         titleColumnTv.setCellValueFactory(new PropertyValueFactory<>("title"));
         seasonsColumnTv.setCellValueFactory(new PropertyValueFactory<>("numSeasons"));
@@ -222,7 +227,7 @@ public class MainController implements Initializable {
         });
     }
     private void initAnimesTable() {
-        tableViewAnimes.setItems(vk.getAnimeSeries());
+        //tableViewAnimes.setItems(vk.getAnimeSeries());
 
         titleColumnAnime.setCellValueFactory(new PropertyValueFactory<>("title"));
         seasonsColumnAnime.setCellValueFactory(new PropertyValueFactory<>("numSeasons"));
@@ -272,6 +277,40 @@ public class MainController implements Initializable {
                 }
             }
         });
+    }
+    private void bindingSearchField() {
+        FilteredList<Movie> moviesFilteredList = new FilteredList<>(vk.getMovies(), b->true);
+        FilteredList<TVSerie> tvsFilteredList = new FilteredList<>(vk.getTvSeries(), b->true);
+        FilteredList<TVSerie> animesFilteredList = new FilteredList<>(vk.getAnimeSeries(), b->true);
+
+        searchTfd.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue == null)
+                return;
+
+            String videoToSearch = newValue.toLowerCase();
+
+            moviesFilteredList.setPredicate(movie -> {/* here I set a filter=predicate */
+                if(newValue.isBlank())
+                    return true;
+                return movie.getTitle().toLowerCase().contains(videoToSearch);
+            });
+
+            tvsFilteredList.setPredicate(tv -> {
+                if(newValue.isBlank())
+                    return true;
+                return tv.getTitle().toLowerCase().contains(videoToSearch);
+            });
+
+            animesFilteredList.setPredicate(anime -> {
+                if(newValue.isBlank())
+                    return true;
+                return anime.getTitle().toLowerCase().contains(videoToSearch);
+            });
+        });
+
+        tableViewMovies.setItems(moviesFilteredList);
+        tableViewTvs.setItems(tvsFilteredList);
+        tableViewAnimes.setItems(animesFilteredList);
     }
 
     private void setHeightsCells() {
@@ -324,8 +363,15 @@ public class MainController implements Initializable {
         BooleanBinding btnDisableCond3 = tableViewAnimes.getSelectionModel().selectedItemProperty().isNull();
         BooleanBinding btnDisableCond = btnDisableCond1.and(btnDisableCond2).and(btnDisableCond3);
 
-        detailsBtn.disableProperty().bind(btnDisableCond);
-        deleteBtn.disableProperty().bind(btnDisableCond);
+        detailsBtnImage.disableProperty().bind(btnDisableCond);
+        detailsBtnImage.opacityProperty().bind(
+                Bindings.when(btnDisableCond).then(0.3).otherwise(1.0)
+        );
+
+        deleteBtnImage.disableProperty().bind(btnDisableCond);
+        deleteBtnImage.opacityProperty().bind(
+                Bindings.when(btnDisableCond).then(0.3).otherwise(1.0)
+        );
     }
 
     private void initDoubleClick() {
@@ -359,6 +405,7 @@ public class MainController implements Initializable {
             }
         });
     }
+
 
     private void clearAllSelection() {
         tableViewMovies.getSelectionModel().clearSelection();
@@ -457,7 +504,7 @@ public class MainController implements Initializable {
         vdController.setVideoSelected(v);
         vdController.setVideoSelectedIndex(index);
 
-        showPopup(root, title, 800, 550);
+        showPopup(root, title, 1000, 650);
 
         clearAllSelection();
 
@@ -473,24 +520,24 @@ public class MainController implements Initializable {
     public void onDeleteClicked() {
         Video videoToDelete;
 
-        String header = "Are you sure to delete the ";
+        String header = "Are you sure to delete ";
         try {
             if (tableViewMovies.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewMovies.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
                     vk.removeMovie(videoToDelete.getId());
 
             } else if (tableViewTvs.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewTvs.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
                     vk.removeTVSerie(videoToDelete.getId());
 
             } else if (tableViewAnimes.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewAnimes.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+" "+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
                     vk.removeAnimeSerie(videoToDelete.getId());
 
             }
@@ -514,7 +561,7 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Export.fxml"));
         Parent root = loader.load();
 
-        showPopup(root, "Export Videos", 480, 235);
+        showPopup(root, "Export Videos", 480, 205);
     }
 
     @FXML

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
@@ -52,20 +53,28 @@
                         <Cursor fx:constant="TEXT" />
                      </cursor>
                   </TextField>
-                  <Button fx:id="detailsBtn" mnemonicParsing="false" onAction="#onDetailsClicked" text="ⓘ">
+                  <ImageView fx:id="detailsBtnImage" fitHeight="39.0" fitWidth="46.0" onMouseClicked="#onDetailsClicked" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets right="40.0" />
                      </HBox.margin>
-                     <font>
-                        <Font size="18.0" />
-                     </font></Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDeleteClicked" text="🗑">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                     <image>
+                        <Image url="@../images/info.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <ImageView fx:id="deleteBtnImage" fitHeight="39.0" fitWidth="47.0" onMouseClicked="#onDeleteClicked" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/bin.png" />
+                     </image>
                      <HBox.margin>
                         <Insets right="140.0" />
-                     </HBox.margin></Button>
+                     </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
                   <Label fx:id="videoNumLbl" text="Number of Videos: n" />
                </children>
                <VBox.margin>

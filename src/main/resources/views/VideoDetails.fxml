@@ -10,25 +10,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
+<AnchorPane prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
    <children>
-      <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
+            <BorderPane maxWidth="915.0">
+               <center>
+                  <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </center>
+               <right>
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="Save" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </right>
+            </BorderPane>
             <Separator>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </VBox.margin></Separator>
-            <HBox alignment="CENTER">
+            <HBox>
                <children>
-                  <VBox prefHeight="463.0" prefWidth="634.0">
+                  <VBox prefWidth="855.0">
                      <children>
                         <Label text="Overview:">
                            <font>
@@ -70,40 +81,68 @@
                                  </image>
                               </ImageView>
                            </children></VBox>
+                        <Separator layoutX="10.0" layoutY="104.0" prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Separator>
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL">
                      <HBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" />
+                        <Insets left="10.0" right="10.0" />
                      </HBox.margin></Separator>
-                  <VBox alignment="CENTER" prefHeight="463.0" prefWidth="154.0">
+                  <VBox alignment="TOP_CENTER">
                      <children>
                         <Label text="Select the state">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
                         </Label>
-                        <CheckBox fx:id="startedCheck" mnemonicParsing="false" prefHeight="17.0" prefWidth="82.0" text="Started">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin></CheckBox>
-                        <CheckBox fx:id="terminatedCheck" mnemonicParsing="false" text="Terminated">
-                           <VBox.margin>
-                              <Insets bottom="20.0" top="5.0" />
-                           </VBox.margin>
-                        </CheckBox>
-                        <Label fx:id="rateLbl" text="Rate the Video" />
-                        <ChoiceBox fx:id="choiceBoxRating" prefHeight="25.0" prefWidth="92.0">
-                           <VBox.margin>
-                              <Insets bottom="285.0" />
-                           </VBox.margin>
-                        </ChoiceBox>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                        <VBox spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onExit" text="Cancel" />
-                              <Button fx:id="confirmBtn" mnemonicParsing="false" onAction="#onConfirm" text="Confirm" />
+                              <CheckBox fx:id="startedCheck" mnemonicParsing="false" text="Started">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="terminatedCheck" mnemonicParsing="false" text="Terminated">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </CheckBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <Separator>
+                           <VBox.margin>
+                              <Insets bottom="20.0" top="20.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <Label text="Manage Backdrop">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox alignment="TOP_CENTER" spacing="8.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Add" />
+                              <Button mnemonicParsing="false" text="Delete" />
                            </children>
                         </HBox>
+                        <Separator>
+                           <VBox.margin>
+                              <Insets bottom="20.0" top="20.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <Label fx:id="rateLbl" text="Rate the Video" />
+                        <ChoiceBox fx:id="choiceBoxRating" prefWidth="75.0">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ChoiceBox>
                      </children>
                      <HBox.margin>
                         <Insets />
@@ -111,7 +150,7 @@
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets />
                </VBox.margin>
             </HBox>
          </children>
