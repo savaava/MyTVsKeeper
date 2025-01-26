@@ -206,14 +206,14 @@ public class VideoKeeper {
 
     @Override
     public String toString() {
-        StringBuilder strb = new StringBuilder("***** Stampa instanza video keeper *****\n");
+        StringBuilder strb = new StringBuilder("**** Stampa instanza video keeper ****\n");
 
-        strb.append(movies.size()).append(" Movies:\n");
-        movies.forEach(m -> strb.append(m.toString()));
-        strb.append(tvSeries.size()).append(" TV Series:\n");
-        tvSeries.forEach(t -> strb.append(t.toString()));
-        strb.append(animeSeries.size()).append(" Anime Series:\n");
-        animeSeries.forEach(a -> strb.append(a.toString()));
+        strb.append("** ").append(movies.size()).append(" Movies:\n");
+        movies.forEach(m -> strb.append("* ").append(m.toString()));
+        strb.append("** ").append(tvSeries.size()).append(" TV Series:\n");
+        tvSeries.forEach(t -> strb.append("* ").append(t.toString()));
+        strb.append("** ").append(animeSeries.size()).append(" Anime Series:\n");
+        animeSeries.forEach(a -> strb.append("* ").append(a.toString()));
 
         return strb.toString();
     }

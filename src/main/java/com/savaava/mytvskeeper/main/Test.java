@@ -1,6 +1,7 @@
 package com.savaava.mytvskeeper.main;
 
 import com.savaava.mytvskeeper.models.*;
+import com.savaava.mytvskeeper.utility.Converter;
 
 import java.util.Random;
 
@@ -11,15 +12,9 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
-        System.out.println(vk);
-
-//        for(int i=0; i<3; i++){
-//            vk.addMovie(getRandomMovie());
-//            vk.addTVSerie(getRandomTVSerie());
-//            vk.addAnimeSerie(getRandomTVSerie());
-//        }
-
         TMDatabase tmdb = TMDatabase.getInstance();
+
+//        System.out.println(vk);
 
 //        System.out.println(tmdb.getMoviesByName(" \nCowboy bebop \n  \n  "));
 //        System.out.println(tmdb.getTVSeriesByName(" \nCowboy bebop \n  \n  "));
@@ -33,11 +28,15 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("62110"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
+
+        byte[] rawImage = tmdb.getTVSerieBackdropById("13916");
+        System.out.println(Converter.bytesToImage(rawImage));
+
+
+
 //        System.out.println(vk);
-//        vk.csvExportMovies("./bin/Movies.csv");
-//        vk.csvExportTVSeries("./bin/TVSeries.csv");
-//        vk.csvExportAnimeSeries("./bin/AnimeSeries.csv");
     }
+
 
     private static Movie getRandomMovie(){
         String title = "Movie "+(n.nextInt(1000) + 1);
@@ -59,7 +58,6 @@ public class Test {
 
         return movie;
     }
-
     private static TVSerie getRandomTVSerie(){
         String title = "TVSerie "+(n.nextInt(1000) + 1);
         String description = "Description for "+title;

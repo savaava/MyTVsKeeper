@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Objects;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -50,8 +51,6 @@ public class TMDatabase {
         return fileConfig.exists();
     }
 
-    /* Movie's Main Constructor:
-    title, description, releaseDate, started, terminated, rating, id, duration, director */
     public Collection<Movie> getMoviesByName(String name) throws IOException, InterruptedException {
         Collection<Movie> out = new ArrayList<>();
 
@@ -77,6 +76,35 @@ public class TMDatabase {
                 movie.addGenre(genresVett.getInt(j));
 
             out.add(movie);
+        }
+
+        return out;
+    }
+    public Collection<TVSerie> getTVSeriesByName(String name) throws IOException, InterruptedException {
+        Collection<TVSerie> out = new ArrayList<>();
+
+        String url = "https://api.themoviedb.org/3/search/tv?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-US&page=1'&api_key="+apiKey;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        JSONArray jsonTVSeries = new JSONObject(response.body()).getJSONArray("results");
+
+        for(int i=0; i<jsonTVSeries.length(); i++){
+            JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
+            JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
+
+            TVSerie tvSerie = new TVSerie(
+                    FormatString.compactTitle(currTVSerie.getString("name")),
+                    FormatString.compactDescription(currTVSerie.getString("overview")),
+                    currTVSerie.getString("first_air_date"),
+                    Integer.toString(currTVSerie.getInt("id")));
+            for(int j=0; j<genresVett.length(); j++)
+                tvSerie.addGenre(genresVett.getInt(j));
+
+            out.add(tvSerie);
         }
 
         return out;
@@ -117,7 +145,7 @@ public class TMDatabase {
         String duration = h==0 ? min+"min" : h+"h "+min+"min";
         Movie out = new Movie(
                 FormatString.compactTitle(jsonMovie.getString("title")),
-                FormatString.compactDescription(jsonMovie.getString("overview")),
+                jsonMovie.getString("overview"),
                 jsonMovie.getString("release_date"),
                 Integer.toString(jsonMovie.getInt("id")),
                 duration,
@@ -128,39 +156,6 @@ public class TMDatabase {
 
         return out;
     }
-
-    /* TVSerie's Main Constructor:
-    * title, description, releaseDate, started, terminated, rating, id, numSeasons, numEpisodes */
-    public Collection<TVSerie> getTVSeriesByName(String name) throws IOException, InterruptedException {
-        Collection<TVSerie> out = new ArrayList<>();
-
-        String url = "https://api.themoviedb.org/3/search/tv?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-US&page=1'&api_key="+apiKey;
-
-        request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(url))
-                .build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        JSONArray jsonTVSeries = new JSONObject(response.body()).getJSONArray("results");
-
-        for(int i=0; i<jsonTVSeries.length(); i++){
-            JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
-            JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
-
-            TVSerie tvSerie = new TVSerie(
-                    FormatString.compactTitle(currTVSerie.getString("name")),
-                    FormatString.compactDescription(currTVSerie.getString("overview")),
-                    currTVSerie.getString("first_air_date"),
-                    Integer.toString(currTVSerie.getInt("id")));
-            for(int j=0; j<genresVett.length(); j++)
-                tvSerie.addGenre(genresVett.getInt(j));
-
-            out.add(tvSerie);
-        }
-
-        return out;
-    }
-
     public TVSerie getTVSerieById(String id) throws IOException, InterruptedException {
         String url = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
 
@@ -174,7 +169,7 @@ public class TMDatabase {
 
         TVSerie out = new TVSerie(
                 FormatString.compactTitle(jsonTVSerie.getString("name")),
-                FormatString.compactDescription(jsonTVSerie.getString("overview")),
+                jsonTVSerie.getString("overview"),
                 jsonTVSerie.getString("first_air_date"),
                 Integer.toString(jsonTVSerie.getInt("id")),
                 jsonTVSerie.getInt("number_of_seasons"),
@@ -187,6 +182,47 @@ public class TMDatabase {
         return out;
     }
 
+    private byte[] getBackdrop(String path) throws IOException, InterruptedException {
+        String urlBackdrop = "https://image.tmdb.org/t/p/w500"+path;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(urlBackdrop))
+                .build();
+        HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        return response.body();
+    }
+    public byte[] getMovieBackdropById(String id) throws IOException, InterruptedException {
+        String urlMovie = "https://api.themoviedb.org/3/movie/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(urlMovie))
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Object backdropPath = new JSONObject(response.body()).get("backdrop_path");
+
+        if(backdropPath instanceof String)
+            return getBackdrop((String)backdropPath);
+        else
+            return null;
+    }
+    public byte[] getTVSerieBackdropById(String id) throws IOException, InterruptedException {
+        String urlTv = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(urlTv))
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Object backdropPath = new JSONObject(response.body()).get("backdrop_path");
+
+        if(backdropPath instanceof String)
+            return getBackdrop((String)backdropPath);
+        else
+            return null;
+    }
 
     public void saveConfig() throws IOException {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileConfig)))) {
@@ -204,7 +240,6 @@ public class TMDatabase {
         apiKey = "";
         fileConfig.delete();
     }
-
 
     public boolean verifyConfig(String apiKey) throws IOException, InterruptedException {
         String url = "https://api.themoviedb.org/3/authentication?api_key="+apiKey;

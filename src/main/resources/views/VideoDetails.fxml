@@ -16,7 +16,7 @@
          <children>
             <BorderPane maxWidth="915.0">
                <center>
-                  <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                  <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -41,17 +41,25 @@
                <children>
                   <VBox prefWidth="855.0">
                      <children>
-                        <Label text="Overview:">
+                        <Label text="Overview">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
-                        <Label fx:id="overviewLbl" text="overview" />
+                        <ScrollPane fitToWidth="true" prefHeight="105.0" prefWidth="853.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="853.0">
+                                 <children>
+                                    <Label fx:id="overviewLbl" prefWidth="853.0" text="overview" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                         <Separator prefWidth="200.0">
                            <VBox.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </Separator>
-                        <Label text="Genres:">
+                        <Label text="Genres">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -65,7 +73,7 @@
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </Separator>
-                        <Label text="Backdrop:">
+                        <Label text="Image">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -73,19 +81,20 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
+                        <HBox>
+                           <children>
+                              <Label text="Size: " />
+                              <Label fx:id="sizeImageLbl" text="0 Bytes" />
+                           </children>
+                        </HBox>
                         <VBox alignment="CENTER">
                            <children>
-                              <ImageView fitHeight="150.0" fitWidth="199.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backdropImageView" fitHeight="345.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/comingSoon.jpg" />
                                  </image>
                               </ImageView>
                            </children></VBox>
-                        <Separator layoutX="10.0" layoutY="104.0" prefWidth="200.0">
-                           <VBox.margin>
-                              <Insets top="5.0" />
-                           </VBox.margin>
-                        </Separator>
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL">
@@ -121,15 +130,15 @@
                               <Insets bottom="20.0" top="20.0" />
                            </VBox.margin>
                         </Separator>
-                        <Label text="Manage Backdrop">
+                        <Label text="Manage Image">
                            <VBox.margin>
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
                         <HBox alignment="TOP_CENTER" spacing="8.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Add" />
-                              <Button mnemonicParsing="false" text="Delete" />
+                              <Button fx:id="addImageBtn" mnemonicParsing="false" onAction="#onAddImage" text="Add" />
+                              <Button fx:id="deleteImageBtn" mnemonicParsing="false" onAction="#onDeleteImage" text="Delete" />
                            </children>
                         </HBox>
                         <Separator>

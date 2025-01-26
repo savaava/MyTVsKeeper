@@ -76,10 +76,10 @@ public class MainController implements Initializable {
     @FXML
     public Label videoNumLbl;
 
-    private String promptTfdSearch[] = {
-            "Search a Movie",
-            "Search a TV Serie",
-            "Search an Anime Serie"
+    private final String[] promptTfdSearch = {
+            "Search Movie title",
+            "Search TV Serie title",
+            "Search Anime Serie title"
     };
 
 
@@ -109,9 +109,9 @@ public class MainController implements Initializable {
             initAnimesTable();
             bindingSearchField();
 
-            setHeightsCells();
+            //setHeightsCells();
 
-            btnBinding();
+            bindingBtn();
 
             initDoubleClick();
 
@@ -119,8 +119,6 @@ public class MainController implements Initializable {
             isInitialized = true;
         });
     }
-
-
     private void initMoviesTable() {
         /* this is unecessary because of the tableViewMovies.setItems(movieFilteredList) */
         //tableViewMovies.setItems(vk.getMovies());
@@ -313,6 +311,7 @@ public class MainController implements Initializable {
         tableViewAnimes.setItems(animesFilteredList);
     }
 
+    /* To improve the cells' height, but it's obviously onerous */
     private void setHeightsCells() {
         tableViewMovies.setRowFactory(movie -> new TableRow<>() {
             @Override
@@ -357,7 +356,7 @@ public class MainController implements Initializable {
         });
     }
 
-    private void btnBinding() {
+    private void bindingBtn() {
         BooleanBinding btnDisableCond1 = tableViewMovies.getSelectionModel().selectedItemProperty().isNull();
         BooleanBinding btnDisableCond2 = tableViewTvs.getSelectionModel().selectedItemProperty().isNull();
         BooleanBinding btnDisableCond3 = tableViewAnimes.getSelectionModel().selectedItemProperty().isNull();
@@ -407,6 +406,7 @@ public class MainController implements Initializable {
     }
 
 
+
     private void clearAllSelection() {
         tableViewMovies.getSelectionModel().clearSelection();
         tableViewTvs.getSelectionModel().clearSelection();
@@ -440,38 +440,29 @@ public class MainController implements Initializable {
     }
 
 
-    @FXML
-    public void onNewMovie() throws IOException {
+    private void onNewVideo(int videoIndex, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
         Parent root = loader.load();
         AddVideoController addController = loader.getController();
-        addController.setVideoToAdd(1);
+        addController.setVideoToAdd(videoIndex);
 
-        showPopup(root, "New Movie");
+        Scene scene = new Scene(root, 950, 600);
+        scene.getStylesheets().add("/FilesCSS/TableView.css");
+        showPopup(scene, title);
 
         clearAllSelection();
+    }
+    @FXML
+    public void onNewMovie() throws IOException {
+        onNewVideo(1, "New Movie");
     }
     @FXML
     public void onNewTv() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
-        Parent root = loader.load();
-        AddVideoController addController = loader.getController();
-        addController.setVideoToAdd(2);
-
-        showPopup(root, "New TV Serie");
-
-        clearAllSelection();
+        onNewVideo(2, "New TV Serie");
     }
     @FXML
     public void onNewAnime() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
-        Parent root = loader.load();
-        AddVideoController addController = loader.getController();
-        addController.setVideoToAdd(3);
-
-        showPopup(root, "New Anime Serie");
-
-        clearAllSelection();
+        onNewVideo(3, "New Anime Serie");
     }
 
     @FXML
@@ -496,11 +487,13 @@ public class MainController implements Initializable {
             title = "Anime details";
             index = 3;
         }else{
+            /* Reaching this block means there's an error */
             v = null;
             title = "";
             index = 0;
         }
 
+        System.out.println(v);
         vdController.setVideoSelected(v);
         vdController.setVideoSelectedIndex(index);
 
@@ -544,6 +537,8 @@ public class MainController implements Initializable {
         } catch (Exception ex) {
             new AlertError("Error deleting the Video","Error's details: "+ex.getMessage());
         }
+
+        clearAllSelection();
     }
 
 
@@ -576,8 +571,7 @@ public class MainController implements Initializable {
     }
 
 
-    private void showPopup(Parent root, String title, int w, int h) {
-        Scene scene = new Scene(root, w, h);
+    private void showPopup(Scene scene, String title) {
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle(title);
@@ -586,7 +580,8 @@ public class MainController implements Initializable {
         popup.setScene(scene);
         popup.showAndWait();
     }
-    private void showPopup(Parent root, String title) {
-        showPopup(root, title, 950, 600);
+    private void showPopup(Parent root, String title, int w, int h) {
+        Scene scene = new Scene(root, w, h);
+        showPopup(scene, title);
     }
 }

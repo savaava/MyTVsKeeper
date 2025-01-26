@@ -71,14 +71,18 @@ public class AddVideoController implements Initializable {
 
             list = FXCollections.observableArrayList();
 
+            bindingBtn();
+
             initTable();
-
-            BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
-            searchBtn.disableProperty().bind(searchDisableCond);
-
-            BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
-            insertBtn.disableProperty().bind(insertDisableCond);
         });
+    }
+
+    private void bindingBtn() {
+        BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
+        searchBtn.disableProperty().bind(searchDisableCond);
+
+        BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
+        insertBtn.disableProperty().bind(insertDisableCond);
     }
 
     private void initTable() {
@@ -87,52 +91,6 @@ public class AddVideoController implements Initializable {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-
-        titleColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER);
-                }
-            }
-        });
-        dateColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER);
-                }
-            }
-        });
-
-        table.setRowFactory(video -> new TableRow<>() {
-            @Override
-            protected void updateItem(Video video, boolean empty) {
-                super.updateItem(video, empty);
-
-                if (empty || video == null) {
-                    setPrefHeight(26);
-                } else {
-                    int titleLines = video.getTitle().split("\n").length;
-                    int descriptionLines = video.getDescription().split("\n").length;
-                    int maxLines = Math.max(titleLines, descriptionLines);
-                    if(maxLines == 2)
-                        setPrefHeight(maxLines * 26);
-                    else
-                        setPrefHeight(maxLines * 20);
-                }
-            }
-        });
     }
 
     public void setVideoToAdd(int videoIndex){
@@ -210,7 +168,6 @@ public class AddVideoController implements Initializable {
             onExit();
     }
 
-    @FXML
     public void onExit() {
         Stage stage = (Stage)table.getScene().getWindow();
         stage.close();

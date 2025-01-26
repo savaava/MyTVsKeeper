@@ -1,6 +1,5 @@
 package com.savaava.mytvskeeper.main;
 
-import com.savaava.mytvskeeper.alerts.AlertError;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

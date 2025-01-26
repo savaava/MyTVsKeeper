@@ -144,7 +144,6 @@ public class ExportController implements Initializable {
         }
     }
 
-    @FXML
     public void onExit() {
         Stage stage = (Stage)exportBtn.getScene().getWindow();
         stage.close();
