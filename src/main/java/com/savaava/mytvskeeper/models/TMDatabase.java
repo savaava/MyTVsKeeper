@@ -67,11 +67,16 @@ public class TMDatabase {
             JSONObject currMovie = jsonMovies.getJSONObject(i);
             JSONArray genresVett = currMovie.getJSONArray("genre_ids");
 
+            Object backdropPath = currMovie.get("backdrop_path");
+            if(!(backdropPath instanceof String))
+                backdropPath = null;
+
             Movie movie = new Movie(
                     FormatString.compactTitle(currMovie.getString("title")),
                     FormatString.compactDescription(currMovie.getString("overview")),
                     currMovie.getString("release_date"),
-                    Integer.toString(currMovie.getInt("id")));
+                    Integer.toString(currMovie.getInt("id")),
+                    (String)backdropPath);
             for(int j=0; j<genresVett.length(); j++)
                 movie.addGenre(genresVett.getInt(j));
 
@@ -96,11 +101,16 @@ public class TMDatabase {
             JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
             JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
 
+            Object backdropPath = currTVSerie.get("backdrop_path");
+            if(!(backdropPath instanceof String))
+                backdropPath = null;
+
             TVSerie tvSerie = new TVSerie(
                     FormatString.compactTitle(currTVSerie.getString("name")),
                     FormatString.compactDescription(currTVSerie.getString("overview")),
                     currTVSerie.getString("first_air_date"),
-                    Integer.toString(currTVSerie.getInt("id")));
+                    Integer.toString(currTVSerie.getInt("id")),
+                    (String)backdropPath);
             for(int j=0; j<genresVett.length(); j++)
                 tvSerie.addGenre(genresVett.getInt(j));
 
@@ -143,11 +153,17 @@ public class TMDatabase {
             min-=60;
         }
         String duration = h==0 ? min+"min" : h+"h "+min+"min";
+
+        Object backdropPath = jsonMovie.get("backdrop_path");
+        if(!(backdropPath instanceof String))
+            backdropPath = null;
+
         Movie out = new Movie(
                 FormatString.compactTitle(jsonMovie.getString("title")),
                 jsonMovie.getString("overview"),
                 jsonMovie.getString("release_date"),
                 Integer.toString(jsonMovie.getInt("id")),
+                (String)backdropPath,
                 duration,
                 director);
         for(int i=0; i<genresVett.length(); i++){
@@ -167,11 +183,16 @@ public class TMDatabase {
         JSONObject jsonTVSerie = new JSONObject(response.body());
         JSONArray genresVett = jsonTVSerie.getJSONArray("genres");
 
+        Object backdropPath = jsonTVSerie.get("backdrop_path");
+        if(!(backdropPath instanceof String))
+            backdropPath = null;
+
         TVSerie out = new TVSerie(
                 FormatString.compactTitle(jsonTVSerie.getString("name")),
                 jsonTVSerie.getString("overview"),
                 jsonTVSerie.getString("first_air_date"),
                 Integer.toString(jsonTVSerie.getInt("id")),
+                (String)backdropPath,
                 jsonTVSerie.getInt("number_of_seasons"),
                 jsonTVSerie.getInt("number_of_episodes"));
 
@@ -182,8 +203,8 @@ public class TMDatabase {
         return out;
     }
 
-    private byte[] getBackdrop(String path) throws IOException, InterruptedException {
-        String urlBackdrop = "https://image.tmdb.org/t/p/w500"+path;
+    public byte[] getBackdrop(String path) throws IOException, InterruptedException {
+        String urlBackdrop = "https://image.tmdb.org/t/p/original"+path;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -192,36 +213,6 @@ public class TMDatabase {
         HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
         return response.body();
-    }
-    public byte[] getMovieBackdropById(String id) throws IOException, InterruptedException {
-        String urlMovie = "https://api.themoviedb.org/3/movie/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
-
-        request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(urlMovie))
-                .build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        Object backdropPath = new JSONObject(response.body()).get("backdrop_path");
-
-        if(backdropPath instanceof String)
-            return getBackdrop((String)backdropPath);
-        else
-            return null;
-    }
-    public byte[] getTVSerieBackdropById(String id) throws IOException, InterruptedException {
-        String urlTv = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
-
-        request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(urlTv))
-                .build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        Object backdropPath = new JSONObject(response.body()).get("backdrop_path");
-
-        if(backdropPath instanceof String)
-            return getBackdrop((String)backdropPath);
-        else
-            return null;
     }
 
     public void saveConfig() throws IOException {

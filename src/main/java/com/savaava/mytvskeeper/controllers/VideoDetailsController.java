@@ -11,6 +11,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -26,17 +27,17 @@ public class VideoDetailsController implements Initializable {
     private int videoSelectedIndex;
 
     @FXML
-    public Label nameLbl, overviewLbl, genresLbl, rateLbl, sizeImageLbl;
+    public Label nameLbl, overviewLbl, genresLbl, rateLbl;
 
     @FXML
     public CheckBox startedCheck, terminatedCheck;
     @FXML
     public ChoiceBox<String> choiceBoxRating;
     @FXML
-    public Button saveBtn, addImageBtn, deleteImageBtn;
+    public Button saveBtn;
 
     @FXML
-    public ImageView backdropImageView;
+    public ImageView videoImageView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,7 +75,7 @@ public class VideoDetailsController implements Initializable {
         nameLbl.setText(FormatString.stringNormalize(videoSelected.getTitle()));
 
         if(videoSelected.getDescription().isEmpty())
-            overviewLbl.setText("No overview detected");
+            overviewLbl.setText("No overview found");
         else
             overviewLbl.setText(videoSelected.getDescription());
 
@@ -87,13 +88,17 @@ public class VideoDetailsController implements Initializable {
         if(videoSelected instanceof Movie) {
             Movie movieSelected = (Movie)videoSelected;
             movieSelected.getGenres().forEach(gi -> genres.append(gi.getName()).append("  |  ") );
-            genres.deleteCharAt(genres.length()-3);
+            if(! genres.isEmpty())
+                genres.deleteCharAt(genres.length()-3);
+            else
+                genres.append("No genre found");
         }else if(videoSelected instanceof TVSerie){
             TVSerie tvSelected = (TVSerie)videoSelected;
             tvSelected.getGenres().forEach(gi -> genres.append(gi.getName()).append("  |  ") );
-            genres.deleteCharAt(genres.length()-3);
-        }else{
-            genres.append("No genres detected");
+            if(! genres.isEmpty())
+                genres.deleteCharAt(genres.length()-3);
+            else
+                genres.append("No genre found");
         }
         genresLbl.setText(genres.toString());
 
@@ -104,7 +109,32 @@ public class VideoDetailsController implements Initializable {
         }else if(videoSelectedIndex == 3){
             rateLbl.setText("Rate the Anime");
         }
+
+        setImage();
     }
+    private void setImage() {
+        String pathImage = videoSelected.getPathImage();
+
+        if(pathImage != null) {
+
+            Image videoImage = null;
+            try {
+                videoImage = Converter.bytesToImage(tmdb.getBackdrop(pathImage));
+            } catch (IOException | InterruptedException ex) {
+                new AlertError("Error searching video's image", "Check the connection\nError's details: " + ex.getMessage());
+            }
+
+            if (videoImage != null)
+                videoImageView.setImage(videoImage);
+            /* when Converter.bytesToImage returns null for IOException remains the default image of: No Image Found */
+        }
+
+        videoImageView.setFitWidth(Integer.MAX_VALUE);
+
+        /* initially is not visible to not show the default image before of the effectively one */
+        videoImageView.setVisible(true);
+    }
+
 
     private void checkBoxBinding() {
         BooleanBinding notStartedCond = Bindings.not(startedCheck.selectedProperty());
@@ -148,31 +178,10 @@ public class VideoDetailsController implements Initializable {
         );
     }
 
-    @FXML
-    private void onAddImage() {
-        try{
-            if(videoSelectedIndex == 1){
-                backdropImageView.setImage(
-                        Converter.bytesToImage(tmdb.getMovieBackdropById(videoSelected.getId()))
-                );
-            }else if(videoSelectedIndex > 1) {
-                backdropImageView.setImage(
-                        Converter.bytesToImage(tmdb.getTVSerieBackdropById(videoSelected.getId()))
-                );
-            }
-        } catch (IOException | InterruptedException e) {
-            new AlertError("erroreeeeeeee");
-        }
-    }
-    @FXML
-    private void onDeleteImage() {
-        
-    }
-
 
     @FXML
     public void onSave() {
-        if(videoSelected instanceof Movie) {
+        if(videoSelected instanceof Movie && videoSelectedIndex == 1) {
 
             Movie movieSelected = (Movie)videoSelected;
             Movie movieToAdd = new Movie(
@@ -183,6 +192,7 @@ public class VideoDetailsController implements Initializable {
                     terminatedCheck.isSelected(),
                     choiceBoxRating.getValue(),
                     movieSelected.getId(),
+                    movieSelected.getPathImage(),
                     movieSelected.getDuration(),
                     movieSelected.getDirector()
             );
@@ -206,16 +216,17 @@ public class VideoDetailsController implements Initializable {
                     terminatedCheck.isSelected(),
                     choiceBoxRating.getValue(),
                     tvSelected.getId(),
+                    tvSelected.getPathImage(),
                     tvSelected.getNumSeasons(),
                     tvSelected.getNumEpisodes()
             );
             tvSelected.getGenres().forEach(gi -> tvToAdd.addGenre(gi.getId()) );
 
             try{
-                if(videoSelectedIndex==2) {
+                if(videoSelectedIndex == 2) {
                     vk.removeTVSerie(tvSelected.getId());
                     vk.addTVSerie(tvToAdd);
-                }else{
+                }else if(videoSelectedIndex == 3){
                     vk.removeAnimeSerie(tvSelected.getId());
                     vk.addAnimeSerie(tvToAdd);
                 }

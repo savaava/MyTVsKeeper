@@ -121,7 +121,7 @@ public class MainController implements Initializable {
     }
     private void initMoviesTable() {
         /* this is unecessary because of the tableViewMovies.setItems(movieFilteredList) */
-        //tableViewMovies.setItems(vk.getMovies());
+//        tableViewMovies.setItems(vk.getMovies());
 
         titleColumnMovie.setCellValueFactory(new PropertyValueFactory<>("title"));
         durationColumnMovie.setCellValueFactory(new PropertyValueFactory<>("duration"));

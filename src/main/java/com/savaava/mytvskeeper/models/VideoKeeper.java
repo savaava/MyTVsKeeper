@@ -74,19 +74,19 @@ public class VideoKeeper {
 
     public void addMovie(Movie movie) throws IOException, VideoAlreadyExistsException {
         if(movies.contains(movie))
-            throw new VideoAlreadyExistsException();
+            throw new VideoAlreadyExistsException("The movie you are trying to add already exists");
         movies.add(movie);
         saveMovies();
     }
     public void addTVSerie(TVSerie tvSerie) throws IOException, VideoAlreadyExistsException {
         if(tvSeries.contains(tvSerie))
-            throw new VideoAlreadyExistsException();
+            throw new VideoAlreadyExistsException("The Serie you are trying to add already exists");
         tvSeries.add(tvSerie);
         saveTVSeries();
     }
     public void addAnimeSerie(TVSerie anime) throws IOException, VideoAlreadyExistsException {
         if(animeSeries.contains(anime))
-            throw new VideoAlreadyExistsException();
+            throw new VideoAlreadyExistsException("The Anime you are trying to add already exists");
         animeSeries.add(anime);
         saveAnimeSeries();
     }
@@ -208,11 +208,11 @@ public class VideoKeeper {
     public String toString() {
         StringBuilder strb = new StringBuilder("**** Stampa instanza video keeper ****\n");
 
-        strb.append("** ").append(movies.size()).append(" Movies:\n");
+        strb.append("** ").append(moviesNumber()).append(" Movies:\n");
         movies.forEach(m -> strb.append("* ").append(m.toString()));
-        strb.append("** ").append(tvSeries.size()).append(" TV Series:\n");
+        strb.append("** ").append(tvsNumber()).append(" TV Series:\n");
         tvSeries.forEach(t -> strb.append("* ").append(t.toString()));
-        strb.append("** ").append(animeSeries.size()).append(" Anime Series:\n");
+        strb.append("** ").append(animesNumber()).append(" Anime Series:\n");
         animeSeries.forEach(a -> strb.append("* ").append(a.toString()));
 
         return strb.toString();

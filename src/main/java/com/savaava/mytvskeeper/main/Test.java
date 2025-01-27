@@ -1,8 +1,10 @@
 package com.savaava.mytvskeeper.main;
 
+import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.utility.Converter;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class Test {
@@ -29,12 +31,22 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 
-        byte[] rawImage = tmdb.getTVSerieBackdropById("13916");
-        System.out.println(Converter.bytesToImage(rawImage));
+        tmdb.getMoviesByName("piovono polpette").forEach(mi -> {
+            try {
+                vk.addMovie(tmdb.getMovieById(mi.getId()));
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+            }
+        });
+//        tmdb.getTVSeriesByName("death note").forEach(tvi -> {
+//            try{
+//                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
+//            } catch (Exception ex) {
+//                System.err.println(ex.getMessage());
+//            }
+//        });
 
-
-
-//        System.out.println(vk);
+        System.out.println(vk);
     }
 
 
@@ -49,7 +61,7 @@ public class Test {
         String duration = (n.nextInt(120)+60)+" min";
         String director = "Director "+(n.nextInt(100)+1);
 
-        Movie movie = new Movie(title, description, releaseDate, started, terminated, rating, id, duration, director);
+        Movie movie = new Movie(title, description, releaseDate, started, terminated, rating, id, null, duration, director);
 
         int numberOfGenres = n.nextInt(4)+1;
         for (int i = 0; i < numberOfGenres; i++) {
@@ -69,7 +81,7 @@ public class Test {
         int numSeasons = n.nextInt(10)+1;
         int numEpisodes = n.nextInt(10)*numSeasons;
 
-        TVSerie tv = new TVSerie(title, description, releaseDate, started, terminated, rating, id, numSeasons, numEpisodes);
+        TVSerie tv = new TVSerie(title, description, releaseDate, started, terminated, rating, id, null, numSeasons, numEpisodes);
 
         int numberOfGenres = n.nextInt(4)+1;
         for (int i = 0; i < numberOfGenres; i++) {

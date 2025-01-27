@@ -81,17 +81,11 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <HBox>
-                           <children>
-                              <Label text="Size: " />
-                              <Label fx:id="sizeImageLbl" text="0 Bytes" />
-                           </children>
-                        </HBox>
                         <VBox alignment="CENTER">
                            <children>
-                              <ImageView fx:id="backdropImageView" fitHeight="345.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="videoImageView" fitHeight="345.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true" visible="false">
                                  <image>
-                                    <Image url="@../images/comingSoon.jpg" />
+                                    <Image url="@../images/noImageFound.png" />
                                  </image>
                               </ImageView>
                            </children></VBox>
@@ -130,22 +124,7 @@
                               <Insets bottom="20.0" top="20.0" />
                            </VBox.margin>
                         </Separator>
-                        <Label text="Manage Image">
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </Label>
-                        <HBox alignment="TOP_CENTER" spacing="8.0">
-                           <children>
-                              <Button fx:id="addImageBtn" mnemonicParsing="false" onAction="#onAddImage" text="Add" />
-                              <Button fx:id="deleteImageBtn" mnemonicParsing="false" onAction="#onDeleteImage" text="Delete" />
-                           </children>
-                        </HBox>
-                        <Separator>
-                           <VBox.margin>
-                              <Insets bottom="20.0" top="20.0" />
-                           </VBox.margin>
-                        </Separator>
+                        <HBox alignment="TOP_CENTER" spacing="8.0" />
                         <Label fx:id="rateLbl" text="Rate the Video" />
                         <ChoiceBox fx:id="choiceBoxRating" prefWidth="75.0">
                            <VBox.margin>
