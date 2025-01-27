@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class VideoDetailsController implements Initializable {
@@ -121,16 +122,23 @@ public class VideoDetailsController implements Initializable {
             try {
                 videoImage = Converter.bytesToImage(tmdb.getBackdrop(pathImage));
             } catch (IOException | InterruptedException ex) {
+                /* Reaching this block means an exception captured from tmdb.getBackdrop and not in bytesToImage */
                 new AlertError("Error searching video's image", "Check the connection\nError's details: " + ex.getMessage());
             }
 
-            if (videoImage != null)
+            if (videoImage != null) {
                 videoImageView.setImage(videoImage);
-            /* when Converter.bytesToImage returns null for IOException remains the default image of: No Image Found */
+                videoImageView.setFitWidth(800);
+                videoImageView.setFitHeight(500);
+            }else{
+                /* when Converter.bytesToImage returns null for IOException remains the default image of: No Image Found */
+                videoImageView.setFitWidth(200);
+                videoImageView.setFitHeight(200);
+            }
+        }else{
+            videoImageView.setFitWidth(200);
+            videoImageView.setFitHeight(200);
         }
-
-        videoImageView.setFitWidth(Integer.MAX_VALUE);
-
         /* initially is not visible to not show the default image before of the effectively one */
         videoImageView.setVisible(true);
     }

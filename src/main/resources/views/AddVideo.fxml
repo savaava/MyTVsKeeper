@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,9 +10,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.AddVideoController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="30.0">
+      <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
          <children>
-            <HBox spacing="10.0">
+            <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <TextField fx:id="tfd" prefWidth="350.0">
                      <opaqueInsets>
@@ -22,16 +23,34 @@
                      </cursor>
                   </TextField>
                   <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#onSearch" text="🔍" textAlignment="CENTER" />
-                  <Button fx:id="insertBtn" mnemonicParsing="false" onAction="#onInsert" text="Insert" textAlignment="CENTER">
+                  <ImageView fx:id="detailsImageBtn" fitHeight="39.0" fitWidth="46.0" onMouseClicked="#onDetailsClicked" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/info.png" />
+                     </image>
                      <HBox.margin>
-                        <Insets left="427.0" />
-                     </HBox.margin></Button>
+                        <Insets left="363.0" />
+                     </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <ImageView fx:id="insertImageBtn" fitHeight="60.0" fitWidth="39.0" onMouseClicked="#onInsertClicked" pickOnBounds="true" preserveRatio="true">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <image>
+                        <Image url="@../images/insert.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets left="22.0" />
+                     </HBox.margin>
+                  </ImageView>
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" />
                </VBox.margin>
             </HBox>
-            <TableView fx:id="table" prefWidth="660.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="titleColumn" prefWidth="250.0" resizable="false" text="Title" />
                 <TableColumn fx:id="dateColumn" prefWidth="100.0" resizable="false" text="Release Date" />

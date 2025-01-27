@@ -30,7 +30,7 @@
                      </font></Label>
                </children>
                <VBox.margin>
-                  <Insets bottom="40.0" />
+                  <Insets bottom="30.0" />
                </VBox.margin>
             </HBox>
             <Label text="Provide your API Key to configure the application" />

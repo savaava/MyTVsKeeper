@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -306,9 +307,18 @@ public class MainController implements Initializable {
             });
         });
 
-        tableViewMovies.setItems(moviesFilteredList);
-        tableViewTvs.setItems(tvsFilteredList);
-        tableViewAnimes.setItems(animesFilteredList);
+        /* without the sortedLists it's impossible to exploit the sorting of TableView clicking the columns */
+        SortedList<Movie> sortedMoviesList = new SortedList<>(moviesFilteredList);
+        sortedMoviesList.comparatorProperty().bind(tableViewMovies.comparatorProperty());
+        tableViewMovies.setItems(sortedMoviesList);
+
+        SortedList<TVSerie> sortedTvsList = new SortedList<>(tvsFilteredList);
+        sortedTvsList.comparatorProperty().bind(tableViewTvs.comparatorProperty());
+        tableViewTvs.setItems(sortedTvsList);
+
+        SortedList<TVSerie> sortedAnimesList = new SortedList<>(animesFilteredList);
+        sortedAnimesList.comparatorProperty().bind(tableViewAnimes.comparatorProperty());
+        tableViewAnimes.setItems(sortedAnimesList);
     }
 
     /* To improve the cells' height, but it's obviously onerous */
@@ -447,7 +457,7 @@ public class MainController implements Initializable {
         addController.setVideoToAdd(videoIndex);
 
         Scene scene = new Scene(root, 950, 600);
-        scene.getStylesheets().add("/FilesCSS/TableView.css");
+//        scene.getStylesheets().add("/FilesCSS/TableViewAdd.css");
         showPopup(scene, title);
 
         clearAllSelection();
@@ -497,7 +507,7 @@ public class MainController implements Initializable {
         vdController.setVideoSelected(v);
         vdController.setVideoSelectedIndex(index);
 
-        showPopup(root, title, 1000, 650);
+        showPopup(root, title, 1000, 750);
 
         clearAllSelection();
 

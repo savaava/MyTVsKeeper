@@ -6,16 +6,24 @@ import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -41,12 +49,14 @@ public class AddVideoController implements Initializable {
             dateColumn,
             descriptionColumn;
     @FXML
-    public Button searchBtn, insertBtn;
+    public Button searchBtn;
+    @FXML
+    public ImageView detailsImageBtn, insertImageBtn;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /* method runLater to be able to exit in cathes, otherwise (Stage)table.getScene() would be null, and
+        /* runLater method to be able to exit in cathes, otherwise (Stage)table.getScene() would be null, and
         * because the stage is not initialized */
         Platform.runLater(() -> {
             try {
@@ -74,15 +84,55 @@ public class AddVideoController implements Initializable {
             bindingBtn();
 
             initTable();
+
+            initDoubleClick();
         });
+    }
+
+    public void setVideoToAdd(int videoIndex){
+        this.videoIndex = videoIndex;
     }
 
     private void bindingBtn() {
         BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
         searchBtn.disableProperty().bind(searchDisableCond);
 
-        BooleanBinding insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
-        insertBtn.disableProperty().bind(insertDisableCond);
+        /* when the scene starts */
+        detailsImageBtn.setDisable(true);
+        detailsImageBtn.setOpacity(0.3);
+        /* Binding to make detailsImageBtn disabled and opaque when there's no item selected from the list
+           and when the video selected has no image to show in details */
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue == null || newValue.getPathImage() == null){
+                detailsImageBtn.setDisable(true);
+                detailsImageBtn.setOpacity(0.3);
+            }else{
+                detailsImageBtn.setDisable(false);
+                detailsImageBtn.setOpacity(1);
+            }
+        });
+
+        BooleanBinding  insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
+        insertImageBtn.disableProperty().bind(insertDisableCond);
+        insertImageBtn.opacityProperty().bind(
+                Bindings.when(insertDisableCond).then(0.3).otherwise(1.0)
+        );
+    }
+
+    /**
+     * Opens details scene to show the image of the video selected when the user clicks two times on a video
+     * and the video has the image.
+     */
+    public void initDoubleClick()  {
+        table.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2 && table.getSelectionModel().getSelectedItem().getPathImage() != null) {
+                try {
+                    onDetailsClicked();
+                } catch (IOException ex) {
+                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
+                }
+            }
+        });
     }
 
     private void initTable() {
@@ -91,10 +141,24 @@ public class AddVideoController implements Initializable {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-    }
 
-    public void setVideoToAdd(int videoIndex){
-        this.videoIndex = videoIndex;
+        centerCells(titleColumn);
+        centerCells(dateColumn);
+    }
+    private void centerCells(TableColumn<Video, String> column) {
+        column.setCellFactory(cell -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setAlignment(Pos.CENTER); // Centra il testo
+                }
+            }
+        });
     }
 
     @FXML
@@ -107,13 +171,46 @@ public class AddVideoController implements Initializable {
                 list.setAll(tmdb.getMoviesByName(nameVideo));
             else
                 list.setAll(tmdb.getTVSeriesByName(nameVideo));
+            /* It's not possible to have videoIndex != 1,2,3 */
         }catch(IOException | InterruptedException ex){
             new AlertError("Error searching video in TMDB","Error's details: "+ex.getMessage());
         }
     }
 
     @FXML
-    public void onInsert() {
+    public void onDetailsClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/VideoDetailsAdd.fxml"));
+        Parent root = loader.load();
+        VideoDetailsAddController vdController = loader.getController();
+
+        Video v = table.getSelectionModel().getSelectedItem();
+        if(v == null) /* Reaching this block means there's an error */
+            return;
+
+        vdController.setTitle(v.getTitle());
+        vdController.setPathImage(v.getPathImage());
+
+        String sceneTitle;
+        if(videoIndex == 1){
+            sceneTitle = "Movie details";
+        } else if (videoIndex == 2) {
+            sceneTitle = "TV Serie details";
+        } else {
+            sceneTitle = "Anime Serie details";
+        }
+
+        Scene scene = new Scene(root, 850, 530);
+        Stage popup = new Stage();
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.setTitle(sceneTitle);
+        popup.getIcons().add(new Image("/images/MyTVsKeeper.png"));
+        popup.setResizable(false);
+        popup.setScene(scene);
+        popup.showAndWait();
+    }
+
+    @FXML
+    public void onInsertClicked() {
         Video videoToAdd = table.getSelectionModel().getSelectedItem();
         boolean flagAlreadyExists = false;
 
@@ -168,8 +265,9 @@ public class AddVideoController implements Initializable {
             onExit();
     }
 
-    public void onExit() {
+    private void onExit() {
         Stage stage = (Stage)table.getScene().getWindow();
         stage.close();
     }
 }
+

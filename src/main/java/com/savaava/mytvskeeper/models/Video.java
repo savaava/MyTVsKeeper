@@ -1,5 +1,7 @@
 package com.savaava.mytvskeeper.models;
 
+import com.savaava.mytvskeeper.utility.FormatString;
+
 public abstract class Video implements java.io.Serializable {
     private final String title;
     private final String description;
@@ -51,7 +53,7 @@ public abstract class Video implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Title="+title+
+        return "Title="+ FormatString.stringNormalize(title)+
                 " | Description(length)"+description.length()+
                 " | Release Date="+releaseDate+
                 (started?" | Started":" | NotStarted")+

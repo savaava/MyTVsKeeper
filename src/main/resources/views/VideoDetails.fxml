@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
+<AnchorPane prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
    <children>
       <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -81,9 +81,9 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <VBox alignment="CENTER">
+                        <VBox alignment="TOP_CENTER">
                            <children>
-                              <ImageView fx:id="videoImageView" fitHeight="345.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                              <ImageView fx:id="videoImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">
                                  <image>
                                     <Image url="@../images/noImageFound.png" />
                                  </image>
