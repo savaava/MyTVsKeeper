@@ -20,7 +20,7 @@
                   <items>
                         <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
                     <MenuItem mnemonicParsing="false" onAction="#onConfig" text="⚙ Configure application" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="🔚 Exit" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="📤🔚 Exit" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="New">
@@ -83,7 +83,7 @@
             </HBox>
          </children>
       </VBox>
-      <TabPane layoutX="57.0" layoutY="116.0" prefHeight="200.0" prefWidth="604.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
+      <TabPane fx:id="videosTabPane" layoutX="57.0" layoutY="116.0" prefHeight="200.0" prefWidth="604.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
          <tabs>
             <Tab fx:id="moviesTab" onSelectionChanged="#onTabViewSelection" text="Movies">
                <content>

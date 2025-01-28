@@ -29,6 +29,7 @@ public class StartApplication extends Application {
         stage.setTitle("MyTVsKeeper");
         stage.getIcons().add(new Image("/images/MyTVsKeeper.png"));
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 

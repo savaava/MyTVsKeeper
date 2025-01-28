@@ -75,36 +75,35 @@ public class ExportController implements Initializable {
         if(fileOut == null)
             return;
 
-        String destPath = fileOut.getAbsolutePath();
-
-        destLbl.setText(destPath);
+        destLbl.setText(fileOut.getAbsolutePath());
 
         if(moviesBtn.isSelected()){
 
             numberLbl1.setText("• Number of Movies:");
             numberLbl2.setText(" "+vk.moviesNumber());
-            try{ vk.csvExportMovies(destPath); }
+            try{ vk.csvExportMovies(fileOut); }
             catch (IOException ex) { new AlertError("Error exporting Movies", "Error's details: "+ex.getMessage()); }
 
         }else if(tvBtn.isSelected()){
 
             numberLbl1.setText("• Number of TV Series:");
             numberLbl2.setText(" "+vk.tvsNumber());
-            try{ vk.csvExportTVSeries(destPath); }
+            try{ vk.csvExportTVSeries(fileOut); }
             catch (IOException ex) { new AlertError("Error exporting TV Series", "Error's details: "+ex.getMessage()); }
 
         }else if(animeBtn.isSelected()){
 
             numberLbl1.setText("• Number of Anime Series:");
             numberLbl2.setText(" "+vk.animesNumber());
-            try{ vk.csvExportAnimeSeries(destPath); }
+            try{ vk.csvExportAnimeSeries(fileOut); }
             catch (IOException ex) { new AlertError("Error exporting Anime Series", "Error's details: "+ex.getMessage()); }
 
         }else{
+            /* Reaching this bvlock means there's an error, because the user cannot click Export if he hasn't chosen the video type yet */
             new AlertError("Error exporting");
         }
 
-        /* modularize in future also for images */
+        /* modularize in future */
         double sizeB = fileOut.length();
         double sizeKb = sizeB/1024.0;
         double sizeMb = sizeKb/1024.0;

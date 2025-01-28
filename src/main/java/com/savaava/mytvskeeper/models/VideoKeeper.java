@@ -2,20 +2,10 @@ package com.savaava.mytvskeeper.models;
 
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.io.BufferedOutputStream;
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.util.Scanner;
 
 import com.savaava.mytvskeeper.utility.FormatString;
 import javafx.collections.FXCollections;
@@ -23,12 +13,13 @@ import javafx.collections.ObservableList;
 
 public class VideoKeeper {
     private static VideoKeeper instance;
+
     ObservableList<Movie> movies;
     ObservableList<TVSerie> tvSeries;
     ObservableList<TVSerie> animeSeries;
-    private final File fileDataMovies = new File("./bin/DataMovies.bin");
-    private final File fileDataTv = new File("./bin/DataTv.bin");
-    private final File fileDataAnime = new File("./bin/DataAnime.bin");
+
+    private final SerializedPersistenceHandler persistenceHandler;
+
     private final String delim = ";";
     private final String delimAux = ",";
 
@@ -38,14 +29,16 @@ public class VideoKeeper {
         tvSeries = FXCollections.observableArrayList();
         animeSeries = FXCollections.observableArrayList();
 
-        if(fileDataMovies.exists())
-            loadMovies();
+        persistenceHandler = new SerializedPersistenceHandler();
 
-        if(fileDataTv.exists())
-            loadTVSeries();
+        if(persistenceHandler.dataMoviesExists())
+            persistenceHandler.loadMovies();
 
-        if(fileDataAnime.exists())
-            loadAnimeSeries();
+        if(persistenceHandler.dataTvExists())
+            persistenceHandler.loadTVSeries();
+
+        if(persistenceHandler.dataAnimeExists())
+            persistenceHandler.loadAnimeSeries();
     }
 
     public static VideoKeeper getInstance() throws Exception {
@@ -76,88 +69,122 @@ public class VideoKeeper {
         if(movies.contains(movie))
             throw new VideoAlreadyExistsException("The movie you are trying to add already exists");
         movies.add(movie);
-        saveMovies();
+        persistenceHandler.saveMovies();
     }
     public void addTVSerie(TVSerie tvSerie) throws IOException, VideoAlreadyExistsException {
         if(tvSeries.contains(tvSerie))
             throw new VideoAlreadyExistsException("The Serie you are trying to add already exists");
         tvSeries.add(tvSerie);
-        saveTVSeries();
+        persistenceHandler.saveTVSeries();
     }
     public void addAnimeSerie(TVSerie anime) throws IOException, VideoAlreadyExistsException {
         if(animeSeries.contains(anime))
             throw new VideoAlreadyExistsException("The Anime you are trying to add already exists");
         animeSeries.add(anime);
-        saveAnimeSeries();
+        persistenceHandler.saveAnimeSeries();
     }
 
     public void removeMovie(String id) throws IOException {
         if(! movies.remove(new Movie(id)))
             return ;
         if(movies.isEmpty())
-            fileDataMovies.delete();
+            persistenceHandler.deleteDataMovies();
         else
-            saveMovies();
+            persistenceHandler.saveMovies();
     }
     public void removeTVSerie(String id) throws IOException {
         if(! tvSeries.remove(new TVSerie(id)))
             return ;
         if(tvSeries.isEmpty())
-            fileDataTv.delete();
+            persistenceHandler.deleteDataTVs();
         else
-            saveTVSeries();
+            persistenceHandler.saveTVSeries();
     }
     public void removeAnimeSerie(String id) throws IOException {
         if(! animeSeries.remove(new TVSerie(id)))
             return ;
         if(animeSeries.isEmpty())
-            fileDataAnime.delete();
+            persistenceHandler.deleteDataAnimes();
         else
-            saveAnimeSeries();
+            persistenceHandler.saveAnimeSeries();
     }
 
+    /* Inner class for the saving and loading operations, supporting the logic separation and information hiding. */
+    private class SerializedPersistenceHandler {
+        private static final String MOVIES_FILE_PATH = "./bin/DataMovies.bin";
+        private static final String TVS_FILE_PATH = "./bin/DataTv.bin";
+        private static final String ANIMES_FILE_PATH = "./bin/DataAnime.bin";
 
-    public void saveMovies() throws IOException {
-        try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileDataMovies)))){
-            oos.writeObject(new ArrayList<>(movies));
+        private final File fileDataMovies = new File(MOVIES_FILE_PATH);
+        private final File fileDataTvs = new File(TVS_FILE_PATH);
+        private final File fileDataAnimes = new File(ANIMES_FILE_PATH);
+
+        public boolean dataMoviesExists() {
+            return fileDataMovies.exists();
         }
-    }
-    public void loadMovies() throws Exception {
-        try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataMovies)))){
-            movies.setAll((Collection<Movie>)ois.readObject());
+        public boolean dataTvExists() {
+            return fileDataTvs.exists();
+        }
+        public boolean dataAnimeExists() {
+            return fileDataAnimes.exists();
+        }
+
+        public void deleteDataMovies() {
+            fileDataMovies.delete();
+        }
+        public void deleteDataTVs() {
+            fileDataTvs.delete();
+        }
+        public void deleteDataAnimes() {
+            fileDataAnimes.delete();
+        }
+
+        /**
+         * Saves a collection of videos to the specified file for the data persistence.
+         * @param collectionToWrite the collection to serialize
+         * @param fileDest the destination file
+         * @throws IOException if an I/O error occurs
+         */
+        private <T extends Video> void saveVideos(Collection<T> collectionToWrite, File fileDest) throws IOException {
+            try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileDest)))){
+                oos.writeObject(new ArrayList<>(collectionToWrite));
+            }
+        }
+        public void saveMovies() throws IOException {
+            saveVideos(new ArrayList<>(movies), fileDataMovies);
+        }
+        public void saveTVSeries() throws IOException {
+            saveVideos(new ArrayList<>(tvSeries), fileDataTvs);
+        }
+        public void saveAnimeSeries() throws IOException {
+            saveVideos(new ArrayList<>(animeSeries), fileDataAnimes);
+        }
+
+        private <T extends Video> void loadVideos(ObservableList<T> targetList, File fileSource) throws Exception {
+            try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileSource)))) {
+                targetList.setAll((Collection<T>) ois.readObject());
+            }
+        }
+        public void loadMovies() throws Exception {
+            loadVideos(movies, fileDataMovies);
+        }
+        public void loadTVSeries() throws Exception {
+            loadVideos(tvSeries, fileDataTvs);
+        }
+        public void loadAnimeSeries() throws Exception {
+            loadVideos(animeSeries, fileDataAnimes);
         }
     }
 
-    public void saveTVSeries() throws IOException {
-        try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileDataTv)))){
-            oos.writeObject(new ArrayList<>(tvSeries));
-        }
-    }
-    public void loadTVSeries() throws Exception {
-        try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataTv)))){
-            tvSeries.setAll((Collection<TVSerie>)ois.readObject());
-        }
-    }
-
-    public void saveAnimeSeries() throws IOException {
-        try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileDataAnime)))){
-            oos.writeObject(new ArrayList<>(animeSeries));
-        }
-    }
-    public void loadAnimeSeries() throws Exception {
-        try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileDataAnime)))){
-            animeSeries.setAll((Collection<TVSerie>)ois.readObject());
-        }
-    }
-
-    public void csvExportMovies(String pathDest) throws IOException {
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathDest)))){
+    /* Export methods are always updated to the latest version */
+    public void csvExportMovies(File fileDest) throws IOException {
+        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
-            pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"ID"));
+            pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"PATH IMAGE","ID"));
             for(Movie mi : movies) {
                 pw.append(FormatString.stringNormalize(mi.getTitle())).append(delim);
                 pw.append(mi.getDuration()).append(delim);
-                pw.append(mi.getReleaseDate().toString()).append(delim);
+                pw.append(mi.getReleaseDate()).append(delim);
                 pw.append(mi.getDirector()).append(delim);
                 pw.append(mi.isStarted()?"Started":"Not Started").append(delim);
                 pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(delim);
@@ -169,19 +196,21 @@ public class VideoKeeper {
                         pw.append(delimAux);
                 }
                 pw.append(delim);
+                pw.append(mi.getPathImage()!=null ? mi.getPathImage():"").append(delim);
                 pw.append(mi.getId()).append("\n");
             }
         }
     }
-    private void csvExportTV(Collection<TVSerie> c, String pathFileDest) throws IOException {
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(pathFileDest)))){
+    private void csvExportTV(Collection<TVSerie> c, File fileDest) throws IOException {
+        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
-            pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"ID"));
+            pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"PATH IMAGE","ID"));
+
             for(TVSerie tvi : c) {
                 pw.append(FormatString.stringNormalize(tvi.getTitle())).append(delim);
                 pw.append(Integer.toString(tvi.getNumSeasons())).append(delimAux);
                 pw.append(Integer.toString(tvi.getNumEpisodes())).append(delim);
-                pw.append(tvi.getReleaseDate().toString()).append(delim);
+                pw.append(tvi.getReleaseDate()).append(delim);
                 pw.append(tvi.isStarted()?"Started":"Not Started").append(delim);
                 pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(delim);
                 pw.append(tvi.getRating()).append(delim);
@@ -192,17 +221,30 @@ public class VideoKeeper {
                         pw.append(delimAux);
                 }
                 pw.append(delim);
+                pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(delim);
                 pw.append(tvi.getId()).append("\n");
             }
         }
     }
-    public void csvExportTVSeries(String pathFileDest) throws IOException {
-        csvExportTV(tvSeries, pathFileDest);
+    public void csvExportTVSeries(File fileDest) throws IOException {
+        csvExportTV(tvSeries, fileDest);
     }
-    public void csvExportAnimeSeries(String pathFileDest) throws IOException {
-        csvExportTV(animeSeries, pathFileDest);
+    public void csvExportAnimeSeries(File fileDest) throws IOException {
+        csvExportTV(animeSeries, fileDest);
     }
 
+    public void csvImportMoviesCurrentVersion(File fileSource) throws IOException {
+        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
+
+        }
+    }
+    public void csvImportTVCurrentVersion() {
+
+    }
+    /* More Import methods to include the previous versions as well */
+    public void csvImportMoviesVersion1() {
+
+    }
 
     @Override
     public String toString() {

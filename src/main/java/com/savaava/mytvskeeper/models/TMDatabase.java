@@ -147,12 +147,17 @@ public class TMDatabase {
         }
 
         int min = jsonMovie.getInt("runtime");
-        int h = 0;
-        while(min >= 60) {
-            h++;
-            min-=60;
+        String duration;
+        if(min != 0) {
+            int h = 0;
+            while (min >= 60) {
+                h++;
+                min -= 60;
+            }
+            duration = h==0 ? min+"min" : h+"h "+min+"min";
+        }else {
+            duration = "";
         }
-        String duration = h==0 ? min+"min" : h+"h "+min+"min";
 
         Object backdropPath = jsonMovie.get("backdrop_path");
         if(!(backdropPath instanceof String))

@@ -31,13 +31,13 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 
-        tmdb.getMoviesByName("piovono polpette").forEach(mi -> {
-            try {
-                vk.addMovie(tmdb.getMovieById(mi.getId()));
-            } catch (Exception ex) {
-                System.err.println(ex.getMessage());
-            }
-        });
+//        tmdb.getMoviesByName("prometheus").forEach(mi -> {
+//            try {
+//                vk.addMovie(tmdb.getMovieById(mi.getId()));
+//            } catch (Exception ex) {
+//                System.err.println(ex.getMessage());
+//            }
+//        });
 //        tmdb.getTVSeriesByName("death note").forEach(tvi -> {
 //            try{
 //                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
