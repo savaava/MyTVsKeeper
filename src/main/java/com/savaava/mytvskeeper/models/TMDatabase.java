@@ -50,6 +50,17 @@ public class TMDatabase {
     public boolean hasConfiguration() {
         return fileConfig.exists();
     }
+    public boolean verifyConfig(String apiKey) throws IOException, InterruptedException {
+        String url = "https://api.themoviedb.org/3/authentication?api_key="+apiKey;
+
+        request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return new JSONObject(response.body()).getBoolean("success");
+    }
 
     public Collection<Movie> getMoviesByName(String name) throws IOException, InterruptedException {
         Collection<Movie> out = new ArrayList<>();
@@ -165,7 +176,7 @@ public class TMDatabase {
 
         Movie out = new Movie(
                 FormatString.compactTitle(jsonMovie.getString("title")),
-                jsonMovie.getString("overview"),
+                FormatString.stringNormalize(jsonMovie.getString("overview")),
                 jsonMovie.getString("release_date"),
                 Integer.toString(jsonMovie.getInt("id")),
                 (String)backdropPath,
@@ -194,7 +205,7 @@ public class TMDatabase {
 
         TVSerie out = new TVSerie(
                 FormatString.compactTitle(jsonTVSerie.getString("name")),
-                jsonTVSerie.getString("overview"),
+                FormatString.stringNormalize(jsonTVSerie.getString("overview")),
                 jsonTVSerie.getString("first_air_date"),
                 Integer.toString(jsonTVSerie.getInt("id")),
                 (String)backdropPath,
@@ -235,17 +246,5 @@ public class TMDatabase {
     public void deleteConfig() {
         apiKey = "";
         fileConfig.delete();
-    }
-
-    public boolean verifyConfig(String apiKey) throws IOException, InterruptedException {
-        String url = "https://api.themoviedb.org/3/authentication?api_key="+apiKey;
-
-        request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(url))
-                .build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return new JSONObject(response.body()).getBoolean("success");
     }
 }

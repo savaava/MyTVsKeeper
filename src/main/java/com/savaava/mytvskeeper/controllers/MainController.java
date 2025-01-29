@@ -1,6 +1,7 @@
 package com.savaava.mytvskeeper.controllers;
 
 import com.savaava.mytvskeeper.alerts.AlertConfirmation;
+import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.Video;
 import com.savaava.mytvskeeper.models.VideoKeeper;
 import com.savaava.mytvskeeper.alerts.AlertError;
@@ -484,14 +485,18 @@ public class MainController implements Initializable {
 
         showPopup(root, title, 1000, 750);
 
-        clearAllSelection();
-
-        if(index == 1)
+        //clearAllSelection();
+        if(index == 1) {
+            /* It's necessary to reinitialize the tables after changes because the TableView doesn't update itself */
             initMoviesTable();
-        else if(index == 2)
+            tableViewMovies.getSelectionModel().select((Movie)v);
+        }else if(index == 2) {
             initTVsTable();
-        else if(index == 3)
+            tableViewTvs.getSelectionModel().select((TVSerie)v);
+        }else if(index == 3) {
             initAnimesTable();
+            tableViewAnimes.getSelectionModel().select((TVSerie)v);
+        }
     }
     private void initDoubleClick() {
         tableViewMovies.setOnMousePressed((MouseEvent e) -> {
@@ -592,7 +597,7 @@ public class MainController implements Initializable {
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle(title);
-        popup.getIcons().add(new Image("/images/MyTVsKeeper.png"));
+        popup.getIcons().add(new Image(StartApplication.APPLICATION_ICON_PATH));
         popup.setResizable(false);
         popup.setScene(scene);
         popup.showAndWait();

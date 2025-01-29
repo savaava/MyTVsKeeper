@@ -188,12 +188,12 @@ public class VideoKeeper {
     /* Export methods are always updated to the latest version */
     public void csvExportMovies(File fileDest) throws IOException {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-            pw.println("VERSION;"+CURRENT_VERSION);
+            pw.println("VERSION"+delim+CURRENT_VERSION);
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
             pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
 
             for(Movie mi : movies) {
-                pw.append(FormatString.stringNormalize(mi.getTitle()).replace(";",".")).append(delim);
+                pw.append(FormatString.stringNormalize(mi.getTitle())).append(delim);
                 pw.append(mi.getDuration()).append(delim);
                 pw.append(mi.getReleaseDate()).append(delim);
                 pw.append(mi.getDirector()).append(delim);
@@ -207,7 +207,7 @@ public class VideoKeeper {
                         pw.append(delimAux);
                 }
                 pw.append(delim);
-                pw.append(FormatString.stringNormalize(mi.getDescription()).replace(";",".")).append(delim);
+                pw.append(mi.getDescription()).append(delim);
                 pw.append(mi.getPathImage()!=null ? mi.getPathImage():"").append(delim);
                 pw.append(mi.getId()).append("\n");
             }
@@ -215,7 +215,7 @@ public class VideoKeeper {
     }
     private void csvExportTV(Collection<TVSerie> c, File fileDest) throws IOException {
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-            pw.println("VERSION;"+CURRENT_VERSION);
+            pw.println("VERSION"+delim+CURRENT_VERSION);
             String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
             pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
 
@@ -234,7 +234,7 @@ public class VideoKeeper {
                         pw.append(delimAux);
                 }
                 pw.append(delim);
-                pw.append(FormatString.stringNormalize(tvi.getDescription())).append(delim);
+                pw.append(tvi.getDescription()).append(delim);
                 pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(delim);
                 pw.append(tvi.getId()).append("\n");
             }
@@ -264,7 +264,6 @@ public class VideoKeeper {
         /* TITLE;DURATION;RELEASE DATE;DIRECTOR;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
         scanner.useDelimiter("\n");
-        scanner.next();
         scanner.next(); /* read the first prompt line */
         scanner.useDelimiter("[;\n]");
 
@@ -282,8 +281,8 @@ public class VideoKeeper {
             String id = scanner.next();
 
             Movie movieToAdd = new Movie(title, description, releaseDate,
-                    started.equals("started"), terminated.equals("terminated"), rating, id,
-                    pathImage.isEmpty()?null:pathImage, duration, director);
+                    started.equals("Started"), terminated.equals("Terminated"), rating, id,
+                    pathImage.isEmpty() ? null:pathImage, duration, director);
             for(String gi : genres){
                 if(! gi.isEmpty())
                     movieToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
@@ -301,12 +300,14 @@ public class VideoKeeper {
      */
     public void csvImportMovies(File fileSource) throws IOException {
         try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.nextLine().split(";")[1];
+            String version = scanner.nextLine().split(delim)[1];
 
             if(version.equals(CURRENT_VERSION))
                 csvImportMoviesCurrentVersion(scanner);
             else if(version.equals("1.0"))
                 csvImportMoviesVersion1(scanner);
+            else
+                System.err.println("Version not found");
         }
     }
 
@@ -344,7 +345,6 @@ public class VideoKeeper {
 
         scanner.useDelimiter("\n");
         scanner.next();
-        scanner.next();
         scanner.useDelimiter("[;\n]");
 
         while(scanner.hasNext()) {
@@ -353,16 +353,18 @@ public class VideoKeeper {
             if(! tvSeries.contains(tvToAdd))
                 tvSeries.add(tvToAdd);
         }
-        persistenceHandler.saveMovies();
+        persistenceHandler.saveTVSeries();
     }
     public void csvImportTVSerie(File fileSource) throws IOException {
         try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.next().split(";")[1];
+            String version = scanner.next().split(delim)[1];
 
             if(version.equals(CURRENT_VERSION))
                 csvImportTVSerieCurrentVersion(scanner);
             else if(version.equals("1.0"))
                 csvImportTVSerieVersion1(scanner);
+            else
+                System.err.println("Version not found");
         }
     }
 
@@ -373,7 +375,6 @@ public class VideoKeeper {
         /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
         scanner.useDelimiter("\n");
-        scanner.next();
         scanner.next(); /* read the first prompt line */
         scanner.useDelimiter("[;\n]");
 
@@ -387,12 +388,14 @@ public class VideoKeeper {
     }
     public void csvImportAnimeSerie(File fileSource) throws IOException {
         try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.next().split(";")[1];
+            String version = scanner.next().split(delim)[1];
 
             if(version.equals(CURRENT_VERSION))
                 csvImportAnimeSerieCurrentVersion(scanner);
             else if(version.equals("1.0"))
                 csvImportAnimeSerieVersion1(scanner);
+            else
+                System.err.println("Version not found");
         }
     }
 

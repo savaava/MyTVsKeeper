@@ -22,7 +22,7 @@ public class FormatString {
     }
 
     public static String stringNormalize(String str) {
-        return str.trim().replace("\n", " ").replaceAll("\\s+", " ");
+        return str.trim().replace("\n", " ").replaceAll("\\s+", " ").replaceAll(";",".");
     }
 
     public static String compactString(String str, int lengthMax) {

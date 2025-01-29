@@ -54,6 +54,7 @@ public class VideoDetailsAddController implements Initializable {
         if(pathImage == null) {
             /* Reaching this block means there's an error because this controller and
             his scene doesn't start if there is no image to show, thanks to the controls made in AddVideoController */
+            videoImage.setImage(new Image("/images/noImageFound.png"));
             return;
         }
 
@@ -70,8 +71,7 @@ public class VideoDetailsAddController implements Initializable {
             videoImage.setFitWidth(800);
             videoImage.setFitHeight(500);
         }else{
-            videoImage.setFitWidth(200);
-            videoImage.setFitHeight(200);
+            videoImage.setImage(new Image("/images/noImageFound.png"));
         }
     }
 

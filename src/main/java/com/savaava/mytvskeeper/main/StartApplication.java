@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class StartApplication extends Application {
+    public static final String APPLICATION_ICON_PATH = "/images/MyTVsKeeper.png";
+
     public static void startApp(String[] args) {
         launch(args);
     }
@@ -27,7 +29,7 @@ public class StartApplication extends Application {
         stage.setMinHeight(400);
         stage.setMinWidth(1000);
         stage.setTitle("MyTVsKeeper");
-        stage.getIcons().add(new Image("/images/MyTVsKeeper.png"));
+        stage.getIcons().add(new Image(APPLICATION_ICON_PATH));
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();

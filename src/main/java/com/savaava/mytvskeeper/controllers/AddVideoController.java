@@ -3,6 +3,7 @@ package com.savaava.mytvskeeper.controllers;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertWarning;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
+import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 
 import javafx.application.Platform;
@@ -203,7 +204,7 @@ public class AddVideoController implements Initializable {
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle(sceneTitle);
-        popup.getIcons().add(new Image("/images/MyTVsKeeper.png"));
+        popup.getIcons().add(new Image(StartApplication.APPLICATION_ICON_PATH));
         popup.setResizable(false);
         popup.setScene(scene);
         popup.showAndWait();

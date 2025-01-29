@@ -10,8 +10,12 @@ import java.util.Random;
 
 public class Test {
     private static final Random n = new Random(333);
-    private static final int vMovie[] = {10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37};
-    private static final int vTVSerie[] = {28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37};
+    private static final int[] vMovie = {10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37};
+    private static final int[] vTVSerie = {28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37};
+
+    private static final String[] VIDEO_ID = {
+            "496243",
+    };
 
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
@@ -32,14 +36,21 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 
-//        tmdb.getMoviesByName("prometheus").forEach(mi -> {
+//        tmdb.getMoviesByName("kissing").forEach(mi -> {
 //            try {
 //                vk.addMovie(tmdb.getMovieById(mi.getId()));
 //            } catch (Exception ex) {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
-//        tmdb.getTVSeriesByName("death note").forEach(tvi -> {
+//        tmdb.getTVSeriesByName("kissing").forEach(tvi ->{
+//            try{
+//                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
+//            } catch (Exception ex) {
+//                System.err.println(ex.getMessage());
+//            }
+//        });
+//        tmdb.getTVSeriesByName("mashle").forEach(tvi -> {
 //            try{
 //                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
 //            } catch (Exception ex) {
@@ -47,7 +58,9 @@ public class Test {
 //            }
 //        });
 
-        vk.csvImportMovies(new File("C:/Users/andre/Desktop/tmp.csv"));
+//        vk.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/tmp1.csv"));
+        vk.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/tmp2.csv"));
+//        vk.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/tmp3.csv"));
 
         System.out.println(vk);
     }
