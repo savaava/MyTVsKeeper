@@ -4,6 +4,7 @@ import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.utility.Converter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -45,6 +46,8 @@ public class Test {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
+
+        vk.csvImportMovies(new File("C:/Users/andre/Desktop/tmp.csv"));
 
         System.out.println(vk);
     }
