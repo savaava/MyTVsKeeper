@@ -72,7 +72,7 @@
                         <Label text="• Destination path:" GridPane.rowIndex="1" />
                         <Label fx:id="numberLbl1" text="• Number of Videos:" />
                         <Label fx:id="numberLbl2" GridPane.columnIndex="1" />
-                        <Label fx:id="destLbl" layoutX="125.0" layoutY="12.0" onMouseClicked="#onPathClicked" textFill="BLUE" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label fx:id="destLbl" layoutX="125.0" layoutY="12.0" onMouseClicked="#onPathClicked" textFill="BLUE" underline="true" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <font>
                               <Font name="System Italic" size="12.0" />
                            </font>

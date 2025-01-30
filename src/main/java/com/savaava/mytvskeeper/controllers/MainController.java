@@ -539,30 +539,34 @@ public class MainController implements Initializable {
             if (tableViewMovies.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewMovies.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeMovie(videoToDelete.getId());
-                videoNumLbl.setText(textNumberVideoLbl[0]+vk.moviesNumber());
+                    videoNumLbl.setText(textNumberVideoLbl[0]+vk.moviesNumber());
+                    clearAllSelection();
+                }
 
             } else if (tableViewTvs.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewTvs.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeTVSerie(videoToDelete.getId());
-                videoNumLbl.setText(textNumberVideoLbl[1]+vk.tvsNumber());
+                    videoNumLbl.setText(textNumberVideoLbl[1]+vk.tvsNumber());
+                    clearAllSelection();
+                }
 
             } else if (tableViewAnimes.getSelectionModel().getSelectedItem() != null) {
 
                 videoToDelete = tableViewAnimes.getSelectionModel().getSelectedItem();
-                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation())
+                if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeAnimeSerie(videoToDelete.getId());
-                videoNumLbl.setText(textNumberVideoLbl[2]+vk.animesNumber());
+                    videoNumLbl.setText(textNumberVideoLbl[2]+vk.animesNumber());
+                    clearAllSelection();
+                }
 
             }
         } catch (Exception ex) {
             new AlertError("Error deleting the Video","Error's details: "+ex.getMessage());
         }
-
-        clearAllSelection();
     }
 
     @FXML

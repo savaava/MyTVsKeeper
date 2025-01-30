@@ -21,11 +21,6 @@ public class Test {
         VideoKeeper vk = VideoKeeper.getInstance();
         TMDatabase tmdb = TMDatabase.getInstance();
 
-//        System.out.println(vk);
-
-//        System.out.println(tmdb.getMoviesByName(" \nCowboy bebop \n  \n  "));
-//        System.out.println(tmdb.getTVSeriesByName(" \nCowboy bebop \n  \n  "));
-
 //        vk.addMovie(tmdb.getMovieById("496243"));
 //        vk.addMovie(tmdb.getMovieById("19995"));
 //        vk.addMovie(tmdb.getMovieById("1022789"));
@@ -58,9 +53,12 @@ public class Test {
 //            }
 //        });
 
-//        vk.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/tmp1.csv"));
-        vk.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/tmp2.csv"));
-//        vk.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/tmp3.csv"));
+
+        VideoKeeper.CsvHandler vkCsv = vk.new CsvHandler();
+
+//        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_Movies.csv"));
+        vkCsv.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_TVSeries.csv"));
+//        vkCsv.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_AnimeSeries.csv"));
 
         System.out.println(vk);
     }

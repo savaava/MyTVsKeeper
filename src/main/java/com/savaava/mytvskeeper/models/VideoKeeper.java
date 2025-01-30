@@ -16,8 +16,6 @@ import javafx.collections.ObservableList;
  * @version 1.0
  */
 public class VideoKeeper {
-    private static final String CURRENT_VERSION = "1.0";
-
     private static VideoKeeper instance;
 
     ObservableList<Movie> movies;
@@ -25,9 +23,6 @@ public class VideoKeeper {
     ObservableList<TVSerie> animeSeries;
 
     private final SerializedPersistenceHandler persistenceHandler;
-
-    private final String delim = ";";
-    private final String delimAux = ",";
 
 
     private VideoKeeper() throws Exception {
@@ -148,7 +143,7 @@ public class VideoKeeper {
         }
 
         /**
-         * Saves a collection of videos to the specified file for the data persistence.
+         * Savess a collection of videos in the specified file for the data persistence.
          * @param listToWrite the collection to serialize
          * @param fileDest the destination file
          * @throws IOException if an I/O error occurs
@@ -184,224 +179,254 @@ public class VideoKeeper {
         }
     }
 
+    public class CsvHandler {
+        public static final String CURRENT_VERSION = "1.0";
+        private static final String CSV_DELIMITER = ";";
+        private static final String CSV_AUXILIARY_DELIMITER = ",";
 
-    /* Export methods are always updated to the latest version */
-    public void csvExportMovies(File fileDest) throws IOException {
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-            pw.println("VERSION"+delim+CURRENT_VERSION);
-            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
-            pw.println(String.join(delim,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
+        /* Export methods are always updated to the latest version */
 
-            for(Movie mi : movies) {
-                pw.append(FormatString.stringNormalize(mi.getTitle())).append(delim);
-                pw.append(mi.getDuration()).append(delim);
-                pw.append(mi.getReleaseDate()).append(delim);
-                pw.append(mi.getDirector()).append(delim);
-                pw.append(mi.isStarted()?"Started":"Not Started").append(delim);
-                pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(delim);
-                pw.append(mi.getRating()).append(delim);
-                int i = 0;
-                for(MovieGenres gi : mi.getGenres()){
-                    pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
-                    if(i!=mi.numGenres())
-                        pw.append(delimAux);
+        /**
+         * Generates a file csv with all the movies on each line.
+         * First line is dedicated to track the {@code CURRENT_VERSION} of the application.
+         * Second line is dedicated to show the content of each column.
+         * Other lines are dedicated to show the contents of each movie.
+         * To generate the file is used the {@code CSV_DELIMITER} to separate the columns
+         * and the {@code CSV_AUXILIARY_DELIMITER} to separate Genres in its column.
+         * @param fileDest is the file path where it's created
+         * @return the number of movies written in fileDest (#movies = #lines-2)
+         * @throws IOException when an exception occurs
+         */
+        public int csvExportMovies(File fileDest) throws IOException {
+            int movieCont = 0;
+
+            try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
+                pw.println("VERSION"+CSV_DELIMITER+CURRENT_VERSION);
+                String genresStr = String.join(CSV_AUXILIARY_DELIMITER,"GENRE 1","GENRE 2","...");
+                pw.println(String.join(CSV_DELIMITER,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
+
+                for(Movie mi : movies) {
+                    movieCont++;
+                    pw.append(FormatString.stringNormalize(mi.getTitle())).append(CSV_DELIMITER);
+                    pw.append(mi.getDuration()).append(CSV_DELIMITER);
+                    pw.append(mi.getReleaseDate()).append(CSV_DELIMITER);
+                    pw.append(mi.getDirector()).append(CSV_DELIMITER);
+                    pw.append(mi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
+                    pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
+                    pw.append(mi.getRating()).append(CSV_DELIMITER);
+
+                    int i = 0;
+                    for(MovieGenres gi : mi.getGenres()){
+                        pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
+                        if(i!=mi.numGenres())
+                            pw.append(CSV_AUXILIARY_DELIMITER);
+                    }
+                    pw.append(CSV_DELIMITER);
+
+                    pw.append(mi.getDescription()).append(CSV_DELIMITER);
+                    pw.append(mi.getPathImage()!=null ? mi.getPathImage():"").append(CSV_DELIMITER);
+                    pw.append(mi.getId()).append("\n");
                 }
-                pw.append(delim);
-                pw.append(mi.getDescription()).append(delim);
-                pw.append(mi.getPathImage()!=null ? mi.getPathImage():"").append(delim);
-                pw.append(mi.getId()).append("\n");
+            }
+            return movieCont;
+        }
+
+        private int csvExportTV(Collection<TVSerie> c, File fileDest) throws IOException {
+            int tvCont = 0;
+
+            try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
+                pw.println("VERSION"+CSV_DELIMITER+CURRENT_VERSION);
+                String genresStr = String.join(CSV_AUXILIARY_DELIMITER,"GENRE 1","GENRE 2","...");
+                pw.println(String.join(CSV_DELIMITER,"TITLE","#SEASONS"+CSV_AUXILIARY_DELIMITER+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
+
+                for(TVSerie tvi : c) {
+                    tvCont++;
+                    pw.append(FormatString.stringNormalize(tvi.getTitle())).append(CSV_DELIMITER);
+                    pw.append(Integer.toString(tvi.getNumSeasons())).append(CSV_AUXILIARY_DELIMITER);
+                    pw.append(Integer.toString(tvi.getNumEpisodes())).append(CSV_DELIMITER);
+                    pw.append(tvi.getReleaseDate()).append(CSV_DELIMITER);
+                    pw.append(tvi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
+                    pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
+                    pw.append(tvi.getRating()).append(CSV_DELIMITER);
+
+                    int i = 0;
+                    for(TVGenres gi : tvi.getGenres()){
+                        pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
+                        if(i!=tvi.numGenres())
+                            pw.append(CSV_AUXILIARY_DELIMITER);
+                    }
+                    pw.append(CSV_DELIMITER);
+
+                    pw.append(tvi.getDescription()).append(CSV_DELIMITER);
+                    pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(CSV_DELIMITER);
+                    pw.append(tvi.getId()).append("\n");
+                }
+            }
+            return tvCont;
+        }
+        public int csvExportTVSeries(File fileDest) throws IOException {
+            return csvExportTV(tvSeries, fileDest);
+        }
+        public int csvExportAnimeSeries(File fileDest) throws IOException {
+            return csvExportTV(animeSeries, fileDest);
+        }
+
+
+        /**
+         * Import Method for file.csv generated in the previous version 1.0
+         * @param scanner scanner of file with movies to import, the file is generated by the application 1.0
+         */
+        private void csvImportMoviesVersion1(Scanner scanner) throws IOException {
+            /* Currently the version 1.0 is the current one */
+            csvImportMoviesCurrentVersion(scanner);
+        }
+        /**
+         * Import Method for file.csv generated in the current version
+         * @param scanner scanner of file with movies to import, the file is generated by the current application
+         */
+        private void csvImportMoviesCurrentVersion(Scanner scanner) throws IOException {
+            /* TITLE;DURATION;RELEASE DATE;DIRECTOR;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
+
+            scanner.useDelimiter("\n");
+            scanner.next(); /* read the first prompt line */
+            scanner.useDelimiter("[;\n]");
+
+            while(scanner.hasNext()) {
+                String title = scanner.next();
+                String duration = scanner.next();
+                String releaseDate = scanner.next();
+                String director = scanner.next();
+                String started = scanner.next();
+                String terminated = scanner.next();
+                String rating = scanner.next();
+                String[] genres = scanner.next().split(CSV_AUXILIARY_DELIMITER);
+                String description = scanner.next();
+                String pathImage = scanner.next();
+                String id = scanner.next();
+
+                Movie movieToAdd = new Movie(title, description, releaseDate,
+                        started.equals("Started"), terminated.equals("Terminated"), rating, id,
+                        pathImage.isEmpty() ? null:pathImage, duration, director);
+                for(String gi : genres){
+                    if(! gi.isEmpty())
+                        movieToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
+                }
+
+                /* to reduce the computational complexity -> the saving only occurs at the end of the scan */
+                if(! movies.contains(movieToAdd))
+                    movies.add(movieToAdd);
+            }
+            persistenceHandler.saveMovies();
+        }
+        /**
+         * It's the main Import method because it is the method effectively called to import videos whatever the version of fileSource,
+         * checking the version first at the first line
+         */
+        public void csvImportMovies(File fileSource) throws IOException {
+            try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
+                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
+
+                if(version.equals(CURRENT_VERSION))
+                    csvImportMoviesCurrentVersion(scanner);
+                else if(version.equals("1.0"))
+                    csvImportMoviesVersion1(scanner);
+                else
+                    System.err.println("Version not found");
             }
         }
-    }
-    private void csvExportTV(Collection<TVSerie> c, File fileDest) throws IOException {
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-            pw.println("VERSION"+delim+CURRENT_VERSION);
-            String genresStr = String.join(delimAux,"GENRE 1","GENRE 2","...");
-            pw.println(String.join(delim,"TITLE","#SEASONS"+delimAux+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
-
-            for(TVSerie tvi : c) {
-                pw.append(FormatString.stringNormalize(tvi.getTitle())).append(delim);
-                pw.append(Integer.toString(tvi.getNumSeasons())).append(delimAux);
-                pw.append(Integer.toString(tvi.getNumEpisodes())).append(delim);
-                pw.append(tvi.getReleaseDate()).append(delim);
-                pw.append(tvi.isStarted()?"Started":"Not Started").append(delim);
-                pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(delim);
-                pw.append(tvi.getRating()).append(delim);
-                int i = 0;
-                for(TVGenres gi : tvi.getGenres()){
-                    pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
-                    if(i!=tvi.numGenres())
-                        pw.append(delimAux);
-                }
-                pw.append(delim);
-                pw.append(tvi.getDescription()).append(delim);
-                pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(delim);
-                pw.append(tvi.getId()).append("\n");
-            }
-        }
-    }
-    public void csvExportTVSeries(File fileDest) throws IOException {
-        csvExportTV(tvSeries, fileDest);
-    }
-    public void csvExportAnimeSeries(File fileDest) throws IOException {
-        csvExportTV(animeSeries, fileDest);
-    }
 
 
-    /**
-     * Import Method for file.csv generated in the previous version 1.0
-     * @param scanner scanner of file with movies to import, the file is generated by the application 1.0
-     */
-    private void csvImportMoviesVersion1(Scanner scanner) throws IOException {
-        /* Currently the version 1.0 is the current one */
-        csvImportMoviesCurrentVersion(scanner);
-    }
-    /**
-     * Import Method for file.csv generated in the current version
-     * @param scanner scanner of file with movies to import, the file is generated by the current application
-     */
-    private void csvImportMoviesCurrentVersion(Scanner scanner) throws IOException {
-        /* TITLE;DURATION;RELEASE DATE;DIRECTOR;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
-
-        scanner.useDelimiter("\n");
-        scanner.next(); /* read the first prompt line */
-        scanner.useDelimiter("[;\n]");
-
-        while(scanner.hasNext()) {
+        private TVSerie csvReadSingleTv(Scanner scanner) {
             String title = scanner.next();
-            String duration = scanner.next();
+            String[] numSeasonsEpisods = scanner.next().split(CSV_AUXILIARY_DELIMITER);
             String releaseDate = scanner.next();
-            String director = scanner.next();
             String started = scanner.next();
             String terminated = scanner.next();
             String rating = scanner.next();
-            String[] genres = scanner.next().split(delimAux);
+            String[] genres = scanner.next().split(CSV_AUXILIARY_DELIMITER);
             String description = scanner.next();
             String pathImage = scanner.next();
             String id = scanner.next();
 
-            Movie movieToAdd = new Movie(title, description, releaseDate,
+            TVSerie tvToAdd = new TVSerie(title, description, releaseDate,
                     started.equals("Started"), terminated.equals("Terminated"), rating, id,
-                    pathImage.isEmpty() ? null:pathImage, duration, director);
+                    pathImage.isEmpty()?null:pathImage,
+                    Integer.parseInt(numSeasonsEpisods[0]), Integer.parseInt(numSeasonsEpisods[1]));
+
             for(String gi : genres){
                 if(! gi.isEmpty())
-                    movieToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
+                    tvToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
             }
 
-            /* to reduce the computational complexity -> the saving only occurs at the end of the scan */
-            if(! movies.contains(movieToAdd))
-                movies.add(movieToAdd);
-        }
-        persistenceHandler.saveMovies();
-    }
-    /**
-     * It's the main Import method because it is the method effectively called to import videos whatever the version of fileSource,
-     * checking the version first at the first line
-     */
-    public void csvImportMovies(File fileSource) throws IOException {
-        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.nextLine().split(delim)[1];
-
-            if(version.equals(CURRENT_VERSION))
-                csvImportMoviesCurrentVersion(scanner);
-            else if(version.equals("1.0"))
-                csvImportMoviesVersion1(scanner);
-            else
-                System.err.println("Version not found");
-        }
-    }
-
-
-    private TVSerie csvReadSingleTv(Scanner scanner) {
-        String title = scanner.next();
-        String[] numSeasonsEpisods = scanner.next().split(delimAux);
-        String releaseDate = scanner.next();
-        String started = scanner.next();
-        String terminated = scanner.next();
-        String rating = scanner.next();
-        String[] genres = scanner.next().split(delimAux);
-        String description = scanner.next();
-        String pathImage = scanner.next();
-        String id = scanner.next();
-
-        TVSerie tvToAdd = new TVSerie(title, description, releaseDate,
-                started.equals("Started"), terminated.equals("Terminated"), rating, id,
-                pathImage.isEmpty()?null:pathImage,
-                Integer.parseInt(numSeasonsEpisods[0]), Integer.parseInt(numSeasonsEpisods[1]));
-
-        for(String gi : genres){
-            if(! gi.isEmpty())
-                tvToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
+            return tvToAdd;
         }
 
-        return tvToAdd;
-    }
-
-    private void csvImportTVSerieVersion1(Scanner scanner) throws IOException {
-        csvImportTVSerieCurrentVersion(scanner);
-    }
-    private void csvImportTVSerieCurrentVersion(Scanner scanner) throws IOException {
-        /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
-
-        scanner.useDelimiter("\n");
-        scanner.next();
-        scanner.useDelimiter("[;\n]");
-
-        while(scanner.hasNext()) {
-            TVSerie tvToAdd = csvReadSingleTv(scanner);
-
-            if(! tvSeries.contains(tvToAdd))
-                tvSeries.add(tvToAdd);
+        private void csvImportTVSerieVersion1(Scanner scanner) throws IOException {
+            csvImportTVSerieCurrentVersion(scanner);
         }
-        persistenceHandler.saveTVSeries();
-    }
-    public void csvImportTVSerie(File fileSource) throws IOException {
-        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.next().split(delim)[1];
+        private void csvImportTVSerieCurrentVersion(Scanner scanner) throws IOException {
+            /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
-            if(version.equals(CURRENT_VERSION))
-                csvImportTVSerieCurrentVersion(scanner);
-            else if(version.equals("1.0"))
-                csvImportTVSerieVersion1(scanner);
-            else
-                System.err.println("Version not found");
+            scanner.useDelimiter("\n");
+            scanner.next();
+            scanner.useDelimiter("[;\n]");
+
+            while(scanner.hasNext()) {
+                TVSerie tvToAdd = csvReadSingleTv(scanner);
+
+                if(! tvSeries.contains(tvToAdd))
+                    tvSeries.add(tvToAdd);
+            }
+//        persistenceHandler.saveTVSeries();
         }
-    }
+        public void csvImportTVSerie(File fileSource) throws IOException {
+            try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
+                String version = scanner.next().split(CSV_DELIMITER)[1];
 
-    private void csvImportAnimeSerieVersion1(Scanner scanner) throws IOException {
-        csvImportAnimeSerieCurrentVersion(scanner);
-    }
-    private void csvImportAnimeSerieCurrentVersion(Scanner scanner) throws IOException {
-        /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
-
-        scanner.useDelimiter("\n");
-        scanner.next(); /* read the first prompt line */
-        scanner.useDelimiter("[;\n]");
-
-        while(scanner.hasNext()) {
-            TVSerie tvToAdd = csvReadSingleTv(scanner);
-
-            if(! animeSeries.contains(tvToAdd))
-                animeSeries.add(tvToAdd);
+                if(version.equals(CURRENT_VERSION))
+                    csvImportTVSerieCurrentVersion(scanner);
+                else if(version.equals("1.0"))
+                    csvImportTVSerieVersion1(scanner);
+                else
+                    System.err.println("Version not found");
+            }
         }
-        persistenceHandler.saveAnimeSeries();
-    }
-    public void csvImportAnimeSerie(File fileSource) throws IOException {
-        try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-            String version = scanner.next().split(delim)[1];
 
-            if(version.equals(CURRENT_VERSION))
-                csvImportAnimeSerieCurrentVersion(scanner);
-            else if(version.equals("1.0"))
-                csvImportAnimeSerieVersion1(scanner);
-            else
-                System.err.println("Version not found");
+        private void csvImportAnimeSerieVersion1(Scanner scanner) throws IOException {
+            csvImportAnimeSerieCurrentVersion(scanner);
+        }
+        private void csvImportAnimeSerieCurrentVersion(Scanner scanner) throws IOException {
+            /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
+
+            scanner.useDelimiter("\n");
+            scanner.next(); /* read the first prompt line */
+            scanner.useDelimiter("[;\n]");
+
+            while(scanner.hasNext()) {
+                TVSerie tvToAdd = csvReadSingleTv(scanner);
+
+                if(! animeSeries.contains(tvToAdd))
+                    animeSeries.add(tvToAdd);
+            }
+            persistenceHandler.saveAnimeSeries();
+        }
+        public void csvImportAnimeSerie(File fileSource) throws IOException {
+            try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
+                String version = scanner.next().split(CSV_DELIMITER)[1];
+
+                if(version.equals(CURRENT_VERSION))
+                    csvImportAnimeSerieCurrentVersion(scanner);
+                else if(version.equals("1.0"))
+                    csvImportAnimeSerieVersion1(scanner);
+                else
+                    System.err.println("Version not found");
+            }
         }
     }
 
     @Override
     public String toString() {
-        StringBuilder strb = new StringBuilder("**** Stampa instanza video keeper ****\n");
+        StringBuilder strb = new StringBuilder("**** Video Keeper instance ****\n");
 
         strb.append("** ").append(moviesNumber()).append(" Movies:\n");
         movies.forEach(m -> strb.append("* ").append(m.toString()));

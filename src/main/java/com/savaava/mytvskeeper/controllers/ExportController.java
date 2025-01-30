@@ -23,9 +23,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ExportController implements Initializable {
-    private VideoKeeper vk;
+    private VideoKeeper.CsvHandler vkCsvHandler;
 
     private FileChooser fileChooser;
+    private File lastPath;
 
     @FXML
     public RadioButton moviesBtn, tvBtn, animeBtn;
@@ -41,7 +42,7 @@ public class ExportController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
             try {
-                vk = VideoKeeper.getInstance();
+                vkCsvHandler = VideoKeeper.getInstance().new CsvHandler();
             } catch (Exception ex) {
                 new AlertError("Error reading saving data files", "Error's details: " + ex.getMessage());
                 onExit();
@@ -70,38 +71,65 @@ public class ExportController implements Initializable {
 
     @FXML
     public void onExport() {
-        File fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+        File fileOut;
 
-        if(fileOut == null)
-            return;
+        /* ensures to user the last path he used is the default one */
+        if(lastPath != null && lastPath.exists())
+            fileChooser.setInitialDirectory(lastPath);
 
-        destLbl.setText(fileOut.getAbsolutePath());
+        int videosNumber;
 
         if(moviesBtn.isSelected()){
+            fileChooser.setInitialFileName("MyTvsKeeper"+ VideoKeeper.CsvHandler.CURRENT_VERSION +"_Movies");
+            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+
+            if(fileOut == null)
+                return;
+
+            try{
+                videosNumber = vkCsvHandler.csvExportMovies(fileOut);
+            }catch (IOException ex) {
+                new AlertError("Error exporting Movies", "Error's details: "+ex.getMessage());
+                return;
+            }
 
             numberLbl1.setText("• Number of Movies:");
-            numberLbl2.setText(" "+vk.moviesNumber());
-            try{ vk.csvExportMovies(fileOut); }
-            catch (IOException ex) { new AlertError("Error exporting Movies", "Error's details: "+ex.getMessage()); }
-
+            numberLbl2.setText(" "+videosNumber);
         }else if(tvBtn.isSelected()){
+            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CsvHandler.CURRENT_VERSION+"_TVSeries");
+            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+
+            if(fileOut == null)
+                return;
+
+            try{
+                videosNumber = vkCsvHandler.csvExportTVSeries(fileOut);
+            }catch(IOException ex){
+                new AlertError("Error exporting TV Series", "Error's details: "+ex.getMessage());
+                return;
+            }
 
             numberLbl1.setText("• Number of TV Series:");
-            numberLbl2.setText(" "+vk.tvsNumber());
-            try{ vk.csvExportTVSeries(fileOut); }
-            catch (IOException ex) { new AlertError("Error exporting TV Series", "Error's details: "+ex.getMessage()); }
+            numberLbl2.setText(" "+videosNumber);
+        }else{ /* animeBtn.isSelected */
+            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CsvHandler.CURRENT_VERSION+"_AnimeSeries");
+            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
-        }else if(animeBtn.isSelected()){
+            if(fileOut == null)
+                return;
+
+            try{
+                videosNumber = vkCsvHandler.csvExportAnimeSeries(fileOut);
+            }catch(IOException ex) {
+                new AlertError("Error exporting Anime Series", "Error's details: "+ex.getMessage());
+                return;
+            }
 
             numberLbl1.setText("• Number of Anime Series:");
-            numberLbl2.setText(" "+vk.animesNumber());
-            try{ vk.csvExportAnimeSeries(fileOut); }
-            catch (IOException ex) { new AlertError("Error exporting Anime Series", "Error's details: "+ex.getMessage()); }
-
-        }else{
-            /* Reaching this bvlock means there's an error, because the user cannot click Export if he hasn't chosen the video type yet */
-            new AlertError("Error exporting");
+            numberLbl2.setText(" "+videosNumber);
         }
+
+        destLbl.setText(fileOut.getAbsolutePath());
 
         /* modularize in future */
         double sizeB = fileOut.length();
@@ -119,6 +147,9 @@ public class ExportController implements Initializable {
         sizeLbl.setText(sizeStr);
 
         clearSelection();
+
+        /* For next export */
+        lastPath = new File(fileOut.getParent());
     }
 
     @FXML
