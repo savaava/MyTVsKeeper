@@ -13,9 +13,11 @@ import javafx.collections.ObservableList;
 
 /**
  * Model for the persistence of videos, which can be of two types: Movie or TVSerie (TV Serie or Anime)
- * @version 1.0
+ * @version {@value CURRENT_VERSION}
  */
 public class VideoKeeper {
+    public static final String CURRENT_VERSION = "1.0";
+
     private static VideoKeeper instance;
 
     ObservableList<Movie> movies;
@@ -180,12 +182,10 @@ public class VideoKeeper {
     }
 
     public class CsvHandler {
-        public static final String CURRENT_VERSION = "1.0";
         private static final String CSV_DELIMITER = ";";
         private static final String CSV_AUXILIARY_DELIMITER = ",";
 
         /* Export methods are always updated to the latest version */
-
         /**
          * Generates a file csv with all the movies on each line.
          * First line is dedicated to track the {@code CURRENT_VERSION} of the application.
@@ -287,8 +287,7 @@ public class VideoKeeper {
         private void csvImportMoviesCurrentVersion(Scanner scanner) throws IOException {
             /* TITLE;DURATION;RELEASE DATE;DIRECTOR;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
-            scanner.useDelimiter("\n");
-            scanner.next(); /* read the first prompt line */
+            scanner.nextLine(); /* read the first prompt line */
             scanner.useDelimiter("[;\n]");
 
             while(scanner.hasNext()) {
@@ -307,12 +306,21 @@ public class VideoKeeper {
                 Movie movieToAdd = new Movie(title, description, releaseDate,
                         started.equals("Started"), terminated.equals("Terminated"), rating, id,
                         pathImage.isEmpty() ? null:pathImage, duration, director);
-                for(String gi : genres){
-                    if(! gi.isEmpty())
-                        movieToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
+
+                for (String gi : genres) {
+                    if (gi.isEmpty()) continue;
+
+                    /* for a greater strength principle */
+                    int openParenIndex = gi.indexOf("(");
+                    int closeParenIndex = gi.indexOf(")");
+
+                    if (openParenIndex!=-1 && closeParenIndex!=-1 && openParenIndex<closeParenIndex) {
+                        String numberGenre = gi.substring(openParenIndex+1, closeParenIndex);
+                        movieToAdd.addGenre(Integer.parseInt(numberGenre));
+                    }
                 }
 
-                /* to reduce the computational complexity -> the saving only occurs at the end of the scan */
+                /* to reduce the computational complexity -> the serialized saving only occurs at the end of the scan */
                 if(! movies.contains(movieToAdd))
                     movies.add(movieToAdd);
             }
@@ -348,14 +356,28 @@ public class VideoKeeper {
             String pathImage = scanner.next();
             String id = scanner.next();
 
+            /* for a greater strength principle */
+            int numEpisodes = 0;
+            String regexInt = "^\\d+$";
+            int numSeasons = numSeasonsEpisods[0].matches(regexInt) ? Integer.parseInt(numSeasonsEpisods[0]) : 0;
+            if(numSeasonsEpisods.length == 2)
+                numEpisodes = numSeasonsEpisods[1].matches(regexInt) ? Integer.parseInt(numSeasonsEpisods[1]) : 0;
+
+
             TVSerie tvToAdd = new TVSerie(title, description, releaseDate,
                     started.equals("Started"), terminated.equals("Terminated"), rating, id,
-                    pathImage.isEmpty()?null:pathImage,
-                    Integer.parseInt(numSeasonsEpisods[0]), Integer.parseInt(numSeasonsEpisods[1]));
+                    pathImage.isEmpty()?null:pathImage, numSeasons, numEpisodes);
 
             for(String gi : genres){
-                if(! gi.isEmpty())
-                    tvToAdd.addGenre(Integer.parseInt(gi.split("[(]")[1].replace(")","")));
+                if (gi.isEmpty()) continue;
+
+                int openParenIndex = gi.indexOf("(");
+                int closeParenIndex = gi.indexOf(")");
+
+                if (openParenIndex!=-1 && closeParenIndex!=-1 && openParenIndex<closeParenIndex) {
+                    String numberGenre = gi.substring(openParenIndex+1, closeParenIndex);
+                    tvToAdd.addGenre(Integer.parseInt(numberGenre));
+                }
             }
 
             return tvToAdd;
@@ -367,8 +389,7 @@ public class VideoKeeper {
         private void csvImportTVSerieCurrentVersion(Scanner scanner) throws IOException {
             /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
-            scanner.useDelimiter("\n");
-            scanner.next();
+            scanner.nextLine();
             scanner.useDelimiter("[;\n]");
 
             while(scanner.hasNext()) {
@@ -377,11 +398,11 @@ public class VideoKeeper {
                 if(! tvSeries.contains(tvToAdd))
                     tvSeries.add(tvToAdd);
             }
-//        persistenceHandler.saveTVSeries();
+            persistenceHandler.saveTVSeries();
         }
         public void csvImportTVSerie(File fileSource) throws IOException {
             try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-                String version = scanner.next().split(CSV_DELIMITER)[1];
+                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
 
                 if(version.equals(CURRENT_VERSION))
                     csvImportTVSerieCurrentVersion(scanner);
@@ -398,8 +419,7 @@ public class VideoKeeper {
         private void csvImportAnimeSerieCurrentVersion(Scanner scanner) throws IOException {
             /* TITLE;#SEASONS,#EPISODES;RELEASE DATE;STARTED;TERMINATED;RATING;GENRE 1,GENRE 2,...;DESCRIPTION;PATH IMAGE;ID */
 
-            scanner.useDelimiter("\n");
-            scanner.next(); /* read the first prompt line */
+            scanner.nextLine(); /* read the first prompt line */
             scanner.useDelimiter("[;\n]");
 
             while(scanner.hasNext()) {
@@ -412,7 +432,7 @@ public class VideoKeeper {
         }
         public void csvImportAnimeSerie(File fileSource) throws IOException {
             try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-                String version = scanner.next().split(CSV_DELIMITER)[1];
+                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
 
                 if(version.equals(CURRENT_VERSION))
                     csvImportAnimeSerieCurrentVersion(scanner);

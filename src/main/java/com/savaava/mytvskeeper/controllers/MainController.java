@@ -586,6 +586,24 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    public void onImport() {
+
+    }
+
+    @FXML
+    public void onMovieStats() {
+
+    }
+    @FXML
+    public void onSerieStats() {
+
+    }
+    @FXML
+    public void onAnimeStats() {
+
+    }
+
+    @FXML
     public void onAbout() {
 
     }

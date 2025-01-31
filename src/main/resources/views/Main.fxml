@@ -18,9 +18,10 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
                     <MenuItem mnemonicParsing="false" onAction="#onConfig" text="⚙ Configure application" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="📤🔚 Exit" />
+                        <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
+                        <MenuItem mnemonicParsing="false" onAction="#onImport" text="📤📥 Import" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="📤📥🔚 Exit" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="New">
@@ -28,6 +29,13 @@
                       <MenuItem mnemonicParsing="false" onAction="#onNewMovie" text="New Movie" />
                         <MenuItem mnemonicParsing="false" onAction="#onNewTv" text="New TV Serie" />
                         <MenuItem mnemonicParsing="false" onAction="#onNewAnime" text="New Anime Serie" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Statistics">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onMovieStats" text="Movies" />
+                        <MenuItem mnemonicParsing="false" onAction="#onSerieStats" text="TV Series" />
+                      <MenuItem mnemonicParsing="false" onAction="#onAnimeStats" text="Anime Series" />
                     </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">

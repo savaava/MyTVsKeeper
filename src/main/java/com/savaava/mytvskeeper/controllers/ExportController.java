@@ -80,7 +80,7 @@ public class ExportController implements Initializable {
         int videosNumber;
 
         if(moviesBtn.isSelected()){
-            fileChooser.setInitialFileName("MyTvsKeeper"+ VideoKeeper.CsvHandler.CURRENT_VERSION +"_Movies");
+            fileChooser.setInitialFileName("MyTvsKeeper"+ VideoKeeper.CURRENT_VERSION +"_Movies");
             fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
             if(fileOut == null)
@@ -96,7 +96,7 @@ public class ExportController implements Initializable {
             numberLbl1.setText("• Number of Movies:");
             numberLbl2.setText(" "+videosNumber);
         }else if(tvBtn.isSelected()){
-            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CsvHandler.CURRENT_VERSION+"_TVSeries");
+            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CURRENT_VERSION+"_TVSeries");
             fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
             if(fileOut == null)
@@ -112,7 +112,7 @@ public class ExportController implements Initializable {
             numberLbl1.setText("• Number of TV Series:");
             numberLbl2.setText(" "+videosNumber);
         }else{ /* animeBtn.isSelected */
-            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CsvHandler.CURRENT_VERSION+"_AnimeSeries");
+            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CURRENT_VERSION+"_AnimeSeries");
             fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
             if(fileOut == null)

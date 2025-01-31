@@ -23,8 +23,10 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 public class TMDatabase {
+    private static final String CONFIG_PATH = "./bin/Config";
+
     private static TMDatabase instance;
-    private final File fileConfig = new File("./bin/Config");
+    private final File fileConfig = new File(CONFIG_PATH);
     private String apiKey;
 
     private final HttpClient client;

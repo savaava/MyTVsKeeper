@@ -19,6 +19,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
+        VideoKeeper.CsvHandler vkCsv = vk.new CsvHandler();
         TMDatabase tmdb = TMDatabase.getInstance();
 
 //        vk.addMovie(tmdb.getMovieById("496243"));
@@ -31,21 +32,21 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 
-//        tmdb.getMoviesByName("kissing").forEach(mi -> {
+//        tmdb.getMoviesByName("toy story").forEach(mi -> {
 //            try {
 //                vk.addMovie(tmdb.getMovieById(mi.getId()));
 //            } catch (Exception ex) {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
-//        tmdb.getTVSeriesByName("kissing").forEach(tvi ->{
+//        tmdb.getTVSeriesByName("breaking bad").forEach(tvi ->{
 //            try{
 //                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
 //            } catch (Exception ex) {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
-//        tmdb.getTVSeriesByName("mashle").forEach(tvi -> {
+//        tmdb.getTVSeriesByName("castlevania").forEach(tvi -> {
 //            try{
 //                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
 //            } catch (Exception ex) {
@@ -53,12 +54,9 @@ public class Test {
 //            }
 //        });
 
-
-        VideoKeeper.CsvHandler vkCsv = vk.new CsvHandler();
-
-//        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_Movies.csv"));
+        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_Movies.csv"));
         vkCsv.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_TVSeries.csv"));
-//        vkCsv.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_AnimeSeries.csv"));
+        vkCsv.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_AnimeSeries.csv"));
 
         System.out.println(vk);
     }
