@@ -586,8 +586,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void onImport() {
+    public void onImport() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Import.fxml"));
+        Parent root = loader.load();
 
+        showPopup(root, "Import Videos", 550, 443);
     }
 
     @FXML

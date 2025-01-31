@@ -1,5 +1,6 @@
 package com.savaava.mytvskeeper.models;
 
+import com.savaava.mytvskeeper.exceptions.NotMatchingVideoTypeException;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 
 import java.io.*;
@@ -181,9 +182,15 @@ public class VideoKeeper {
         }
     }
 
+
     public class CsvHandler {
         private static final String CSV_DELIMITER = ";";
         private static final String CSV_AUXILIARY_DELIMITER = ",";
+
+        private static final String MOVIE_TYPE = "Movie";
+        private static final String TVSERIE_TYPE = "TV Serie";
+        private static final String ANIME_TYPE = "Anime Serie";
+
 
         /* Export methods are always updated to the latest version */
         /**
@@ -201,8 +208,10 @@ public class VideoKeeper {
             int movieCont = 0;
 
             try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-                pw.println("VERSION"+CSV_DELIMITER+CURRENT_VERSION);
                 String genresStr = String.join(CSV_AUXILIARY_DELIMITER,"GENRE 1","GENRE 2","...");
+
+                pw.println("VERSION"+CSV_DELIMITER+"VIDEO TYPE");
+                pw.println(CURRENT_VERSION+CSV_DELIMITER+MOVIE_TYPE);
                 pw.println(String.join(CSV_DELIMITER,"TITLE","DURATION","RELEASE DATE","DIRECTOR","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
 
                 for(Movie mi : movies) {
@@ -231,44 +240,52 @@ public class VideoKeeper {
             return movieCont;
         }
 
-        private int csvExportTV(Collection<TVSerie> c, File fileDest) throws IOException {
+        private int csvExportTV(Collection<TVSerie> c, PrintWriter pw) throws IOException {
             int tvCont = 0;
+            String genresStr = String.join(CSV_AUXILIARY_DELIMITER,"GENRE 1","GENRE 2","...");
 
-            try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
-                pw.println("VERSION"+CSV_DELIMITER+CURRENT_VERSION);
-                String genresStr = String.join(CSV_AUXILIARY_DELIMITER,"GENRE 1","GENRE 2","...");
-                pw.println(String.join(CSV_DELIMITER,"TITLE","#SEASONS"+CSV_AUXILIARY_DELIMITER+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
+            pw.println(String.join(CSV_DELIMITER,"TITLE","#SEASONS"+CSV_AUXILIARY_DELIMITER+"#EPISODES","RELEASE DATE","STARTED","TERMINATED","RATING",genresStr,"DESCRIPTION","PATH IMAGE","ID"));
 
-                for(TVSerie tvi : c) {
-                    tvCont++;
-                    pw.append(FormatString.stringNormalize(tvi.getTitle())).append(CSV_DELIMITER);
-                    pw.append(Integer.toString(tvi.getNumSeasons())).append(CSV_AUXILIARY_DELIMITER);
-                    pw.append(Integer.toString(tvi.getNumEpisodes())).append(CSV_DELIMITER);
-                    pw.append(tvi.getReleaseDate()).append(CSV_DELIMITER);
-                    pw.append(tvi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
-                    pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
-                    pw.append(tvi.getRating()).append(CSV_DELIMITER);
+            for(TVSerie tvi : c) {
+                tvCont++;
+                pw.append(FormatString.stringNormalize(tvi.getTitle())).append(CSV_DELIMITER);
+                pw.append(Integer.toString(tvi.getNumSeasons())).append(CSV_AUXILIARY_DELIMITER);
+                pw.append(Integer.toString(tvi.getNumEpisodes())).append(CSV_DELIMITER);
+                pw.append(tvi.getReleaseDate()).append(CSV_DELIMITER);
+                pw.append(tvi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
+                pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
+                pw.append(tvi.getRating()).append(CSV_DELIMITER);
 
-                    int i = 0;
-                    for(TVGenres gi : tvi.getGenres()){
-                        pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
-                        if(i!=tvi.numGenres())
-                            pw.append(CSV_AUXILIARY_DELIMITER);
-                    }
-                    pw.append(CSV_DELIMITER);
-
-                    pw.append(tvi.getDescription()).append(CSV_DELIMITER);
-                    pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(CSV_DELIMITER);
-                    pw.append(tvi.getId()).append("\n");
+                int i = 0;
+                for(TVGenres gi : tvi.getGenres()){
+                    pw.append(gi.getName()).append("(").append(Integer.toString(gi.getId())).append(")"); i++;
+                    if(i!=tvi.numGenres())
+                        pw.append(CSV_AUXILIARY_DELIMITER);
                 }
+                pw.append(CSV_DELIMITER);
+
+                pw.append(tvi.getDescription()).append(CSV_DELIMITER);
+                pw.append(tvi.getPathImage()!=null ? tvi.getPathImage():"").append(CSV_DELIMITER);
+                pw.append(tvi.getId()).append("\n");
             }
+
             return tvCont;
         }
         public int csvExportTVSeries(File fileDest) throws IOException {
-            return csvExportTV(tvSeries, fileDest);
+            try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
+                pw.println("VERSION"+CSV_DELIMITER+"VIDEO TYPE");
+                pw.println(CURRENT_VERSION+CSV_DELIMITER+TVSERIE_TYPE);
+
+                return csvExportTV(tvSeries, pw);
+            }
         }
         public int csvExportAnimeSeries(File fileDest) throws IOException {
-            return csvExportTV(animeSeries, fileDest);
+            try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileDest)))){
+                pw.println("VERSION"+CSV_DELIMITER+"VIDEO TYPE");
+                pw.println(CURRENT_VERSION+CSV_DELIMITER+ANIME_TYPE);
+
+                return csvExportTV(animeSeries, pw);
+            }
         }
 
 
@@ -330,10 +347,17 @@ public class VideoKeeper {
          * It's the main Import method because it is the method effectively called to import videos whatever the version of fileSource,
          * checking the version first at the first line
          */
-        public void csvImportMovies(File fileSource) throws IOException {
+        public void csvImportMovies(File fileSource) throws NotMatchingVideoTypeException,IOException {
             try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
+                scanner.nextLine();
+                String[] versionAndType = scanner.nextLine().split(CSV_DELIMITER);
 
+                /* It's a reachable block when in import phase the user specifies a different video type against MOVIE_TYPE of file */
+                if(! versionAndType[1].equals(MOVIE_TYPE))
+                    throw new NotMatchingVideoTypeException("Video type expected: "+MOVIE_TYPE+
+                            "\nVideo type of file:  "+versionAndType[1]);
+
+                String version = versionAndType[0];
                 if(version.equals(CURRENT_VERSION))
                     csvImportMoviesCurrentVersion(scanner);
                 else if(version.equals("1.0"))
@@ -400,10 +424,16 @@ public class VideoKeeper {
             }
             persistenceHandler.saveTVSeries();
         }
-        public void csvImportTVSerie(File fileSource) throws IOException {
+        public void csvImportTVSerie(File fileSource) throws NotMatchingVideoTypeException,IOException {
             try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
+                scanner.nextLine();
+                String[] versionAndType = scanner.nextLine().split(CSV_DELIMITER);
 
+                if(! versionAndType[1].equals(TVSERIE_TYPE))
+                    throw new NotMatchingVideoTypeException("Video type expected: "+TVSERIE_TYPE+
+                            "\nVideo type of file: "+versionAndType[1]);
+
+                String version = versionAndType[0];
                 if(version.equals(CURRENT_VERSION))
                     csvImportTVSerieCurrentVersion(scanner);
                 else if(version.equals("1.0"))
@@ -430,9 +460,16 @@ public class VideoKeeper {
             }
             persistenceHandler.saveAnimeSeries();
         }
-        public void csvImportAnimeSerie(File fileSource) throws IOException {
+        public void csvImportAnimeSerie(File fileSource) throws NotMatchingVideoTypeException,IOException {
             try(Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileSource)))){
-                String version = scanner.nextLine().split(CSV_DELIMITER)[1];
+                scanner.nextLine();
+                String[] versionAndType = scanner.nextLine().split(CSV_DELIMITER);
+
+                if(! versionAndType[1].equals(ANIME_TYPE))
+                    throw new NotMatchingVideoTypeException("Video type expected: "+ANIME_TYPE+
+                            "\nVideo type of file: "+versionAndType[1]);
+
+                String version = versionAndType[0];
 
                 if(version.equals(CURRENT_VERSION))
                     csvImportAnimeSerieCurrentVersion(scanner);

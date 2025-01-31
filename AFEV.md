@@ -35,4 +35,4 @@ AFEV (Application Funtionalities Evolution based on Versions):
 
 
 ## 1.3
-- Adding statistics for rating
+- Adding statistics for rating,

@@ -31,7 +31,7 @@ public class ExportController implements Initializable {
     @FXML
     public RadioButton moviesBtn, tvBtn, animeBtn;
     @FXML
-    private ToggleGroup videosGroup;
+    public ToggleGroup videosGroup;
 
     @FXML
     public Button exportBtn;
@@ -79,54 +79,44 @@ public class ExportController implements Initializable {
 
         int videosNumber;
 
-        if(moviesBtn.isSelected()){
-            fileChooser.setInitialFileName("MyTvsKeeper"+ VideoKeeper.CURRENT_VERSION +"_Movies");
-            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+        try {
+            if (moviesBtn.isSelected()) {
+                fileChooser.setInitialFileName("MyTvsKeeper" + VideoKeeper.CURRENT_VERSION + "_Movies");
+                fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
-            if(fileOut == null)
-                return;
+                if (fileOut == null)
+                    return;
 
-            try{
                 videosNumber = vkCsvHandler.csvExportMovies(fileOut);
-            }catch (IOException ex) {
-                new AlertError("Error exporting Movies", "Error's details: "+ex.getMessage());
-                return;
-            }
 
-            numberLbl1.setText("• Number of Movies:");
-            numberLbl2.setText(" "+videosNumber);
-        }else if(tvBtn.isSelected()){
-            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CURRENT_VERSION+"_TVSeries");
-            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+                numberLbl1.setText("• Number of Movies:");
+                numberLbl2.setText(" " + videosNumber);
+            } else if (tvBtn.isSelected()) {
+                fileChooser.setInitialFileName("MyTvsKeeper" + VideoKeeper.CURRENT_VERSION + "_TVSeries");
+                fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
-            if(fileOut == null)
-                return;
+                if (fileOut == null)
+                    return;
 
-            try{
                 videosNumber = vkCsvHandler.csvExportTVSeries(fileOut);
-            }catch(IOException ex){
-                new AlertError("Error exporting TV Series", "Error's details: "+ex.getMessage());
-                return;
-            }
 
-            numberLbl1.setText("• Number of TV Series:");
-            numberLbl2.setText(" "+videosNumber);
-        }else{ /* animeBtn.isSelected */
-            fileChooser.setInitialFileName("MyTvsKeeper"+VideoKeeper.CURRENT_VERSION+"_AnimeSeries");
-            fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
+                numberLbl1.setText("• Number of TV Series:");
+                numberLbl2.setText(" " + videosNumber);
+            } else { /* animeBtn.isSelected */
+                fileChooser.setInitialFileName("MyTvsKeeper" + VideoKeeper.CURRENT_VERSION + "_AnimeSeries");
+                fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
 
-            if(fileOut == null)
-                return;
+                if (fileOut == null)
+                    return;
 
-            try{
                 videosNumber = vkCsvHandler.csvExportAnimeSeries(fileOut);
-            }catch(IOException ex) {
-                new AlertError("Error exporting Anime Series", "Error's details: "+ex.getMessage());
-                return;
-            }
 
-            numberLbl1.setText("• Number of Anime Series:");
-            numberLbl2.setText(" "+videosNumber);
+                numberLbl1.setText("• Number of Anime Series:");
+                numberLbl2.setText(" " + videosNumber);
+            }
+        } catch (IOException ex) {
+            new AlertError("Error exporting Videos", "Error's details: " + ex.getMessage());
+            return;
         }
 
         destLbl.setText(fileOut.getAbsolutePath());
