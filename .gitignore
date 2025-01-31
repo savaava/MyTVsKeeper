@@ -9,7 +9,6 @@ bin/
 mvnw
 mvnw.cmd
 jarToExe.txt
-VersionLog.txt
 
 # Da commentare quando l'applicazione è pronta:
 executables/
