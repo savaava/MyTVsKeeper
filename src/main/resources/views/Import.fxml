@@ -45,7 +45,7 @@
             </Button>
             <AnchorPane fx:id="anchorPane" maxWidth="500.0" onDragDropped="#onDragDropped" onDragExited="#onDragExited" onDragOver="#onDragOver" prefHeight="150.0">
                <children>
-                  <ImageView fx:id="imageDragAndDrop" fitHeight="117.0" fitWidth="131.0" layoutX="192.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imageDragAndDrop" fitHeight="117.0" fitWidth="131.0" layoutX="192.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/DragAndDrop.png" />
                      </image>

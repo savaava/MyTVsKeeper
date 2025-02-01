@@ -30,11 +30,11 @@ AFEV (Application Funtionalities Evolution based on Versions):
     - New attribute ```String pathImage``` in ```Video.java```
     - Export method update for this version
 
-## 1.2
+## 1.2 - Current Version
 - **Import methods** for each version up to this one, ensuring retrocompatibilty
     - ```ImportController.java```
     - ```Import.fxml```
+    - drag and drop funtionality 
 
-
-## 1.3
+## 1.3 - Coming soon
 - Adding statistics for rating,
