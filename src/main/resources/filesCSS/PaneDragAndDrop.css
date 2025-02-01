@@ -1,0 +1,6 @@
+.anchor-pane {
+    -fx-background-radius: 80;
+    -fx-border-radius: 80;
+    -fx-border-color: black;
+    -fx-background-color: red;
+}

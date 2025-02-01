@@ -20,8 +20,8 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onConfig" text="⚙ Configure application" />
                         <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
-                        <MenuItem mnemonicParsing="false" onAction="#onImport" text="📤📥 Import" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="📤📥🔚 Exit" />
+                        <MenuItem mnemonicParsing="false" onAction="#onImport" text="📤📤📤📤📥 Import" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="📤📤📥📤📤📤📥📤📥📤📤📥📤📥🔚 Exit" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="New">
@@ -53,7 +53,7 @@
             </MenuBar>
             <HBox alignment="BOTTOM_LEFT" prefHeight="13.0" prefWidth="1100.0">
                <children>
-                  <TextField fx:id="searchTfd" prefHeight="25.0" prefWidth="253.0" promptText="Search a video">
+                  <TextField fx:id="searchTfd" prefHeight="25.0" prefWidth="253.0" promptText="Search Movie title">
                      <HBox.margin>
                         <Insets left="40.0" right="160.0" />
                      </HBox.margin>

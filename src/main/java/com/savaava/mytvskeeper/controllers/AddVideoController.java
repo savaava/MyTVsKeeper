@@ -228,7 +228,9 @@ public class AddVideoController implements Initializable {
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("Movie already exists","The selected movie already exists in your movie list");
                 flagAlreadyExists = true;
-            }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected Movie - Error's details: "+ex.getMessage());}
+            }catch(Exception ex) {
+                new AlertError("Error saving data","Error saving The selected Movie - Error's details: "+ex.getMessage());
+            }
 
         }else if(videoIndex == 2){
             TVSerie tvToAdd;
@@ -243,7 +245,9 @@ public class AddVideoController implements Initializable {
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("TV Serie already exists","The selected TV Serie already exists in your TV Serie list");
                 flagAlreadyExists = true;
-            }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected TV Serie - Error's details: "+ex.getMessage());}
+            }catch(Exception ex) {
+                new AlertError("Error saving data","Error saving The selected TV Serie - Error's details: "+ex.getMessage());
+            }
 
         }else{
             TVSerie animeToAdd;
@@ -258,7 +262,9 @@ public class AddVideoController implements Initializable {
             catch(VideoAlreadyExistsException ex) {
                 new AlertWarning("Anime already exists","The selected Anime already exists in your Anime list");
                 flagAlreadyExists = true;
-            }catch(IOException ex) {new AlertError("Error saving data","Error saving The selected Anime - Error's details: "+ex.getMessage());}
+            }catch(Exception ex) {
+                new AlertError("Error saving data","Error saving The selected Anime - Error's details: "+ex.getMessage());
+            }
 
         }
 

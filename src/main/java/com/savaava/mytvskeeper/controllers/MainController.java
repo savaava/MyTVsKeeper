@@ -80,17 +80,6 @@ public class MainController implements Initializable {
     @FXML
     public Label videoNumLbl;
 
-    private final String[] promptTfdSearch = {
-            "Search Movie title",
-            "Search TV Serie title",
-            "Search Anime Serie title"
-    };
-    private final String[] textNumberVideoLbl = {
-            "Number of Movies: ",
-            "Number of TV Series: ",
-            "Number of Anime Series: "
-    };
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -111,8 +100,7 @@ public class MainController implements Initializable {
             }
 
             /* for the initialization when the user open the application, and he hasn't chosen a Tab yet  */
-            searchTfd.setPromptText(promptTfdSearch[0]);
-            videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
+            setNumMovieLbl();
 
             initMoviesTable();
             initTVsTable();
@@ -129,6 +117,7 @@ public class MainController implements Initializable {
             isInitialized = true;
         });
     }
+
     private void initMoviesTable() {
         /* this is unecessary because of the tableViewMovies.setItems(movieFilteredList) */
 //        tableViewMovies.setItems(vk.getMovies());
@@ -330,6 +319,16 @@ public class MainController implements Initializable {
         tableViewAnimes.setItems(sortedAnimesList);
     }
 
+    private void setNumMovieLbl() {
+        videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
+    }
+    private void setNumTVSerieLbl() {
+        videoNumLbl.setText("Number of TV Series: "+vk.tvsNumber());
+    }
+    private void setNumAnimeLbl() {
+        videoNumLbl.setText("Number of Anime Series: "+vk.animesNumber());
+    }
+
     /* To improve the cells' height, but it's obviously onerous */
     private void setHeightsCells() {
         tableViewMovies.setRowFactory(movie -> new TableRow<>() {
@@ -410,14 +409,14 @@ public class MainController implements Initializable {
             return;
 
         if(selectedTab == moviesTab){
-            searchTfd.setPromptText(promptTfdSearch[0]);
-            videoNumLbl.setText(textNumberVideoLbl[0]+vk.moviesNumber());
+            searchTfd.setPromptText("Search Movie title");
+            setNumMovieLbl();
         }else if(selectedTab == tvsTab){
-            searchTfd.setPromptText(promptTfdSearch[1]);
-            videoNumLbl.setText(textNumberVideoLbl[1]+vk.tvsNumber());
+            searchTfd.setPromptText("Search TV Serie title");
+            setNumTVSerieLbl();
         }else if(selectedTab == animesTab){
-            searchTfd.setPromptText(promptTfdSearch[2]);
-            videoNumLbl.setText(textNumberVideoLbl[2]+vk.animesNumber());
+            searchTfd.setPromptText("Search Anime Serie title");
+            setNumAnimeLbl();
         }else /* caso non previsto */
             System.err.println("Unexpected tab selected: "+selectedTab.getText());
 
@@ -431,7 +430,6 @@ public class MainController implements Initializable {
         addController.setVideoToAdd(videoIndex);
 
         Scene scene = new Scene(root, 950, 600);
-//        scene.getStylesheets().add("/FilesCSS/TableViewAdd.css");
         showPopup(scene, title);
 
         clearAllSelection();
@@ -541,7 +539,7 @@ public class MainController implements Initializable {
                 videoToDelete = tableViewMovies.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeMovie(videoToDelete.getId());
-                    videoNumLbl.setText(textNumberVideoLbl[0]+vk.moviesNumber());
+                    setNumMovieLbl();
                     clearAllSelection();
                 }
 
@@ -550,7 +548,7 @@ public class MainController implements Initializable {
                 videoToDelete = tableViewTvs.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeTVSerie(videoToDelete.getId());
-                    videoNumLbl.setText(textNumberVideoLbl[1]+vk.tvsNumber());
+                    setNumTVSerieLbl();
                     clearAllSelection();
                 }
 
@@ -559,7 +557,7 @@ public class MainController implements Initializable {
                 videoToDelete = tableViewAnimes.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeAnimeSerie(videoToDelete.getId());
-                    videoNumLbl.setText(textNumberVideoLbl[2]+vk.animesNumber());
+                    setNumAnimeLbl();
                     clearAllSelection();
                 }
 
@@ -590,7 +588,11 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Import.fxml"));
         Parent root = loader.load();
 
-        showPopup(root, "Import Videos", 550, 443);
+        Scene scene = new Scene(root, 550, 420);
+//        scene.getStylesheets().add("/filesCSS/PaneDragAndDrop.css");
+
+        showPopup(scene, "Import Videos");
+
     }
 
     @FXML

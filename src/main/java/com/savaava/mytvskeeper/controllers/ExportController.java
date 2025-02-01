@@ -36,7 +36,7 @@ public class ExportController implements Initializable {
     @FXML
     public Button exportBtn;
     @FXML
-    public Label numberLbl1, numberLbl2, destLbl, sizeLbl;
+    public Label numberLbl, destLbl, sizeLbl;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,9 +88,6 @@ public class ExportController implements Initializable {
                     return;
 
                 videosNumber = vkCsvHandler.csvExportMovies(fileOut);
-
-                numberLbl1.setText("• Number of Movies:");
-                numberLbl2.setText(" " + videosNumber);
             } else if (tvBtn.isSelected()) {
                 fileChooser.setInitialFileName("MyTvsKeeper" + VideoKeeper.CURRENT_VERSION + "_TVSeries");
                 fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
@@ -99,9 +96,6 @@ public class ExportController implements Initializable {
                     return;
 
                 videosNumber = vkCsvHandler.csvExportTVSeries(fileOut);
-
-                numberLbl1.setText("• Number of TV Series:");
-                numberLbl2.setText(" " + videosNumber);
             } else { /* animeBtn.isSelected */
                 fileChooser.setInitialFileName("MyTvsKeeper" + VideoKeeper.CURRENT_VERSION + "_AnimeSeries");
                 fileOut = fileChooser.showSaveDialog(exportBtn.getScene().getWindow());
@@ -110,11 +104,10 @@ public class ExportController implements Initializable {
                     return;
 
                 videosNumber = vkCsvHandler.csvExportAnimeSeries(fileOut);
-
-                numberLbl1.setText("• Number of Anime Series:");
-                numberLbl2.setText(" " + videosNumber);
             }
-        } catch (IOException ex) {
+
+            numberLbl.setText(Integer.toString(videosNumber));
+        } catch (Exception ex) {
             new AlertError("Error exporting Videos", "Error's details: " + ex.getMessage());
             return;
         }

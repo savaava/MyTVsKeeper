@@ -32,6 +32,8 @@ AFEV (Application Funtionalities Evolution based on Versions):
 
 ## 1.2
 - **Import methods** for each version up to this one, ensuring retrocompatibilty
+    - ```ImportController.java```
+    - ```Import.fxml```
 
 
 ## 1.3
