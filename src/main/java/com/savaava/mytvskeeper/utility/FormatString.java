@@ -13,18 +13,25 @@ public class FormatString {
         return out;
     }
 
+    /**
+     * Formats the title for TableView of addVideo and Main Scene
+     */
     public static String compactTitle(String title) {
         return compactString(title, 40);
     }
-
+    /**
+     * Formats the description for TableView of addVideo scene, not of Main one because the description is not there
+     */
     public static String compactDescription(String description) {
-        return compactString(description,90);
+        return compactString(description,80);
     }
 
+    /**
+     * Replaces ; to not have problems in csv reading
+     */
     public static String stringNormalize(String str) {
         return str.trim().replace("\n", " ").replaceAll("\\s+", " ").replaceAll(";",".");
     }
-
     public static String compactString(String str, int lengthMax) {
         if (str==null || str.isEmpty()) {
             return "";

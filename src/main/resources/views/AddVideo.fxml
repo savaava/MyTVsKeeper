@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.AddVideoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.AddVideoController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
          <children>
@@ -53,8 +53,9 @@
             <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="titleColumn" prefWidth="250.0" resizable="false" text="Title" />
+                  <TableColumn fx:id="previewColumn" prefWidth="300.0" resizable="false" text="Preview" />
                 <TableColumn fx:id="dateColumn" prefWidth="100.0" resizable="false" text="Release Date" />
-                  <TableColumn fx:id="descriptionColumn" prefWidth="545.0" resizable="false" text="Description" />
+                  <TableColumn fx:id="descriptionColumn" prefWidth="495.0" resizable="false" text="Description" />
               </columns>
                <VBox.margin>
                   <Insets />

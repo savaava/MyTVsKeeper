@@ -6,6 +6,7 @@ import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 
+import com.savaava.mytvskeeper.utility.Converter;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -31,6 +32,8 @@ import java.net.URL;
 
 import java.io.IOException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AddVideoController implements Initializable {
@@ -40,15 +43,21 @@ public class AddVideoController implements Initializable {
     private TMDatabase tmdb;
     private VideoKeeper vk;
 
+    /* will contain at most 20 images */
+    private Map<String,Image> imagesCache;
+
     @FXML
     public TextField tfd;
     @FXML
     public TableView<Video> table;
+
     @FXML
     public TableColumn<Video,String>
             titleColumn,
+            previewColumn,
             dateColumn,
             descriptionColumn;
+
     @FXML
     public Button searchBtn;
     @FXML
@@ -81,6 +90,7 @@ public class AddVideoController implements Initializable {
             }
 
             list = FXCollections.observableArrayList();
+            imagesCache = new HashMap<>();
 
             bindingBtn();
 
@@ -136,16 +146,6 @@ public class AddVideoController implements Initializable {
         });
     }
 
-    private void initTable() {
-        table.setItems(list);
-
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-
-        centerCells(titleColumn);
-        centerCells(dateColumn);
-    }
     private void centerCells(TableColumn<Video, String> column) {
         column.setCellFactory(cell -> new TableCell<>() {
             @Override
@@ -156,14 +156,78 @@ public class AddVideoController implements Initializable {
                     setText(null);
                 } else {
                     setText(item);
-                    setAlignment(Pos.CENTER); // Centra il testo
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
     }
 
+    /**
+     * Continuously updates the cells of the previewColumn column to display images of the videos found.
+     * Since the TableView continuously (for spatial efficiecy) updates the cells I use caching with a {@code imagesCache}
+     * to store the images to be inserted into the cells with updateItem, instead of continuously requesting the image to TMDB.
+     * <p>
+     * Furthermore, when the {@code imagesCache} doesn't have the current image I use a thread for each https request to not have bad
+     * performance at the initialization phase. Just like for {@code imagesCache} I can start a maximum of only 20 simultaneous threads.
+     * Without threads We had waited the sequential loading of all images -> HOL blocking 😎.
+     * <p>
+     * When the {@code imagesCache} has loaded all images it's not necessary any long to make
+     * https requests with threads, because I update the cells with the images contained in the {@code imagesCache}
+     */
+    private void initPreviewColumn() {
+        previewColumn.setCellFactory(cell -> new TableCell<>() {
+            private final ImageView imageToSet = new ImageView();
+
+            @Override
+            protected void updateItem(String pathImage, boolean empty) {
+                super.updateItem(pathImage, empty);
+
+                System.out.println(imagesCache.size());
+
+                if (pathImage == null || empty) {
+                    setGraphic(null);
+                }else{
+                    if(imagesCache.containsKey(pathImage)){
+                        imageToSet.setImage(imagesCache.get(pathImage));
+                    }else{
+                        new Thread(() ->{
+                            try {
+                                Image imageTmp = Converter.bytesToImage(
+                                        tmdb.getBackdrop(pathImage)
+                                );
+                                imageToSet.setImage(imageTmp);
+                                imagesCache.put(pathImage, imageTmp);
+                            }catch(Exception ex){System.err.println(ex.getMessage());}
+                        }).start();
+                    }
+
+                    imageToSet.setFitWidth(300);
+                    imageToSet.setFitHeight(300);
+                    imageToSet.setPreserveRatio(true);
+
+                    setGraphic(imageToSet);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
+    }
+    private void initTable() {
+        table.setItems(list);
+
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        previewColumn.setCellValueFactory(new PropertyValueFactory<>("pathImage")); /* I'll not insert the path, but the corresponding image */
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        centerCells(titleColumn);
+        initPreviewColumn();
+        centerCells(dateColumn);
+    }
+
     @FXML
     public void onSearch() {
+        imagesCache.clear();
+
         String nameVideo = tfd.getText();
         strBinding.setValue(nameVideo);
 
@@ -213,62 +277,53 @@ public class AddVideoController implements Initializable {
     @FXML
     public void onInsertClicked() {
         Video videoToAdd = table.getSelectionModel().getSelectedItem();
-        boolean flagAlreadyExists = false;
+
+        /* reaching this block means an error, because the user cannot insert the video if he hadn't selected it for the btn binding */
+        if(videoToAdd == null)
+            return;
+
+        boolean flagNotExists = false;
 
         if(videoIndex == 1){
-            Movie movieToAdd;
-
-            try{ movieToAdd = tmdb.getMovieById(videoToAdd.getId()); }
-            catch(IOException | InterruptedException ex){
+            try {
+                Movie movieToAdd = tmdb.getMovieById(videoToAdd.getId());
+                vk.addMovie(movieToAdd);
+                flagNotExists = true;
+            }catch(InterruptedException ex){
                 new AlertError("Error searching Movie in TMDB","Error's details: "+ex.getMessage());
-                return;
-            }
-
-            try{ vk.addMovie(movieToAdd); }
-            catch(VideoAlreadyExistsException ex) {
+            }catch(VideoAlreadyExistsException ex){
                 new AlertWarning("Movie already exists","The selected movie already exists in your movie list");
-                flagAlreadyExists = true;
-            }catch(Exception ex) {
-                new AlertError("Error saving data","Error saving The selected Movie - Error's details: "+ex.getMessage());
+            }catch(Exception ex){
+                new AlertError("Error adding Movie","Error's details: "+ex.getMessage());
             }
-
         }else if(videoIndex == 2){
-            TVSerie tvToAdd;
-
-            try{ tvToAdd = tmdb.getTVSerieById(videoToAdd.getId()); }
-            catch(IOException | InterruptedException ex){
+            try {
+                TVSerie tvToAdd = tmdb.getTVSerieById(videoToAdd.getId());
+                vk.addTVSerie(tvToAdd);
+                flagNotExists = true;
+            }catch(InterruptedException ex){
                 new AlertError("Error searching TV Serie in TMDB","Error's details: "+ex.getMessage());
-                return;
-            }
-
-            try{ vk.addTVSerie(tvToAdd); }
-            catch(VideoAlreadyExistsException ex) {
+            }catch(VideoAlreadyExistsException ex){
                 new AlertWarning("TV Serie already exists","The selected TV Serie already exists in your TV Serie list");
-                flagAlreadyExists = true;
-            }catch(Exception ex) {
-                new AlertError("Error saving data","Error saving The selected TV Serie - Error's details: "+ex.getMessage());
+            }catch(Exception ex){
+                new AlertError("Error adding TV Serie","Error's details: "+ex.getMessage());
             }
-
         }else{
-            TVSerie animeToAdd;
-
-            try{ animeToAdd = tmdb.getTVSerieById(videoToAdd.getId()); }
-            catch(IOException | InterruptedException ex){
+            try {
+                TVSerie animeToAdd = tmdb.getTVSerieById(videoToAdd.getId());
+                vk.addAnimeSerie(animeToAdd);
+                flagNotExists = true;
+            }catch(InterruptedException ex){
                 new AlertError("Error searching Anime in TMDB","Error's details: "+ex.getMessage());
-                return;
-            }
-
-            try{ vk.addAnimeSerie(animeToAdd); }
-            catch(VideoAlreadyExistsException ex) {
+            }catch(VideoAlreadyExistsException ex){
                 new AlertWarning("Anime already exists","The selected Anime already exists in your Anime list");
-                flagAlreadyExists = true;
-            }catch(Exception ex) {
-                new AlertError("Error saving data","Error saving The selected Anime - Error's details: "+ex.getMessage());
+            }catch(Exception ex){
+                new AlertError("Error adding Anime","Error's details: "+ex.getMessage());
             }
-
         }
 
-        if(!flagAlreadyExists)
+        /* Added the video: */
+        if(flagNotExists)
             onExit();
     }
 

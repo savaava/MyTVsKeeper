@@ -429,7 +429,7 @@ public class MainController implements Initializable {
         AddVideoController addController = loader.getController();
         addController.setVideoToAdd(videoIndex);
 
-        Scene scene = new Scene(root, 950, 600);
+        Scene scene = new Scene(root, 1200, 700);
         showPopup(scene, title);
 
         clearAllSelection();
@@ -437,14 +437,17 @@ public class MainController implements Initializable {
     @FXML
     public void onNewMovie() throws IOException {
         onNewVideo(1, "New Movie");
+        setNumMovieLbl();
     }
     @FXML
     public void onNewTv() throws IOException {
         onNewVideo(2, "New TV Serie");
+        setNumTVSerieLbl();
     }
     @FXML
     public void onNewAnime() throws IOException {
         onNewVideo(3, "New Anime Serie");
+        setNumAnimeLbl();
     }
 
     @FXML

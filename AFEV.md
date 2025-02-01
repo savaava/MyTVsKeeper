@@ -35,6 +35,12 @@ AFEV (Application Funtionalities Evolution based on Versions):
     - ```ImportController.java```
     - ```Import.fxml```
     - drag and drop funtionality 
+- Fixing bugs
+- Enhanced design quality 
 
 ## 1.3 - Coming soon
-- Adding statistics for rating,
+- Adding statistics 
+    - Scene fxml and controller
+    - rating (pie)
+    - started/terminated (pie)
+    - genres ()
