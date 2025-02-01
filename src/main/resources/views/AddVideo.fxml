@@ -28,7 +28,7 @@
                         <Image url="@../images/info.png" />
                      </image>
                      <HBox.margin>
-                        <Insets left="363.0" />
+                        <Insets left="613.0" />
                      </HBox.margin>
                      <cursor>
                         <Cursor fx:constant="HAND" />
