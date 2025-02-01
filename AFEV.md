@@ -37,6 +37,7 @@ AFEV (Application Funtionalities Evolution based on Versions):
     - drag and drop funtionality 
 - Fixing bugs
 - Enhanced design quality 
+- **initPreviewColumn** method to add image in each cell of preview column in addVideo scene 
 
 ## 1.3 - Coming soon
 - Adding statistics 
