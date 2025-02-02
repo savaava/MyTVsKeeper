@@ -67,7 +67,7 @@ public class TMDatabase {
     public Collection<Movie> getMoviesByName(String name) throws IOException, InterruptedException {
         Collection<Movie> out = new ArrayList<>();
 
-        String url = "https://api.themoviedb.org/3/search/movie?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-EN&page=1'&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/search/movie?query="+FormatString.nameForHTTP(name)+"&include_adult=false&language=en-EN&page=1'&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -101,7 +101,7 @@ public class TMDatabase {
     public Collection<TVSerie> getTVSeriesByName(String name) throws IOException, InterruptedException {
         Collection<TVSerie> out = new ArrayList<>();
 
-        String url = "https://api.themoviedb.org/3/search/tv?query="+FormatString.nameForHTTP(name)+"&include_adult=true&language=en-US&page=1'&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/search/tv?query="+FormatString.nameForHTTP(name)+"&include_adult=false&language=en-US&page=1'&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -134,8 +134,8 @@ public class TMDatabase {
     }
 
     public Movie getMovieById(String id) throws IOException, InterruptedException {
-        String url = "https://api.themoviedb.org/3/movie/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
-        String urlCredits = "https://api.themoviedb.org/3/movie/"+id+"/credits?language=en-US&include_adult=true&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/movie/"+id+"?language=en-US&include_adult=false&api_key="+apiKey;
+        String urlCredits = "https://api.themoviedb.org/3/movie/"+id+"/credits?language=en-US&include_adult=false&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -191,7 +191,7 @@ public class TMDatabase {
         return out;
     }
     public TVSerie getTVSerieById(String id) throws IOException, InterruptedException {
-        String url = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=true&api_key="+apiKey;
+        String url = "https://api.themoviedb.org/3/tv/"+id+"?language=en-US&include_adult=false&api_key="+apiKey;
 
         request = HttpRequest.newBuilder()
                 .GET()
@@ -221,10 +221,12 @@ public class TMDatabase {
         return out;
     }
 
-    public byte[] getBackdrop(String path) throws IOException, InterruptedException {
+    public static byte[] getBackdrop(String path) throws IOException, InterruptedException {
         String urlBackdrop = "https://image.tmdb.org/t/p/original"+path;
 
-        request = HttpRequest.newBuilder()
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(urlBackdrop))
                 .build();

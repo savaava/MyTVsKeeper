@@ -22,7 +22,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Separator>
-            <ImageView fx:id="videoImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="videoImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </VBox>
    </children>

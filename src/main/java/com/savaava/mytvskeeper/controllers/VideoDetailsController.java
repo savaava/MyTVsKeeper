@@ -22,10 +22,11 @@ import java.util.ResourceBundle;
 
 public class VideoDetailsController implements Initializable {
     private VideoKeeper vk;
-    private TMDatabase tmdb;
 
     private Video videoSelected;
     private int videoSelectedIndex;
+
+    private ImagesCache imagesCache;
 
     @FXML
     public Label nameLbl, overviewLbl, genresLbl, rateLbl;
@@ -50,13 +51,6 @@ public class VideoDetailsController implements Initializable {
                 onExit();
             }
 
-            try {
-                tmdb = TMDatabase.getInstance();
-            }catch(IOException ex) {
-                new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
-                onExit();
-            }
-
             initValues();
 
             checkBoxBinding();
@@ -71,7 +65,30 @@ public class VideoDetailsController implements Initializable {
         videoSelected = v;
     }
     public void setVideoSelectedIndex(int i){ videoSelectedIndex = i; }
+    public void setImagesCache(ImagesCache imagesCache){this.imagesCache = imagesCache;}
 
+    private void setImage() {
+        String pathImage = videoSelected.getPathImage();
+
+        if(pathImage != null) {
+            synchronized (imagesCache){
+                while(! imagesCache.containsImage(pathImage)){
+                    try {
+                        imagesCache.wait();
+                    }catch(InterruptedException ex) {System.err.println(ex.getMessage());}
+                }
+            }
+            videoImageView.setImage(imagesCache.getImageFromPath(pathImage));
+            videoImageView.setFitWidth(800);
+            videoImageView.setFitHeight(500);
+        }else{
+            videoImageView.setFitWidth(200);
+            videoImageView.setFitHeight(200);
+        }
+
+        /* initially is not visible to not show the default image before of the effectively one */
+        videoImageView.setVisible(true);
+    }
     private void initValues() {
         nameLbl.setText(FormatString.stringNormalize(videoSelected.getTitle()));
 
@@ -111,36 +128,9 @@ public class VideoDetailsController implements Initializable {
             rateLbl.setText("Rate the Anime");
         }
 
-        setImage();
-    }
-    private void setImage() {
-        String pathImage = videoSelected.getPathImage();
-
-        if(pathImage != null) {
-
-            Image videoImage = null;
-            try {
-                videoImage = Converter.bytesToImage(tmdb.getBackdrop(pathImage));
-            } catch (IOException | InterruptedException ex) {
-                /* Reaching this block means an exception captured from tmdb.getBackdrop and not in bytesToImage */
-                new AlertError("Error searching video's image", "Check the connection\nError's details: " + ex.getMessage());
-            }
-
-            if (videoImage != null) {
-                videoImageView.setImage(videoImage);
-                videoImageView.setFitWidth(800);
-                videoImageView.setFitHeight(500);
-            }else{
-                /* when Converter.bytesToImage returns null for IOException remains the default image of: No Image Found */
-                videoImageView.setFitWidth(200);
-                videoImageView.setFitHeight(200);
-            }
-        }else{
-            videoImageView.setFitWidth(200);
-            videoImageView.setFitHeight(200);
-        }
-        /* initially is not visible to not show the default image before of the effectively one */
-        videoImageView.setVisible(true);
+        Platform.runLater(() -> {
+            setImage();
+        });
     }
 
 
@@ -189,7 +179,7 @@ public class VideoDetailsController implements Initializable {
 
     @FXML
     public void onSave() {
-        if(videoSelected instanceof Movie && videoSelectedIndex == 1) {
+        if(videoSelected instanceof Movie) { /* videoIndex = 1 */
 
             Movie movieSelected = (Movie)videoSelected;
             Movie movieToAdd = new Movie(
@@ -213,7 +203,7 @@ public class VideoDetailsController implements Initializable {
                 new AlertError("Error saving changes","Error's details: "+ex.getMessage());
             }
 
-        }else if(videoSelected instanceof TVSerie) {
+        }else if(videoSelected instanceof TVSerie) { /* videoIndex = 2 | 3 */
 
             TVSerie tvSelected = (TVSerie)videoSelected;
             TVSerie tvToAdd = new TVSerie(

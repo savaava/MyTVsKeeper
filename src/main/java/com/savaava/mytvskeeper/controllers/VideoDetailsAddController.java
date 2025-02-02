@@ -1,8 +1,5 @@
 package com.savaava.mytvskeeper.controllers;
 
-import com.savaava.mytvskeeper.alerts.AlertError;
-import com.savaava.mytvskeeper.models.TMDatabase;
-import com.savaava.mytvskeeper.utility.Converter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,30 +8,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class VideoDetailsAddController implements Initializable {
     private String title;
-    private String pathImage;
-    private TMDatabase tmdb;
+    private Image videoImage;
 
     @FXML
     public Label titleLbl;
     @FXML
-    public ImageView videoImage;
+    public ImageView videoImageView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            try {
-                tmdb = TMDatabase.getInstance();
-            } catch (IOException ex) {
-                new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
-                onExit();
-            }
-
             initValues();
         });
     }
@@ -42,8 +30,8 @@ public class VideoDetailsAddController implements Initializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public void setPathImage(String pathImage) {
-        this.pathImage = pathImage;
+    public void setVideoImage(Image i) {
+        videoImage = i;
     }
 
     private void initValues() {
@@ -51,27 +39,14 @@ public class VideoDetailsAddController implements Initializable {
             titleLbl.setText(title);
         }
 
-        if(pathImage == null) {
+        if(videoImage == null) {
             /* Reaching this block means there's an error because this controller and
             his scene doesn't start if there is no image to show, thanks to the controls made in AddVideoController */
-            videoImage.setImage(new Image("/images/noImageFound.png"));
-            return;
-        }
-
-        Image image = null;
-        try {
-            image = Converter.bytesToImage(tmdb.getBackdrop(pathImage));
-        } catch (IOException | InterruptedException ex) {
-            /* Reaching this block means an exception captured from tmdb.getBackdrop and not in bytesToImage */
-            new AlertError("Error searching video's image", "Check the connection\nError's details: " + ex.getMessage());
-        }
-
-        if (image != null) {
-            videoImage.setImage(image);
-            videoImage.setFitWidth(800);
-            videoImage.setFitHeight(500);
+            videoImageView.setImage(new Image("/images/noImageFound.png"));
         }else{
-            videoImage.setImage(new Image("/images/noImageFound.png"));
+            videoImageView.setImage(videoImage);
+            videoImageView.setFitWidth(800);
+            videoImageView.setFitHeight(500);
         }
     }
 

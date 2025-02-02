@@ -2,12 +2,10 @@ package com.savaava.mytvskeeper.controllers;
 
 import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.main.StartApplication;
-import com.savaava.mytvskeeper.models.Video;
-import com.savaava.mytvskeeper.models.VideoKeeper;
+import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.alerts.AlertError;
-import com.savaava.mytvskeeper.models.Movie;
-import com.savaava.mytvskeeper.models.TVSerie;
 
+import com.savaava.mytvskeeper.utility.Converter;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -39,6 +37,8 @@ public class MainController implements Initializable {
     private VideoKeeper vk;
 
     private boolean isInitialized = false;
+
+    private final ImagesCache imagesCache = new ImagesCache();
 
     @FXML
     public TableView<Movie> tableViewMovies;
@@ -83,6 +83,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /* runLater method to be able to exit in cathes, otherwise (Stage)table.getScene() would be null because the stage is not initialized */
         Platform.runLater(() -> {
             File dir = new File("bin");
             if (!dir.exists() || !dir.isDirectory()) {
@@ -456,47 +457,66 @@ public class MainController implements Initializable {
         Parent root = loader.load();
         VideoDetailsController vdController = loader.getController();
 
+        vdController.setImagesCache(imagesCache);
+
         String title;
-        Video v;
+        Video videoSelected;
         int index;
         if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
-            v = tableViewMovies.getSelectionModel().getSelectedItem();
+            videoSelected = tableViewMovies.getSelectionModel().getSelectedItem();
             title = "Movie details";
             index = 1;
         }else if(tableViewTvs.getSelectionModel().getSelectedItem() != null){
-            v = tableViewTvs.getSelectionModel().getSelectedItem();
+            videoSelected = tableViewTvs.getSelectionModel().getSelectedItem();
             title = "TV Serie details";
             index = 2;
         }else if(tableViewAnimes.getSelectionModel().getSelectedItem() != null){
-            v = tableViewAnimes.getSelectionModel().getSelectedItem();
+            videoSelected = tableViewAnimes.getSelectionModel().getSelectedItem();
             title = "Anime details";
             index = 3;
         }else{
             /* Reaching this block means there's an error */
-            v = null;
+            videoSelected = null;
             title = "";
             index = 0;
         }
-
-        /* logging debugging  */
-        System.out.print(v);
-
-        vdController.setVideoSelected(v);
+        vdController.setVideoSelected(videoSelected);
         vdController.setVideoSelectedIndex(index);
+
+        if(index!=0 && videoSelected.getPathImage() != null){
+            if(imagesCache.containsImage(videoSelected.getPathImage())){
+                System.out.println("image already in cache -> "+imagesCache.getImageFromPath(videoSelected.getPathImage()));
+            }else{
+                new Thread(() -> {
+                    synchronized (imagesCache) {
+                        try{
+                            Image image = Converter.bytesToImage(
+                                    TMDatabase.getBackdrop(videoSelected.getPathImage())
+                            );
+                            System.out.println("image not in cache yet -> " + image);
+                            imagesCache.addImage(videoSelected.getPathImage(), image);
+                            imagesCache.notify();
+                        }catch(Exception ex){System.err.println(ex.getMessage());}
+                    }
+                }).start();
+            }
+        }
+
+        /* logging debugging */
+        //System.out.print(videoSelected);
 
         showPopup(root, title, 1000, 750);
 
-        //clearAllSelection();
         if(index == 1) {
             /* It's necessary to reinitialize the tables after changes because the TableView doesn't update itself */
             initMoviesTable();
-            tableViewMovies.getSelectionModel().select((Movie)v);
+            tableViewMovies.getSelectionModel().select((Movie)videoSelected);
         }else if(index == 2) {
             initTVsTable();
-            tableViewTvs.getSelectionModel().select((TVSerie)v);
+            tableViewTvs.getSelectionModel().select((TVSerie)videoSelected);
         }else if(index == 3) {
             initAnimesTable();
-            tableViewAnimes.getSelectionModel().select((TVSerie)v);
+            tableViewAnimes.getSelectionModel().select((TVSerie)videoSelected);
         }
     }
     private void initDoubleClick() {

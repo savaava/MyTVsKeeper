@@ -32,19 +32,20 @@ import java.net.URL;
 
 import java.io.IOException;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AddVideoController implements Initializable {
+    private VideoKeeper vk;
+    private TMDatabase tmdb;
+
+    private ObservableList<Video> list;
     private int videoIndex;
     private final StringProperty strBinding = new SimpleStringProperty("");
-    private ObservableList<Video> list;
-    private TMDatabase tmdb;
-    private VideoKeeper vk;
-
-    /* will contain at most 20 images */
-    private Map<String,Image> imagesCache;
+    /* will contain at most 20 images
+    * The implementation chosen is HashTable (Thread safe) to make the concurrently insertions in synchronized way */
+    private Map<String, Image> imagesCache;
 
     @FXML
     public TextField tfd;
@@ -66,8 +67,6 @@ public class AddVideoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /* runLater method to be able to exit in cathes, otherwise (Stage)table.getScene() would be null, and
-        * because the stage is not initialized */
         Platform.runLater(() -> {
             try {
                 vk = VideoKeeper.getInstance();
@@ -90,7 +89,7 @@ public class AddVideoController implements Initializable {
             }
 
             list = FXCollections.observableArrayList();
-            imagesCache = new HashMap<>();
+            imagesCache = new Hashtable<>();
 
             bindingBtn();
 
@@ -169,7 +168,7 @@ public class AddVideoController implements Initializable {
      * <p>
      * Furthermore, when the {@code imagesCache} doesn't have the current image I use a thread for each https request to not have bad
      * performance at the initialization phase. Just like for {@code imagesCache} I can start a maximum of only 20 simultaneous threads.
-     * Without threads We had waited the sequential loading of all images -> HOL blocking 😎.
+     * Without threads We had waited the sequential loading of all images → HOL blocking 😎.
      * <p>
      * When the {@code imagesCache} has loaded all images it's not necessary any long to make
      * https requests with threads, because I update the cells with the images contained in the {@code imagesCache}
@@ -182,7 +181,7 @@ public class AddVideoController implements Initializable {
             protected void updateItem(String pathImage, boolean empty) {
                 super.updateItem(pathImage, empty);
 
-                System.out.println(imagesCache.size());
+                //System.out.println(imagesCache.size());
 
                 if (pathImage == null || empty) {
                     setGraphic(null);
@@ -249,11 +248,23 @@ public class AddVideoController implements Initializable {
         VideoDetailsAddController vdController = loader.getController();
 
         Video v = table.getSelectionModel().getSelectedItem();
-        if(v == null) /* Reaching this block means there's an error */
-            return;
+        if(v == null)
+            return; /* Reaching this block means there's an error */
 
         vdController.setTitle(v.getTitle());
-        vdController.setPathImage(v.getPathImage());
+        if(v.getPathImage() != null) {
+            if(imagesCache.containsKey(v.getPathImage())) {
+                vdController.setVideoImage(imagesCache.get(v.getPathImage()));
+            }else{
+                /* It's strange to reach this block, because all the images should be in cache
+                * However there's a very low probability a thread has not inserted the image in cache yet */
+                try{
+                    Image image = Converter.bytesToImage(tmdb.getBackdrop(v.getPathImage()));
+                    imagesCache.put(v.getPathImage(), image);
+                    vdController.setVideoImage(image);
+                }catch(InterruptedException ex){System.err.println(ex.getMessage());}
+            }
+        }
 
         String sceneTitle;
         if(videoIndex == 1){
