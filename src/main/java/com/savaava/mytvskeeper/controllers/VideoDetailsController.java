@@ -61,11 +61,9 @@ public class VideoDetailsController implements Initializable {
         });
     }
 
-    public void setVideoSelected(Video v) {
-        videoSelected = v;
-    }
+    public void setVideoSelected(Video v) { videoSelected = v; }
     public void setVideoSelectedIndex(int i){ videoSelectedIndex = i; }
-    public void setImagesCache(ImagesCache imagesCache){this.imagesCache = imagesCache;}
+    public void setImagesCache(ImagesCache imagesCache){ this.imagesCache = imagesCache; }
 
     private void setImage() {
         String pathImage = videoSelected.getPathImage();
