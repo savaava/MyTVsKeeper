@@ -151,7 +151,7 @@ public class VideoKeeper {
          * @param fileDest the destination file
          * @throws Exception if an I/O error occurs
          */
-        private <T extends Video> void saveVideos(ObservableList<T> listToWrite, File fileDest) throws Exception {
+        private void saveVideos(ObservableList<? extends Video> listToWrite, File fileDest) throws Exception {
             try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileDest)))){
                 oos.writeObject(new ArrayList<>(listToWrite));
             }

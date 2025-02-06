@@ -21,6 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -112,6 +113,7 @@ public class MainController implements Initializable {
             bindingBtn();
 
             initDoubleClick();
+            initKeysPressed();
 
             /* Flag to track the end of initialize */
             isInitialized = true;
@@ -496,34 +498,26 @@ public class MainController implements Initializable {
             tableViewAnimes.getSelectionModel().select((TVSerie)videoSelected);
         }
     }
+    private void setDoubleClickHandler(TableView<? extends Video> tableView) {
+        tableView.setOnMousePressed((MouseEvent e) -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                try{
+                    onDetailsClicked();
+                }catch(IOException ex){ new AlertError("Error showing details","Error's details: "+ex.getMessage()); }
+            }
+        });
+    }
     private void initDoubleClick() {
-        tableViewMovies.setOnMousePressed((MouseEvent e) -> {
-            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+        setDoubleClickHandler(tableViewMovies);
+        setDoubleClickHandler(tableViewTvs);
+        setDoubleClickHandler(tableViewAnimes);
+    }
+    private void initKeysPressed() {
+        tableViewMovies.setOnKeyPressed(keyEvent -> {
+            if(keyEvent.getCode() == KeyCode.ENTER) {
                 try {
                     onDetailsClicked();
-                } catch (IOException ex) {
-                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
-                }
-            }
-        });
-
-        tableViewTvs.setOnMousePressed((MouseEvent e) -> {
-            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
-                try {
-                    onDetailsClicked();
-                } catch (IOException ex) {
-                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
-                }
-            }
-        });
-
-        tableViewAnimes.setOnMousePressed((MouseEvent e) -> {
-            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
-                try {
-                    onDetailsClicked();
-                } catch (IOException ex) {
-                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
-                }
+                }catch(IOException ex){ new AlertError("Error showing details", "Error's details: " + ex.getMessage()); }
             }
         });
     }
@@ -615,6 +609,10 @@ public class MainController implements Initializable {
 
     @FXML
     public void onExit() {
+        AlertConfirmation exitConfirmation = new AlertConfirmation("Sure to exit from the application ?");
+        if(! exitConfirmation.getResultConfirmation())
+            return;
+
         Stage stage = (Stage)tableViewMovies.getScene().getWindow();
         stage.close();
     }

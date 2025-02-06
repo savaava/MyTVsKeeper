@@ -127,10 +127,9 @@ public class VideoDetailsController implements Initializable {
             rateLbl.setText("Rate the Anime");
         }
 
-//        Platform.runLater(() -> {
-//            setImage();
-//        });
-        setImage();
+        Platform.runLater(() -> {
+            setImage();
+        });
     }
 
 
