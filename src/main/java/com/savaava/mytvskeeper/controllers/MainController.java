@@ -457,8 +457,6 @@ public class MainController implements Initializable {
         Parent root = loader.load();
         VideoDetailsController vdController = loader.getController();
 
-        vdController.setImagesCache(imagesCache);
-
         String title;
         Video videoSelected;
         int index;
@@ -483,24 +481,7 @@ public class MainController implements Initializable {
         vdController.setVideoSelected(videoSelected);
         vdController.setVideoSelectedIndex(index);
 
-        if(index!=0 && videoSelected.getPathImage() != null){
-            if(imagesCache.containsImage(videoSelected.getPathImage())){
-                System.out.println("image already in cache -> "+imagesCache.getImageFromPath(videoSelected.getPathImage()));
-            }else{
-                new Thread(() -> {
-                    synchronized (imagesCache) {
-                        try{
-                            Image image = Converter.bytesToImage(
-                                    TMDatabase.getBackdrop(videoSelected.getPathImage())
-                            );
-                            System.out.println("image not in cache yet -> " + image);
-                            imagesCache.addImage(videoSelected.getPathImage(), image);
-                            imagesCache.notify();
-                        }catch(Exception ex){System.err.println(ex.getMessage());}
-                    }
-                }).start();
-            }
-        }
+        vdController.setImagesCache(imagesCache);
 
         /* logging debugging */
         //System.out.print(videoSelected);

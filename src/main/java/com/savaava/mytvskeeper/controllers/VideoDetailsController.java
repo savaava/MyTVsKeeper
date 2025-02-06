@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class VideoDetailsController implements Initializable {
@@ -68,18 +67,21 @@ public class VideoDetailsController implements Initializable {
     private void setImage() {
         String pathImage = videoSelected.getPathImage();
 
-        if(pathImage != null) {
-            synchronized (imagesCache){
-                while(! imagesCache.containsImage(pathImage)){
-                    try {
-                        imagesCache.wait();
-                    }catch(InterruptedException ex) {System.err.println(ex.getMessage());}
-                }
+        if(pathImage!=null) { /* Video has an image to search */
+            if(imagesCache.containsImage(pathImage)) { /* The image has already been saved in cache */
+                System.out.println("image already in cache -> "+imagesCache.getImageFromPath(pathImage));
+                videoImageView.setImage(imagesCache.getImageFromPath(pathImage));
+            }else{ /* The image has not been saved in cache yet */
+                try {
+                    Image videoImage = Converter.bytesToImage(TMDatabase.getBackdrop(pathImage));
+                    videoImageView.setImage(videoImage);
+                    System.out.println("image not in cache yet -> "+videoImage);
+                    imagesCache.addImage(pathImage,videoImage);
+                }catch(Exception ex){ new AlertError("Error getting video image from database","Error's details: "+ex.getMessage()); return; }
             }
-            videoImageView.setImage(imagesCache.getImageFromPath(pathImage));
             videoImageView.setFitWidth(800);
             videoImageView.setFitHeight(500);
-        }else{
+        }else{ /* Video has no image to search */
             videoImageView.setFitWidth(200);
             videoImageView.setFitHeight(200);
         }
@@ -126,9 +128,10 @@ public class VideoDetailsController implements Initializable {
             rateLbl.setText("Rate the Anime");
         }
 
-        Platform.runLater(() -> {
-            setImage();
-        });
+//        Platform.runLater(() -> {
+//            setImage();
+//        });
+        setImage();
     }
 
 
