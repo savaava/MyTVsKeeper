@@ -5,7 +5,6 @@ import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.alerts.AlertError;
 
-import com.savaava.mytvskeeper.utility.Converter;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -482,9 +481,6 @@ public class MainController implements Initializable {
         vdController.setVideoSelectedIndex(index);
 
         vdController.setImagesCache(imagesCache);
-
-        /* logging debugging */
-        //System.out.print(videoSelected);
 
         showPopup(root, title, 1000, 750);
 
