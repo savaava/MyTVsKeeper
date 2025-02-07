@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleEscPressed" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.MainController">
    <children>
       <VBox prefHeight="900.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -21,7 +21,13 @@
                     <MenuItem mnemonicParsing="false" onAction="#onConfig" text="⚙ Configure application" />
                         <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
                         <MenuItem mnemonicParsing="false" onAction="#onImport" text="📥 Import" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="🔚 Exit" />
+                        <MenuItem mnemonicParsing="false" onAction="#onExit" text="🚪 Exit" />
+                      <!--
+                      Nel caso dovesse buggarsi di nuovo ci sono le icone conservate
+                      <MenuItem mnemonicParsing="false" onAction="#onExport" text="📤 Export " />
+                      <MenuItem mnemonicParsing="false" onAction="#onImport" text="📥 Import" />
+                      <MenuItem mnemonicParsing="false" onAction="#onExit" text="🚪 Exit" />
+                      -->
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="New">
@@ -91,7 +97,7 @@
             </HBox>
          </children>
       </VBox>
-      <TabPane fx:id="videosTabPane" layoutX="57.0" layoutY="116.0" prefHeight="200.0" prefWidth="604.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
+      <TabPane fx:id="videosTabPane" layoutX="57.0" layoutY="116.0" onKeyPressed="#handleEnterPressed" prefHeight="200.0" prefWidth="604.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
          <tabs>
             <Tab fx:id="moviesTab" onSelectionChanged="#onTabViewSelection" text="Movies">
                <content>

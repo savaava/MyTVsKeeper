@@ -22,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -113,7 +114,7 @@ public class MainController implements Initializable {
             bindingBtn();
 
             initDoubleClick();
-            initKeysPressed();
+//            initKeysPressed();
 
             /* Flag to track the end of initialize */
             isInitialized = true;
@@ -452,6 +453,24 @@ public class MainController implements Initializable {
         setNumAnimeLbl();
     }
 
+    private boolean isVideoSelected() {
+        return tableViewMovies.getSelectionModel().getSelectedItem() != null ||
+               tableViewTvs.getSelectionModel().getSelectedItem() != null ||
+               tableViewAnimes.getSelectionModel().getSelectedItem() != null;
+    }
+
+    @FXML
+    public void handleEnterPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ENTER) {
+            if(! isVideoSelected())
+                return;
+
+            try {
+                onDetailsClicked();
+            }catch(IOException ex){ new AlertError("Error showing details", "Error's details: " + ex.getMessage()); }
+        }
+    }
+
     @FXML
     public void onDetailsClicked() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/VideoDetails.fxml"));
@@ -461,6 +480,7 @@ public class MainController implements Initializable {
         String title;
         Video videoSelected;
         int index;
+
         if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
             videoSelected = tableViewMovies.getSelectionModel().getSelectedItem();
             title = "Movie details";
@@ -469,15 +489,10 @@ public class MainController implements Initializable {
             videoSelected = tableViewTvs.getSelectionModel().getSelectedItem();
             title = "TV Serie details";
             index = 2;
-        }else if(tableViewAnimes.getSelectionModel().getSelectedItem() != null){
+        }else{ /* tableViewAnimes.getSelectionModel().getSelectedItem() != null */
             videoSelected = tableViewAnimes.getSelectionModel().getSelectedItem();
             title = "Anime details";
             index = 3;
-        }else{
-            /* Reaching this block means there's an error */
-            videoSelected = null;
-            title = "";
-            index = 0;
         }
         vdController.setVideoSelected(videoSelected);
         vdController.setVideoSelectedIndex(index);
@@ -511,15 +526,6 @@ public class MainController implements Initializable {
         setDoubleClickHandler(tableViewMovies);
         setDoubleClickHandler(tableViewTvs);
         setDoubleClickHandler(tableViewAnimes);
-    }
-    private void initKeysPressed() {
-        tableViewMovies.setOnKeyPressed(keyEvent -> {
-            if(keyEvent.getCode() == KeyCode.ENTER) {
-                try {
-                    onDetailsClicked();
-                }catch(IOException ex){ new AlertError("Error showing details", "Error's details: " + ex.getMessage()); }
-            }
-        });
     }
 
     @FXML
@@ -605,6 +611,12 @@ public class MainController implements Initializable {
     @FXML
     public void onAbout() {
 
+    }
+
+    @FXML
+    public void handleEscPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ESCAPE)
+            onExit();
     }
 
     @FXML

@@ -24,6 +24,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -336,6 +338,12 @@ public class AddVideoController implements Initializable {
         /* Added the video: */
         if(flagNotExists)
             onExit();
+    }
+
+    @FXML
+    public void handleEnterPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ENTER && !searchBtn.isDisable())
+            onSearch();
     }
 
     private void onExit() {

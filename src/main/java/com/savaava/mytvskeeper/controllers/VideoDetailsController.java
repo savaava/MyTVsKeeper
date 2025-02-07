@@ -1,5 +1,6 @@
 package com.savaava.mytvskeeper.controllers;
 
+import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.utility.Converter;
@@ -13,6 +14,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -234,6 +237,17 @@ public class VideoDetailsController implements Initializable {
         }
 
         onExit();
+    }
+
+    @FXML
+    public void handleEscPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ESCAPE){
+            if(! saveBtn.isDisable()){
+                if(! new AlertConfirmation("Sure to exit from the Video Details ?","There are changes will not be saved").getResultConfirmation())
+                    return;
+            }
+            onExit();
+        }
     }
 
     public void onExit() {
