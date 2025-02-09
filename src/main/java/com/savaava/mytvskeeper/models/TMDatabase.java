@@ -80,7 +80,7 @@ public class TMDatabase {
             JSONObject currMovie = jsonMovies.getJSONObject(i);
             JSONArray genresVett = currMovie.getJSONArray("genre_ids");
 
-            Object backdropPath = currMovie.get("backdrop_path");
+            Object backdropPath = currMovie.get("poster_path");
             if(!(backdropPath instanceof String))
                 backdropPath = null;
 
@@ -114,7 +114,7 @@ public class TMDatabase {
             JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
             JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
 
-            Object backdropPath = currTVSerie.get("backdrop_path");
+            Object backdropPath = currTVSerie.get("poster_path");
             if(!(backdropPath instanceof String))
                 backdropPath = null;
 
@@ -159,20 +159,7 @@ public class TMDatabase {
                 director = crewMateVett.getString("name");
         }
 
-        int min = jsonMovie.getInt("runtime");
-        String duration;
-        if(min != 0) {
-            int h = 0;
-            while (min >= 60) {
-                h++;
-                min -= 60;
-            }
-            duration = h==0 ? min+"min" : h+"h "+min+"min";
-        }else {
-            duration = "";
-        }
-
-        Object backdropPath = jsonMovie.get("backdrop_path");
+        Object backdropPath = jsonMovie.get("poster_path");
         if(!(backdropPath instanceof String))
             backdropPath = null;
 
@@ -182,7 +169,7 @@ public class TMDatabase {
                 jsonMovie.getString("release_date"),
                 Integer.toString(jsonMovie.getInt("id")),
                 (String)backdropPath,
-                duration,
+                jsonMovie.getInt("runtime"),
                 director);
         for(int i=0; i<genresVett.length(); i++){
             out.addGenre(genresVett.getJSONObject(i).getInt("id"));
@@ -201,7 +188,7 @@ public class TMDatabase {
         JSONObject jsonTVSerie = new JSONObject(response.body());
         JSONArray genresVett = jsonTVSerie.getJSONArray("genres");
 
-        Object backdropPath = jsonTVSerie.get("backdrop_path");
+        Object backdropPath = jsonTVSerie.get("poster_path");
         if(!(backdropPath instanceof String))
             backdropPath = null;
 

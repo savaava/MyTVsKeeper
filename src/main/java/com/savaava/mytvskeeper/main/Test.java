@@ -39,13 +39,13 @@ public class Test {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
-//        tmdb.getTVSeriesByName("breaking bad").forEach(tvi ->{
-//            try{
-//                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
-//            } catch (Exception ex) {
-//                System.err.println(ex.getMessage());
-//            }
-//        });
+        tmdb.getTVSeriesByName("gli anelli del potere").forEach(tvi ->{
+            try{
+                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+            }
+        });
 //        tmdb.getTVSeriesByName("castlevania").forEach(tvi -> {
 //            try{
 //                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
@@ -54,52 +54,10 @@ public class Test {
 //            }
 //        });
 
-        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_Movies.csv"));
-        vkCsv.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_TVSeries.csv"));
-        vkCsv.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_AnimeSeries.csv"));
+//        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_Movies.csv"));
+//        vkCsv.csvImportTVSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_TVSeries.csv"));
+//        vkCsv.csvImportAnimeSerie(new File("C:/Users/andre/Desktop/tmp/MyTvsKeeper1.0_AnimeSeries.csv"));
 
         System.out.println(vk);
-    }
-
-
-    private static Movie getRandomMovie(){
-        String title = "Movie "+(n.nextInt(1000) + 1);
-        String description = "Description for "+title;
-        String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
-        boolean started = n.nextBoolean();
-        boolean terminated = n.nextBoolean();
-        String rating = n.nextInt(10) + 1+"";
-        String id = Integer.toString(n.nextInt(100000)+1);
-        String duration = (n.nextInt(120)+60)+" min";
-        String director = "Director "+(n.nextInt(100)+1);
-
-        Movie movie = new Movie(title, description, releaseDate, started, terminated, rating, id, null, duration, director);
-
-        int numberOfGenres = n.nextInt(4)+1;
-        for (int i = 0; i < numberOfGenres; i++) {
-            movie.addGenre(vMovie[n.nextInt(vMovie.length)]);
-        }
-
-        return movie;
-    }
-    private static TVSerie getRandomTVSerie(){
-        String title = "TVSerie "+(n.nextInt(1000) + 1);
-        String description = "Description for "+title;
-        String releaseDate = n.nextInt(30)+1990+"-"+n.nextInt(12)+1+"-"+n.nextInt(28)+1;
-        boolean started = n.nextBoolean();
-        boolean terminated = n.nextBoolean();
-        String rating = n.nextInt(10) + 1+"";
-        String id = Integer.toString(n.nextInt(100000)+1);
-        int numSeasons = n.nextInt(10)+1;
-        int numEpisodes = n.nextInt(10)*numSeasons;
-
-        TVSerie tv = new TVSerie(title, description, releaseDate, started, terminated, rating, id, null, numSeasons, numEpisodes);
-
-        int numberOfGenres = n.nextInt(4)+1;
-        for (int i = 0; i < numberOfGenres; i++) {
-            tv.addGenre(vTVSerie[n.nextInt(vTVSerie.length)]);
-        }
-
-        return tv;
     }
 }

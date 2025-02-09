@@ -40,6 +40,7 @@ AFEV (Application Funtionalities Evolution based on Versions):
 - **initPreviewColumn** method to add image in each cell of preview column in addVideo scene 
     - Enhanced the performance of this functionality 
 - Caching of video images for Main
+- Controlled the keys pressing (ENTER or ESC) by the user
 
 ## 1.3 - Coming soon
 - Adding statistics 
