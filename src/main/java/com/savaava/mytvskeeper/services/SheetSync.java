@@ -1,4 +1,6 @@
-package com.savaava.mytvskeeper.models;
+package com.savaava.mytvskeeper.services;
+
+import com.savaava.mytvskeeper.models.Movie;
 
 import java.util.Collection;
 
@@ -14,9 +16,7 @@ public interface SheetSync {
 
     /**
      * Method invoked at the application starting
-     * @param c is the movies collection of application
-     * @return a collection empty if gs has all the movies of collection input {@code c}, otherwise returns a collection with
-     * movies added in gs.
+     * @return the collection of all the movies saved in gs until now
      */
-    Collection<Movie> checkSynchronization(Collection<Movie> c);
+    Collection<Movie> checkSynchronization();
 }

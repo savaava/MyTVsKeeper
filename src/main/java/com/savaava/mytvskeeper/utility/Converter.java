@@ -1,5 +1,6 @@
 package com.savaava.mytvskeeper.utility;
 
+import com.savaava.mytvskeeper.services.TMDatabase;
 import javafx.scene.image.Image;
 
 import java.io.ByteArrayInputStream;
@@ -11,7 +12,7 @@ public class Converter {
      * @param bytesImage are the bytes of an image, for example once taken from TMDB
      * @return the Image corresponding the bytes as the JavaFx Object: Image, useful for ImageView,
      * null if the method captures an IOException converting bytes to Image
-     * @see com.savaava.mytvskeeper.models.TMDatabase getBackdrop
+     * @see TMDatabase getBackdrop
      */
     public static Image bytesToImage(byte[] bytesImage) {
         if (bytesImage == null || bytesImage.length == 0) {

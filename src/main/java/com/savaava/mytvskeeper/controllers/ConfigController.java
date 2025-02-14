@@ -3,7 +3,7 @@ package com.savaava.mytvskeeper.controllers;
 import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertInfo;
-import com.savaava.mytvskeeper.models.TMDatabase;
+import com.savaava.mytvskeeper.services.TMDatabase;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,11 +1,8 @@
 package com.savaava.mytvskeeper.main;
 
-import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
-import com.savaava.mytvskeeper.utility.Converter;
+import com.savaava.mytvskeeper.services.TMDatabase;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class Test {

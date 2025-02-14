@@ -6,6 +6,7 @@ import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 
+import com.savaava.mytvskeeper.services.TMDatabase;
 import com.savaava.mytvskeeper.utility.Converter;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;

@@ -1,5 +1,7 @@
-package com.savaava.mytvskeeper.models;
+package com.savaava.mytvskeeper.services;
 
+import com.savaava.mytvskeeper.models.Movie;
+import com.savaava.mytvskeeper.models.TVSerie;
 import com.savaava.mytvskeeper.utility.FormatString;
 
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Objects;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
