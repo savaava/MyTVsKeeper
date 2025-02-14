@@ -65,7 +65,7 @@ public class AddVideoController implements Initializable {
     @FXML
     public Button searchBtn;
     @FXML
-    public ImageView detailsImageBtn, insertImageBtn;
+    public ImageView insertImageBtn;
 
 
     @Override
@@ -110,21 +110,6 @@ public class AddVideoController implements Initializable {
         BooleanBinding searchDisableCond = tfd.textProperty().isEmpty().or(tfd.textProperty().isEqualTo(strBinding));
         searchBtn.disableProperty().bind(searchDisableCond);
 
-        /* when the scene starts */
-        detailsImageBtn.setDisable(true);
-        detailsImageBtn.setOpacity(0.3);
-        /* Binding to make detailsImageBtn disabled and opaque when there's no item selected from the list
-           and when the video selected has no image to show in details */
-        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue == null || newValue.getPathImage() == null){
-                detailsImageBtn.setDisable(true);
-                detailsImageBtn.setOpacity(0.3);
-            }else{
-                detailsImageBtn.setDisable(false);
-                detailsImageBtn.setOpacity(1);
-            }
-        });
-
         BooleanBinding  insertDisableCond = table.getSelectionModel().selectedItemProperty().isNull();
         insertImageBtn.disableProperty().bind(insertDisableCond);
         insertImageBtn.opacityProperty().bind(
@@ -139,11 +124,7 @@ public class AddVideoController implements Initializable {
     public void initDoubleClick()  {
         table.setOnMousePressed((MouseEvent e) -> {
             if (e.isPrimaryButtonDown() && e.getClickCount() == 2 && table.getSelectionModel().getSelectedItem().getPathImage() != null) {
-                try {
-                    onDetailsClicked();
-                } catch (IOException ex) {
-                    new AlertError("Error showing details","Error's details: "+ex.getMessage());
-                }
+                onInsertClicked();
             }
         });
     }
@@ -242,50 +223,6 @@ public class AddVideoController implements Initializable {
         }catch(IOException | InterruptedException ex){
             new AlertError("Error searching video in TMDB","Error's details: "+ex.getMessage());
         }
-    }
-
-    @FXML
-    public void onDetailsClicked() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/VideoDetailsAdd.fxml"));
-        Parent root = loader.load();
-        VideoDetailsAddController vdController = loader.getController();
-
-        Video v = table.getSelectionModel().getSelectedItem();
-        if(v == null)
-            return; /* Reaching this block means there's an error */
-
-        vdController.setTitle(v.getTitle());
-        if(v.getPathImage() != null) {
-            if(imagesCache.containsKey(v.getPathImage())) {
-                vdController.setVideoImage(imagesCache.get(v.getPathImage()));
-            }else{
-                /* It's strange to reach this block, because all the images should be in cache
-                * However there's a very low probability a thread has not inserted the image in cache yet */
-                try{
-                    Image image = Converter.bytesToImage(tmdb.getBackdrop(v.getPathImage()));
-                    imagesCache.put(v.getPathImage(), image);
-                    vdController.setVideoImage(image);
-                }catch(InterruptedException ex){System.err.println(ex.getMessage());}
-            }
-        }
-
-        String sceneTitle;
-        if(videoIndex == 1){
-            sceneTitle = "Movie details";
-        } else if (videoIndex == 2) {
-            sceneTitle = "TV Serie details";
-        } else {
-            sceneTitle = "Anime Serie details";
-        }
-
-        Scene scene = new Scene(root, 850, 530);
-        Stage popup = new Stage();
-        popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle(sceneTitle);
-        popup.getIcons().add(new Image(StartApplication.APPLICATION_ICON_PATH));
-        popup.setResizable(false);
-        popup.setScene(scene);
-        popup.showAndWait();
     }
 
     @FXML

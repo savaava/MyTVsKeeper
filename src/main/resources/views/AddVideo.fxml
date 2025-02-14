@@ -23,17 +23,6 @@
                      </cursor>
                   </TextField>
                   <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#onSearch" text="🔍" textAlignment="CENTER" />
-                  <ImageView fx:id="detailsImageBtn" fitHeight="39.0" fitWidth="46.0" onMouseClicked="#onDetailsClicked" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/info.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="613.0" />
-                     </HBox.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
                   <ImageView fx:id="insertImageBtn" fitHeight="60.0" fitWidth="39.0" onMouseClicked="#onInsertClicked" pickOnBounds="true" preserveRatio="true">
                      <cursor>
                         <Cursor fx:constant="HAND" />
@@ -42,7 +31,7 @@
                         <Image url="@../images/insert.png" />
                      </image>
                      <HBox.margin>
-                        <Insets left="22.0" />
+                        <Insets left="684.0" />
                      </HBox.margin>
                   </ImageView>
                </children>
@@ -53,7 +42,7 @@
             <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="titleColumn" prefWidth="250.0" resizable="false" text="Title" />
-                  <TableColumn fx:id="previewColumn" prefWidth="300.0" resizable="false" text="Preview" />
+                  <TableColumn fx:id="previewColumn" prefWidth="210.0" resizable="false" text="Preview" />
                 <TableColumn fx:id="dateColumn" prefWidth="100.0" resizable="false" text="Release Date" />
                   <TableColumn fx:id="descriptionColumn" prefWidth="495.0" resizable="false" text="Description" />
               </columns>
