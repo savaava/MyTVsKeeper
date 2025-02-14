@@ -17,7 +17,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         VideoKeeper vk = VideoKeeper.getInstance();
         VideoKeeper.CsvHandler vkCsv = vk.new CsvHandler();
-        TMDatabase tmdb = TMDatabase.getInstance();
+        TMDatabase tmdb = new TMDatabase();
 
 //        vk.addMovie(tmdb.getMovieById("496243"));
 //        vk.addMovie(tmdb.getMovieById("19995"));
@@ -29,21 +29,21 @@ public class Test {
 //        vk.addAnimeSerie(tmdb.getTVSerieById("71024"));
 //        vk.addAnimeSerie(tmdb.getTVSerieById("30991"));
 
-//        tmdb.getMoviesByName("toy story").forEach(mi -> {
+//        tmdb.getMoviesByName("Star wars").forEach(mi -> {
 //            try {
 //                vk.addMovie(tmdb.getMovieById(mi.getId()));
 //            } catch (Exception ex) {
 //                System.err.println(ex.getMessage());
 //            }
 //        });
-        tmdb.getTVSeriesByName("gli anelli del potere").forEach(tvi ->{
-            try{
-                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
-            } catch (Exception ex) {
-                System.err.println(ex.getMessage());
-            }
-        });
-//        tmdb.getTVSeriesByName("castlevania").forEach(tvi -> {
+//        tmdb.getTVSeriesByName("outer banks").forEach(tvi ->{
+//            try{
+//                vk.addTVSerie(tmdb.getTVSerieById(tvi.getId()));
+//            } catch (Exception ex) {
+//                System.err.println(ex.getMessage());
+//            }
+//        });
+//        tmdb.getTVSeriesByName("demon slayer").forEach(tvi -> {
 //            try{
 //                vk.addAnimeSerie(tmdb.getTVSerieById(tvi.getId()));
 //            } catch (Exception ex) {

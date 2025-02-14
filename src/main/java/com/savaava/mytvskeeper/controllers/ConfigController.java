@@ -39,12 +39,7 @@ public class ConfigController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            try {
-                tmdb = TMDatabase.getInstance();
-            }catch(IOException ex) {
-                new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
-                onExit();
-            }
+            tmdb = new TMDatabase();
 
             try {
                 if(tmdb.hasConfiguration()) {
@@ -64,8 +59,6 @@ public class ConfigController implements Initializable {
         });
 
         btnBindings();
-
-
     }
 
     private void btnBindings() {

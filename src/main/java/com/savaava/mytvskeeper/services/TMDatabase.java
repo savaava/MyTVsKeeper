@@ -4,16 +4,9 @@ import com.savaava.mytvskeeper.models.Movie;
 import com.savaava.mytvskeeper.models.TVSerie;
 import com.savaava.mytvskeeper.utility.FormatString;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.FileReader;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -26,7 +19,6 @@ import org.json.JSONArray;
 public class TMDatabase {
     private static final String CONFIG_PATH = "./bin/Config";
 
-    private static TMDatabase instance;
     private final File fileConfig = new File(CONFIG_PATH);
     private String apiKey;
 
@@ -34,17 +26,11 @@ public class TMDatabase {
     private HttpRequest request;
     private HttpResponse<String> response;
 
-    private TMDatabase() throws IOException {
+    public TMDatabase() {
         if(hasConfiguration())
             loadConfig();
 
         client = HttpClient.newHttpClient();
-    }
-
-    public static TMDatabase getInstance() throws IOException {
-        if(instance == null)
-            instance = new TMDatabase();
-        return instance;
     }
 
     public String getApiKey(){return apiKey;}
@@ -224,16 +210,14 @@ public class TMDatabase {
     }
 
     public void saveConfig() throws IOException {
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileConfig)))) {
-            pw.println("YOUR API KEY");
-            pw.print(apiKey);
+        try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileConfig)))){
+            oos.writeObject(apiKey);
         }
     }
-    public void loadConfig() throws IOException {
-        try(BufferedReader br = new BufferedReader(new FileReader(fileConfig))) {
-            br.readLine();
-            apiKey = br.readLine();
-        }
+    public void loadConfig() {
+        try(ObjectInputStream dis = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileConfig)))){
+            setApiKey((String)dis.readObject());
+        } catch (Exception ex) {System.err.println(ex.getMessage());}
     }
     public void deleteConfig() {
         apiKey = "";

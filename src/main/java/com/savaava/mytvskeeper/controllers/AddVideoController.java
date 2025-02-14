@@ -3,7 +3,6 @@ package com.savaava.mytvskeeper.controllers;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertWarning;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
-import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 
 import com.savaava.mytvskeeper.services.TMDatabase;
@@ -16,11 +15,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -28,7 +24,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -78,13 +73,7 @@ public class AddVideoController implements Initializable {
                 onExit();
             }
 
-            try {
-                tmdb = TMDatabase.getInstance();
-            } catch (IOException ex) {
-                new AlertError("Error reading config file", "Error's details: " + ex.getMessage());
-                onExit();
-            }
-
+            tmdb = new TMDatabase();
             if(! tmdb.hasConfiguration()) {
                 new AlertWarning("Config file doesn't Exists !",
                         "Please configure the application clicking: \nFile -> Configure application");
