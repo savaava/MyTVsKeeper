@@ -432,8 +432,7 @@ public class MainController implements Initializable {
         AddVideoController addController = loader.getController();
         addController.setVideoToAdd(videoIndex);
 
-        Scene scene = new Scene(root, 1200, 700);
-        showPopup(scene, title);
+        showPopup(root, title);
 
         clearAllSelection();
     }
@@ -499,7 +498,7 @@ public class MainController implements Initializable {
 
         vdController.setImagesCache(imagesCache);
 
-        showPopup(root, title, 1000, 750);
+        showPopup(root, title);
 
         if(index == 1) {
             /* It's necessary to reinitialize the tables after changes because the TableView doesn't update itself */
@@ -572,7 +571,7 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Config.fxml"));
         Parent root = loader.load();
 
-        showPopup(root, "Configuration", 500, 300);
+        showPopup(root, "Configuration");
     }
 
     @FXML
@@ -580,7 +579,7 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Export.fxml"));
         Parent root = loader.load();
 
-        showPopup(root, "Export Videos", 480, 205);
+        showPopup(root, "Export Videos");
     }
 
     @FXML
@@ -588,10 +587,9 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Import.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 550, 420);
 //        scene.getStylesheets().add("/filesCSS/PaneDragAndDrop.css");
 
-        showPopup(scene, "Import Videos");
+        showPopup(root, "Import Videos");
 
     }
 
@@ -639,8 +637,8 @@ public class MainController implements Initializable {
         popup.setScene(scene);
         popup.showAndWait();
     }
-    private void showPopup(Parent root, String title, int w, int h) {
-        Scene scene = new Scene(root, w, h);
+    private void showPopup(Parent root, String title) {
+        Scene scene = new Scene(root);
         showPopup(scene, title);
     }
 }

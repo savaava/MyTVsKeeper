@@ -24,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -83,6 +84,8 @@ public class AddVideoController implements Initializable {
             list = FXCollections.observableArrayList();
             imagesCache = new Hashtable<>();
 
+            resizeScene();
+
             bindingBtn();
 
             initTable();
@@ -93,6 +96,16 @@ public class AddVideoController implements Initializable {
 
     public void setVideoToAdd(int videoIndex){
         this.videoIndex = videoIndex;
+    }
+
+    private void resizeScene() {
+        double h = Screen.getPrimary().getBounds().getHeight();
+        double w = Screen.getPrimary().getBounds().getWidth();
+
+        Stage stage = (Stage)table.getScene().getWindow();
+
+        stage.setHeight(0.8 * h);
+        stage.setWidth(0.6 * w);
     }
 
     private void bindingBtn() {

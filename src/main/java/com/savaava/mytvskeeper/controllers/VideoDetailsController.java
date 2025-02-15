@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -54,6 +55,8 @@ public class VideoDetailsController implements Initializable {
             }
 
             initValues();
+
+            resizeScene();
 
             checkBoxBinding();
 
@@ -136,6 +139,15 @@ public class VideoDetailsController implements Initializable {
         });
     }
 
+    private void resizeScene() {
+        double h = Screen.getPrimary().getBounds().getHeight();
+        double w = Screen.getPrimary().getBounds().getWidth();
+
+        Stage stage = (Stage)saveBtn.getScene().getWindow();
+
+        stage.setHeight(0.77 * h);
+        stage.setWidth(0.52 * w);
+    }
 
     private void checkBoxBinding() {
         BooleanBinding notStartedCond = Bindings.not(startedCheck.selectedProperty());
