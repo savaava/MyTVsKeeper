@@ -1,8 +1,11 @@
 # MyTVsKeeper
 MyTVsKeeper is a java application to keep your favorite movies and series.
 
-## Installation guide
-Launcher 
+## Starting application
+To start the application it's only necessary to press on `MyTVsKeeper.exe`.
+
+## Source code
+The source code of this java application is contained in the repository at: [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
 
 ## Documentation
 The doc of this project is available executing doxygen.exe on terminal, in the main directory 
