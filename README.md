@@ -1,18 +1,29 @@
 # MyTVsKeeper
 MyTVsKeeper is a java application to keep your favorite movies and series.
 
-## Starting application
-To start the application it's only necessary to press on `MyTVsKeeper.exe`.
+## Installation Guide ⚙️
+1. Go to the [Releases page](https://github.com/savaava/MyTVsKeeper/releases).
+2. Select the desired version (e.g. [Release Version 1.2](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.2)).
+3. Download the `MyTVsKeeper.zip` file from the "Assets" section (exclude the other files).
+4. Extract the contents of the ZIP file to any folder of your choice.
+5. To launch the application, double-click `MyTVsKeeper.exe`.
+
+## Running the Application 🚀
+- After extracting the application, run the `MyTVsKeeper.exe` file to start the app.
 
 ## Source code
-The source code of this java application is contained in the repository at: [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
+The source code for this Java application is available in the repository: [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
 
-## Documentation
-The doc of this project is available executing doxygen.exe on terminal, in the main directory 
+## Software Used 🛠️
+This application was developed using the following tools:
+- **IDE**: [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+- **JDK**: Java 21.0.3
+- **JavaFX SDK**: 21.0.3
+- **Postman**: [Postman](https://www.postman.com/)
+- **API**: [TheMovieDB](https://developer.themoviedb.org/reference/intro/getting-started)
+- **Documentation**:
+  - [Java 8 Documentation](https://docs.oracle.com/javase/8/docs/api/)
+  - [JavaFX 8 Documentation](https://docs.oracle.com/javase/8/javafx/api/)
 
-## Software used
-To realize this application I used Intellij with:
-- jdk 21.0.3
-- javafx sdk 21.0.3
-- javafx jmods 21.0.3
-
+## Contributing 🤝
+Feel free to suggest new features to add to the application, all suggestions are welcome.
