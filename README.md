@@ -17,13 +17,14 @@ The source code for this Java application is available in the repository: [savaa
 ## Software Used 🛠️
 This application was developed using the following tools:
 - **IDE**: [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-- **JDK**: Java 21.0.3
-- **JavaFX SDK**: 21.0.3
+- **JDK**: Java 21.0.3 ☕
+- **JavaFX SDK**: 21.0.3 ☕
 - **Postman**: [Postman](https://www.postman.com/)
 - **API**: [TheMovieDB](https://developer.themoviedb.org/reference/intro/getting-started)
 - **Documentation**:
   - [Java 8 Documentation](https://docs.oracle.com/javase/8/docs/api/)
   - [JavaFX 8 Documentation](https://docs.oracle.com/javase/8/javafx/api/)
+- **Exe Generator**: [Launch4j](https://launch4j.sourceforge.net/)
 
 ## Contributing 🤝
 Feel free to suggest new features to add to the application, all suggestions are welcome.
