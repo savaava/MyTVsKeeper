@@ -14,7 +14,7 @@
          <children>
             <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
-                  <TextField fx:id="tfd" prefWidth="350.0">
+                  <TextField fx:id="tfd" prefWidth="350.0" promptText="Search a video">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -23,6 +23,11 @@
                      </cursor>
                   </TextField>
                   <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#onSearch" text="🔍" textAlignment="CENTER" />
+                  <ComboBox fx:id="videoComboBox" onAction="#onVideoTypeClicked" promptText="Choose video">
+                     <HBox.margin>
+                        <Insets left="100.0" />
+                     </HBox.margin>
+                  </ComboBox>
                   <ImageView fx:id="insertImageBtn" fitHeight="60.0" fitWidth="39.0" onMouseClicked="#onInsertClicked" pickOnBounds="true" preserveRatio="true">
                      <cursor>
                         <Cursor fx:constant="HAND" />
@@ -31,7 +36,7 @@
                         <Image url="@../images/insert.png" />
                      </image>
                      <HBox.margin>
-                        <Insets left="570.0" />
+                        <Insets left="200.0" />
                      </HBox.margin>
                   </ImageView>
                </children>

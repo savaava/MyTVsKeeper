@@ -35,6 +35,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static java.lang.System.*;
+
 public class AddVideoController implements Initializable {
     private VideoKeeper vk;
     private TMDatabase tmdb;
@@ -45,6 +47,8 @@ public class AddVideoController implements Initializable {
     /* will contain at most 20 images
     * The implementation chosen is HashTable (Thread safe) to make the concurrently insertions in synchronized way */
     private Map<String, Image> imagesCache;
+
+    private String lastVideoType;
 
     @FXML
     public TextField tfd;
@@ -60,6 +64,8 @@ public class AddVideoController implements Initializable {
 
     @FXML
     public Button searchBtn;
+    @FXML
+    public ComboBox<String> videoComboBox;
     @FXML
     public ImageView insertImageBtn;
 
@@ -86,6 +92,8 @@ public class AddVideoController implements Initializable {
 
             resizeScene();
 
+            initComboBox();
+
             bindingBtn();
 
             initTable();
@@ -106,6 +114,16 @@ public class AddVideoController implements Initializable {
 
         stage.setHeight(0.8 * h);
         stage.setWidth(0.6 * w);
+    }
+
+    private void initComboBox() {
+        videoComboBox.getItems().setAll(
+                "Movie",
+                "TV Series",
+                "Anime Series"
+        );
+
+        videoComboBox.getSelectionModel().select(videoIndex);
     }
 
     private void bindingBtn() {
@@ -182,7 +200,8 @@ public class AddVideoController implements Initializable {
                                 );
                                 imageToSet.setImage(imageTmp);
                                 imagesCache.put(pathImage, imageTmp);
-                            }catch(Exception ex){System.err.println(ex.getMessage());}
+                            }catch(Exception ex){
+                                err.println(ex.getMessage());}
                         }).start();
                     }
 
@@ -217,7 +236,7 @@ public class AddVideoController implements Initializable {
         strBinding.setValue(nameVideo);
 
         try{
-            if(videoIndex == 1)
+            if(videoIndex == 0)
                 list.setAll(tmdb.getMoviesByName(nameVideo));
             else
                 list.setAll(tmdb.getTVSeriesByName(nameVideo));
@@ -237,7 +256,7 @@ public class AddVideoController implements Initializable {
 
         boolean flagNotExists = false;
 
-        if(videoIndex == 1){
+        if(videoIndex == 0){
             try {
                 Movie movieToAdd = tmdb.getMovieById(videoToAdd.getId());
                 vk.addMovie(movieToAdd);
@@ -249,7 +268,7 @@ public class AddVideoController implements Initializable {
             }catch(Exception ex){
                 new AlertError("Error adding Movie","Error's details: "+ex.getMessage());
             }
-        }else if(videoIndex == 2){
+        }else if(videoIndex == 1){
             try {
                 TVSerie tvToAdd = tmdb.getTVSerieById(videoToAdd.getId());
                 vk.addTVSerie(tvToAdd);
@@ -278,6 +297,27 @@ public class AddVideoController implements Initializable {
         /* Added the video: */
         if(flagNotExists)
             onExit();
+    }
+
+    @FXML
+    public void onVideoTypeClicked() {
+        int videoChosen = videoComboBox.getSelectionModel().getSelectedIndex();
+
+        if(videoIndex == videoChosen)
+            return;
+        videoIndex = videoChosen;
+
+        list.clear();
+        strBinding.setValue("");
+
+        Stage stage = (Stage)table.getScene().getWindow();
+        if(videoChosen == 0){
+            stage.setTitle("New Movie");
+        }else if(videoChosen == 1){
+            stage.setTitle("New TV Series");
+        }else{ /* videoChosen == 2 */
+            stage.setTitle("New Anime Series");
+        }
     }
 
     @FXML

@@ -49,6 +49,15 @@ public enum MovieGenres {
         return MovieGenres.getById(id);
     }
 
+    public static MovieGenres getGenre(String genreName) {
+        for (MovieGenres genre : values()) {
+            if (genre.getName().equalsIgnoreCase(genreName)) {
+                return genre;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString(){
         return "("+name+"-"+id+")";

@@ -287,24 +287,28 @@ public class MainController implements Initializable {
             if(newValue == null)
                 return;
 
-            String videoToSearch = newValue.toLowerCase();
+            String strSearched = newValue.toLowerCase();
 
             moviesFilteredList.setPredicate(movie -> {/* here I set a filter=predicate */
                 if(newValue.isBlank())
                     return true;
-                return movie.getTitle().toLowerCase().contains(videoToSearch);
+                return movie.getTitle().toLowerCase().contains(strSearched) ||
+                        movie.getDirector().toLowerCase().contains(strSearched) || /* if user search by director */
+                        movie.getReleaseDate().contains(strSearched); /* if user search by release date */
             });
 
             tvsFilteredList.setPredicate(tv -> {
                 if(newValue.isBlank())
                     return true;
-                return tv.getTitle().toLowerCase().contains(videoToSearch);
+                return tv.getTitle().toLowerCase().contains(strSearched) ||
+                        tv.getReleaseDate().contains(strSearched);
             });
 
             animesFilteredList.setPredicate(anime -> {
                 if(newValue.isBlank())
                     return true;
-                return anime.getTitle().toLowerCase().contains(videoToSearch);
+                return anime.getTitle().toLowerCase().contains(strSearched) ||
+                        anime.getReleaseDate().contains(strSearched);
             });
         });
 
@@ -438,17 +442,17 @@ public class MainController implements Initializable {
     }
     @FXML
     public void onNewMovie() throws IOException {
-        onNewVideo(1, "New Movie");
+        onNewVideo(0, "New Movie");
         setNumMovieLbl();
     }
     @FXML
     public void onNewTv() throws IOException {
-        onNewVideo(2, "New TV Serie");
+        onNewVideo(1, "New TV Series");
         setNumTVSerieLbl();
     }
     @FXML
     public void onNewAnime() throws IOException {
-        onNewVideo(3, "New Anime Serie");
+        onNewVideo(2, "New Anime Series");
         setNumAnimeLbl();
     }
 
@@ -493,6 +497,7 @@ public class MainController implements Initializable {
             title = "Anime details";
             index = 3;
         }
+        System.out.println(videoSelected);
         vdController.setVideoSelected(videoSelected);
         vdController.setVideoSelectedIndex(index);
 
