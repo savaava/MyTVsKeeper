@@ -73,14 +73,6 @@
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </Separator>
-                        <Label text="Image">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
                         <VBox alignment="TOP_CENTER">
                            <children>
                               <ImageView fx:id="videoImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">

@@ -114,7 +114,6 @@ public class MainController implements Initializable {
             bindingBtn();
 
             initDoubleClick();
-//            initKeysPressed();
 
             /* Flag to track the end of initialize */
             isInitialized = true;
@@ -434,11 +433,24 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AddVideo.fxml"));
         Parent root = loader.load();
         AddVideoController addController = loader.getController();
-        addController.setVideoToAdd(videoIndex);
+        addController.setVideoIndex(videoIndex);
 
         showPopup(root, title);
 
         clearAllSelection();
+
+        Video videoAdded = addController.getVideoAdded();
+        if(videoAdded == null)
+            return;
+
+        if(addController.getVideoIndex() == 0){
+            tableViewMovies.getSelectionModel().select((Movie)videoAdded);
+        }else if(addController.getVideoIndex() == 1){
+            tableViewTvs.getSelectionModel().select((TVSerie)videoAdded);
+        }else{
+            tableViewAnimes.getSelectionModel().select((TVSerie)videoAdded);
+        }
+        onDetailsClicked();
     }
     @FXML
     public void onNewMovie() throws IOException {
@@ -456,26 +468,31 @@ public class MainController implements Initializable {
         setNumAnimeLbl();
     }
 
-    private boolean isVideoSelected() {
-        return tableViewMovies.getSelectionModel().getSelectedItem() != null ||
-               tableViewTvs.getSelectionModel().getSelectedItem() != null ||
-               tableViewAnimes.getSelectionModel().getSelectedItem() != null;
+    private boolean noVideoSelected() {
+        return tableViewMovies.getSelectionModel().getSelectedItem() == null &&
+                tableViewTvs.getSelectionModel().getSelectedItem() == null &&
+                tableViewAnimes.getSelectionModel().getSelectedItem() == null;
     }
 
     @FXML
-    public void handleEnterPressed(KeyEvent keyEvent) {
+    public void handleKeyPressed(KeyEvent keyEvent) {
+        if(noVideoSelected())
+            return;
+        
         if(keyEvent.getCode() == KeyCode.ENTER) {
-            if(! isVideoSelected())
-                return;
-
             try {
                 onDetailsClicked();
             }catch(IOException ex){ new AlertError("Error showing details", "Error's details: " + ex.getMessage()); }
+        }else if(keyEvent.getCode() == KeyCode.DELETE){
+            onDeleteClicked();
         }
     }
 
     @FXML
     public void onDetailsClicked() throws IOException {
+        if(noVideoSelected())
+            return;
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/VideoDetails.fxml"));
         Parent root = loader.load();
         VideoDetailsController vdController = loader.getController();
@@ -534,6 +551,9 @@ public class MainController implements Initializable {
 
     @FXML
     public void onDeleteClicked() {
+        if(noVideoSelected())
+            return;
+        
         Video videoToDelete;
 
         String header = "Are you sure to delete ";

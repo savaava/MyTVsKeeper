@@ -48,7 +48,7 @@ public class AddVideoController implements Initializable {
     * The implementation chosen is HashTable (Thread safe) to make the concurrently insertions in synchronized way */
     private Map<String, Image> imagesCache;
 
-    private String lastVideoType;
+    private Video videoAdded;
 
     @FXML
     public TextField tfd;
@@ -102,8 +102,13 @@ public class AddVideoController implements Initializable {
         });
     }
 
-    public void setVideoToAdd(int videoIndex){
+    public void setVideoIndex(int videoIndex){
         this.videoIndex = videoIndex;
+    }
+    public int getVideoIndex() {return videoIndex;}
+
+    public Video getVideoAdded() {
+        return videoAdded;
     }
 
     private void resizeScene() {
@@ -240,7 +245,6 @@ public class AddVideoController implements Initializable {
                 list.setAll(tmdb.getMoviesByName(nameVideo));
             else
                 list.setAll(tmdb.getTVSeriesByName(nameVideo));
-            /* It's not possible to have videoIndex != 1,2,3 */
         }catch(IOException | InterruptedException ex){
             new AlertError("Error searching video in TMDB","Error's details: "+ex.getMessage());
         }
@@ -260,6 +264,7 @@ public class AddVideoController implements Initializable {
             try {
                 Movie movieToAdd = tmdb.getMovieById(videoToAdd.getId());
                 vk.addMovie(movieToAdd);
+                videoAdded = movieToAdd;
                 flagNotExists = true;
             }catch(InterruptedException ex){
                 new AlertError("Error searching Movie in TMDB","Error's details: "+ex.getMessage());
@@ -272,6 +277,7 @@ public class AddVideoController implements Initializable {
             try {
                 TVSerie tvToAdd = tmdb.getTVSerieById(videoToAdd.getId());
                 vk.addTVSerie(tvToAdd);
+                videoAdded = tvToAdd;
                 flagNotExists = true;
             }catch(InterruptedException ex){
                 new AlertError("Error searching TV Serie in TMDB","Error's details: "+ex.getMessage());
@@ -284,6 +290,7 @@ public class AddVideoController implements Initializable {
             try {
                 TVSerie animeToAdd = tmdb.getTVSerieById(videoToAdd.getId());
                 vk.addAnimeSerie(animeToAdd);
+                videoAdded = animeToAdd;
                 flagNotExists = true;
             }catch(InterruptedException ex){
                 new AlertError("Error searching Anime in TMDB","Error's details: "+ex.getMessage());
