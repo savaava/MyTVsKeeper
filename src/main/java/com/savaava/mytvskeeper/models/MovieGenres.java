@@ -40,22 +40,26 @@ public enum MovieGenres {
         }
         return null;
     }
-
     public static boolean hasGenre(int id){
         return MovieGenres.getById(id) != null;
     }
-
     public static MovieGenres getGenre(int id) {
         return MovieGenres.getById(id);
     }
 
-    public static MovieGenres getGenre(String genreName) {
+    private static MovieGenres getByName(String name) {
         for (MovieGenres genre : values()) {
-            if (genre.getName().equalsIgnoreCase(genreName)) {
+            if (genre.getName().equalsIgnoreCase(name)) {
                 return genre;
             }
         }
         return null;
+    }
+    public static boolean hasGenre(String name){
+        return MovieGenres.getByName(name) != null;
+    }
+    public static MovieGenres getGenre(String name) {
+        return getByName(name);
     }
 
     @Override
