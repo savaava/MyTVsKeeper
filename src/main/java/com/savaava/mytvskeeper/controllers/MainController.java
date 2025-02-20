@@ -529,7 +529,7 @@ public class MainController implements Initializable {
         }else if(index == 2) {
             initTVsTable();
             tableViewTvs.getSelectionModel().select((TVSerie)videoSelected);
-        }else if(index == 3) {
+        }else {
             initAnimesTable();
             tableViewAnimes.getSelectionModel().select((TVSerie)videoSelected);
         }
