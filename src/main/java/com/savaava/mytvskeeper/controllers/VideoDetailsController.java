@@ -31,15 +31,17 @@ public class VideoDetailsController implements Initializable {
 
     private ImagesCache imagesCache;
 
+    private String star = "🌟";
+
     @FXML
-    public Label nameLbl, overviewLbl, genresLbl, rateLbl;
+    public Label nameLbl, overviewLbl, genresLbl, rateLbl, ratingValueLbl;
 
     @FXML
     public CheckBox startedCheck, terminatedCheck;
     @FXML
     public ChoiceBox<String> choiceBoxRating;
     @FXML
-    public Button saveBtn;
+    public Button saveBtn, decreaseRatingBtn, increaseRatingBtn;
 
     @FXML
     public ImageView videoImageView;
@@ -56,13 +58,16 @@ public class VideoDetailsController implements Initializable {
 
             initValues();
 
+            choiceBoxRating.setOnAction(e -> ratingValueLbl.setText(choiceBoxRating.getValue()));
+
+            confirmBinding();
+            checkBoxBinding();
+            decreaseBinding();
+            increaseBinding();
+
             resizeScene();
 
             checkBoxBinding();
-
-            initChoiceBoxRating();
-
-            confirmBinding();
         });
     }
 
@@ -75,13 +80,13 @@ public class VideoDetailsController implements Initializable {
 
         if(pathImage!=null) { /* Video has an image to search */
             if(imagesCache.containsImage(pathImage)) { /* The image has already been saved in cache */
-                System.out.println("image already in cache -> "+imagesCache.getImageFromPath(pathImage));
+//                System.out.println("image already in cache -> "+imagesCache.getImageFromPath(pathImage));
                 videoImageView.setImage(imagesCache.getImageFromPath(pathImage));
             }else{ /* The image has not been saved in cache yet */
                 try {
                     Image videoImage = Converter.bytesToImage(TMDatabase.getBackdrop(pathImage));
                     videoImageView.setImage(videoImage);
-                    System.out.println("image not in cache yet -> "+videoImage);
+//                    System.out.println("image not in cache yet -> "+videoImage);
                     imagesCache.addImage(pathImage,videoImage);
                 }catch(Exception ex){ new AlertError("Error getting video image from database","Error's details: "+ex.getMessage()); return; }
             }
@@ -107,6 +112,8 @@ public class VideoDetailsController implements Initializable {
         terminatedCheck.setSelected(videoSelected.isTerminated());
 
         choiceBoxRating.setValue(videoSelected.getRating());
+
+        ratingValueLbl.setText(videoSelected.getRating());
 
         StringBuilder genres = new StringBuilder();
         if(videoSelected instanceof Movie) {
@@ -134,34 +141,27 @@ public class VideoDetailsController implements Initializable {
             rateLbl.setText("Rate the Anime");
         }
 
-        Platform.runLater(() -> {
-            setImage();
-        });
-    }
+        initChoiceBoxRating();
 
-    private void resizeScene() {
-        double h = Screen.getPrimary().getBounds().getHeight();
-        double w = Screen.getPrimary().getBounds().getWidth();
-
-        Stage stage = (Stage)saveBtn.getScene().getWindow();
-
-        stage.setHeight(0.77 * h);
-        stage.setWidth(0.52 * w);
+        Platform.runLater(this::setImage);
     }
 
     private void checkBoxBinding() {
         BooleanBinding notStartedCond = Bindings.not(startedCheck.selectedProperty());
 
         terminatedCheck.disableProperty().bind(notStartedCond);
+        choiceBoxRating.disableProperty().bind(notStartedCond);
 
         notStartedCond.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
+            if(newValue){
                 terminatedCheck.setSelected(false);
+                choiceBoxRating.getSelectionModel().select(0);
+                ratingValueLbl.setText("");
+            }
         });
     }
 
     private void initChoiceBoxRating() {
-        String star = "🌟";
         choiceBoxRating.getItems().setAll(
                 "",
                 "1 "+star,
@@ -176,21 +176,81 @@ public class VideoDetailsController implements Initializable {
                 star+" 10 "+star);
     }
 
+    private void onInputChange() {
+        saveBtn.setDisable(
+                startedCheck.isSelected() == videoSelected.isStarted() &&
+                terminatedCheck.isSelected() == videoSelected.isTerminated() &&
+                ratingValueLbl.getText().equals(videoSelected.getRating())
+        );
+    }
     private void confirmBinding() {
         saveBtn.setDisable(true);
 
         startedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
         terminatedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
-        choiceBoxRating.valueProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
+        ratingValueLbl.textProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
     }
-    private void onInputChange() {
-        saveBtn.setDisable(
-                startedCheck.isSelected() == videoSelected.isStarted() &&
-                terminatedCheck.isSelected() == videoSelected.isTerminated() &&
-                choiceBoxRating.getValue().equals(videoSelected.getRating())
+
+    private void decreaseBinding() {
+        BooleanBinding bingingBtn = ratingValueLbl.textProperty().isEqualTo("0.5 "+star).or(ratingValueLbl.textProperty().isEmpty());
+        decreaseRatingBtn.disableProperty().bind(bingingBtn);
+    }
+    private void increaseBinding() {
+        BooleanBinding bingingBtn = ratingValueLbl.textProperty().isEqualTo(star+" 10 "+star).or(ratingValueLbl.textProperty().isEmpty());
+        increaseRatingBtn.disableProperty().bind(bingingBtn);
+    }
+
+    private void resizeScene() {
+        double h = Screen.getPrimary().getBounds().getHeight();
+        double w = Screen.getPrimary().getBounds().getWidth();
+
+        Stage stage = (Stage)saveBtn.getScene().getWindow();
+
+        stage.setHeight(0.77 * h);
+        stage.setWidth(0.52 * w);
+    }
+
+    private float ratingToFloat(String rating) {
+        return Float.parseFloat(
+                rating.replaceAll(star,"").trim()
         );
     }
 
+    @FXML
+    public void onDecreaseRating() {
+        float rating = ratingToFloat(ratingValueLbl.getText());
+        if((int)rating == rating){
+            ratingValueLbl.setText(
+                    (rating - 0.5f)+" "+star
+            );
+        }else{
+            ratingValueLbl.setText(
+                    (int)(rating - 0.5f)+" "+star
+            );
+        }
+
+//        System.out.println(rating+" -> "+ratingValueLbl.getText());
+//        choiceBoxRating.getSelectionModel().select(0);
+    }
+    @FXML
+    public void onIncreaseRating() {
+        float rating = ratingToFloat(ratingValueLbl.getText());
+
+        if(rating == 9.5f){
+            ratingValueLbl.setText(star+" 10 "+star);
+        }else if((int)rating == rating){
+            ratingValueLbl.setText(
+                    (rating + 0.5f)+" "+star
+            );
+        }else{
+            ratingValueLbl.setText(
+                    (int)(rating + 0.5f)+" "+star
+            );
+        }
+
+//        System.out.println(rating+" -> "+ratingValueLbl.getText());
+//        choiceBoxRating.getSelectionModel().select(0);
+    }
 
     @FXML
     public void onSave() {
@@ -203,7 +263,7 @@ public class VideoDetailsController implements Initializable {
                     movieSelected.getReleaseDate(),
                     startedCheck.isSelected(),
                     terminatedCheck.isSelected(),
-                    choiceBoxRating.getValue(),
+                    ratingValueLbl.getText(),
                     movieSelected.getId(),
                     movieSelected.getPathImage(),
                     movieSelected.getDuration(),
@@ -227,7 +287,7 @@ public class VideoDetailsController implements Initializable {
                     tvSelected.getReleaseDate(),
                     startedCheck.isSelected(),
                     terminatedCheck.isSelected(),
-                    choiceBoxRating.getValue(),
+                    ratingValueLbl.getText(),
                     tvSelected.getId(),
                     tvSelected.getPathImage(),
                     tvSelected.getNumSeasons(),

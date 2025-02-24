@@ -514,7 +514,7 @@ public class MainController implements Initializable {
             title = "Anime details";
             index = 3;
         }
-        System.out.println(videoSelected);
+//        System.out.println(videoSelected);
         vdController.setVideoSelected(videoSelected);
         vdController.setVideoSelectedIndex(index);
 

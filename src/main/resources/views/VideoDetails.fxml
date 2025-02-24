@@ -87,7 +87,7 @@
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin></Separator>
-                  <VBox alignment="TOP_CENTER">
+                  <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="123.0">
                      <children>
                         <Label text="Select the state">
                            <VBox.margin>
@@ -116,8 +116,20 @@
                               <Insets bottom="20.0" top="20.0" />
                            </VBox.margin>
                         </Separator>
-                        <HBox alignment="TOP_CENTER" spacing="8.0" />
-                        <Label fx:id="rateLbl" text="Rate the Video" />
+                        <Label fx:id="ratingValueLbl" />
+                        <Label fx:id="rateLbl" text="Rate the Video">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin></Label>
+                        <HBox alignment="TOP_CENTER" spacing="5.0">
+                           <children>
+                              <Button fx:id="decreaseRatingBtn" mnemonicParsing="false" onAction="#onDecreaseRating" text="- 0.5" />
+                              <Button fx:id="increaseRatingBtn" mnemonicParsing="false" onAction="#onIncreaseRating" text="+ 0.5" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </HBox>
                         <ChoiceBox fx:id="choiceBoxRating" prefWidth="75.0">
                            <VBox.margin>
                               <Insets />
