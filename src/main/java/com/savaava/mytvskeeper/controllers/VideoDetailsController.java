@@ -97,12 +97,24 @@ public class VideoDetailsController implements Initializable {
             }
             videoImageView.setFitWidth(800);
             videoImageView.setFitHeight(500);
-            videoImageView.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0.3, 0, 5);");
+            videoImageView.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 25, 0.3, 0, 5);");
+
+            /* initially is not visible to not show the default image before of the effectively one */
+            videoImageView.setVisible(true);
 
             ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), videoImageView);
-            scaleUp.setToX(1.05); scaleUp.setToY(1.05);
+            scaleUp.setToX(1.05);
+            scaleUp.setToY(1.05);
             ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), videoImageView);
-            scaleDown.setToX(1.0); scaleDown.setToY(1.0);
+            scaleDown.setToX(1.0);
+            scaleDown.setToY(1.0);
+
+            ScaleTransition scaleUpStarting = new ScaleTransition(Duration.millis(200), videoImageView);
+            scaleUpStarting.setToX(1.05);
+            scaleUpStarting.setToY(1.05);
+            scaleUpStarting.setOnFinished(event -> scaleDown.play());
+            scaleUpStarting.play();
+
             videoImageView.setOnMouseEntered(event -> scaleUp.playFromStart());
             videoImageView.setOnMouseExited(event -> scaleDown.playFromStart());
 
@@ -110,10 +122,8 @@ public class VideoDetailsController implements Initializable {
             videoImageView.setFitWidth(800);
             videoImageView.setFitHeight(350);
             videoImageView.setOpacity(0.2);
+            videoImageView.setVisible(true);
         }
-
-        /* initially is not visible to not show the default image before of the effectively one */
-        videoImageView.setVisible(true);
     }
     private void initValues() {
         nameLbl.setText(FormatString.stringNormalize(videoSelected.getTitle()));
@@ -162,7 +172,7 @@ public class VideoDetailsController implements Initializable {
         startedCheck.setSelected(videoSelected.isStarted());
         terminatedCheck.setSelected(videoSelected.isTerminated());
 
-        /* notes */
+        notesTextArea.setText(videoSelected.getNotes());
 
         choiceBoxRating.getItems().setAll(
                 "",
@@ -199,7 +209,8 @@ public class VideoDetailsController implements Initializable {
         saveBtn.setDisable(
                 startedCheck.isSelected() == videoSelected.isStarted() &&
                 terminatedCheck.isSelected() == videoSelected.isTerminated() &&
-                ratingValueLbl.getText().equals(videoSelected.getRating())
+                ratingValueLbl.getText().equals(videoSelected.getRating()) &&
+                notesTextArea.getText().equals(videoSelected.getNotes())
         );
     }
     private void confirmBinding() {
@@ -207,6 +218,7 @@ public class VideoDetailsController implements Initializable {
 
         startedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
         terminatedCheck.selectedProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
+        notesTextArea.textProperty().addListener((observable, oldValue, newValue) -> onInputChange());
         ratingValueLbl.textProperty().addListener((observable, oldValue, newValue) -> onInputChange() );
     }
 
@@ -285,6 +297,7 @@ public class VideoDetailsController implements Initializable {
                     ratingValueLbl.getText(),
                     movieSelected.getId(),
                     movieSelected.getPathImage(),
+                    notesTextArea.getText(),
                     movieSelected.getDuration(),
                     movieSelected.getDirector()
             );
@@ -309,6 +322,7 @@ public class VideoDetailsController implements Initializable {
                     ratingValueLbl.getText(),
                     tvSelected.getId(),
                     tvSelected.getPathImage(),
+                    notesTextArea.getText(),
                     tvSelected.getNumSeasons(),
                     tvSelected.getNumEpisodes()
             );

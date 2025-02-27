@@ -119,10 +119,10 @@ public class ImportController implements Initializable {
             if(files.size()==1 && files.getFirst().getName().endsWith(".csv")) {
                 event.acceptTransferModes(TransferMode.COPY);
                 anchorPane.setStyle("-fx-background-radius: 20;-fx-background-color: #87CEFA;");
-                System.out.println(files.getFirst().getAbsolutePath());
+//                System.out.println(files.getFirst().getAbsolutePath());
             }else {
                 anchorPane.setStyle("-fx-background-radius: 20;-fx-background-color: #FFDEAD;");
-                System.err.println(files.getFirst().getAbsolutePath());
+//                System.err.println(files.getFirst().getAbsolutePath());
             }
         }
         event.consume();

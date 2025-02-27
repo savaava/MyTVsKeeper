@@ -9,20 +9,20 @@ public class TVSerie extends Video {
     private final int numEpisodes;
     private final Set<TVGenres> genres;
 
-    public TVSerie(String title, String description, String releaseDate, boolean started, boolean terminated, String rating, String id, String pathImage, int numSeasons, int numEpisodes) {
-        super(title, description, releaseDate, started, terminated, rating, id, pathImage);
+    public TVSerie(String title, String description, String releaseDate, boolean started, boolean terminated, String rating, String id, String pathImage, String notes, int numSeasons, int numEpisodes) {
+        super(title, description, releaseDate, started, terminated, rating, id, pathImage, notes);
         this.numSeasons = numSeasons;
         this.numEpisodes = numEpisodes;
         genres = new HashSet<>();
     }
     public TVSerie(String title, String description, String releaseDate, String id, String pathImage, int numSeasons, int numEpisodes) {
-        this(title,description,releaseDate,false,false,"",id,pathImage,numSeasons,numEpisodes);
+        this(title,description,releaseDate,false,false,"",id,pathImage,"",numSeasons,numEpisodes);
     }
     /**
      * Constructor for https requests without id
      */
     public TVSerie(String title, String description, String releaseDate, String id, String pathImage) {
-        this(title,description,releaseDate,false,false,"",id,pathImage,0,0);
+        this(title,description,releaseDate,false,false,"",id,pathImage,"",0,0);
     }
     public TVSerie(String id) {
         this("","","",id,"");

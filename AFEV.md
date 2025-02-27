@@ -43,6 +43,10 @@ AFEV (Application Funtionalities Evolution based on Versions):
 - Controlled the keys pressing (ENTER or ESC) by the user
 
 ## 1.3 - Coming soon
+- Added the possibility to associate some notes to your videos 
+- Totally modified the Scene of Video Details
+
+## 1.4 - Coming soon
 - Adding statistics 
     - Scene fxml and controller
     - rating (pie)
