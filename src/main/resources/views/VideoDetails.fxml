@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane onKeyPressed="#handleEscPressed" prefHeight="580.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.savaava.mytvskeeper.controllers.VideoDetailsController">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
+         <children>
+            <Label fx:id="nameLbl" alignment="CENTER" text="Name Video" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+      <HBox layoutX="400.0" layoutY="40.0" spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <ImageView fx:id="videoImageView" fitHeight="338.0" fitWidth="334.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../images/noImageFound.png" />
+               </image>
+            </ImageView>
+            <VBox>
+               <children>
+                  <HBox spacing="40.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label text="Release Date">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="releaseDateLbl" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="10.0" layoutY="10.0">
+                           <children>
+                              <Label text="Duration">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="durationLbl" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="10.0" layoutY="10.0">
+                           <children>
+                              <Label fx:id="directorAboveLbl" text="Director">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="directorLbl" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Label text="Overview">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ScrollPane fitToWidth="true" prefHeight="105.0" prefWidth="853.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="853.0">
+                           <children>
+                              <Label fx:id="overviewLbl" prefWidth="853.0" text="overview" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <Label text="Genres">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="genresLbl" text="genres" />
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <HBox spacing="40.0">
+                     <children>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="State">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <CheckBox fx:id="startedCheck" mnemonicParsing="false" text="Started">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="terminatedCheck" mnemonicParsing="false" text="Terminated">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </CheckBox>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="My Notes">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <TextArea fx:id="notesTextArea" prefHeight="100.0" prefWidth="380.0" wrapText="true" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER">
+                           <children>
+                              <Label text="My Rating">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="ratingValueLbl">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="TOP_CENTER" spacing="5.0">
+                                       <children>
+                                          <Button fx:id="decreaseRatingBtn" mnemonicParsing="false" onAction="#onDecreaseRating" text="- 0.5" />
+                                          <Button fx:id="increaseRatingBtn" mnemonicParsing="false" onAction="#onIncreaseRating" text="+ 0.5" />
+                                       </children>
+                                    </HBox>
+                                    <ChoiceBox fx:id="choiceBoxRating" prefWidth="75.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <Button fx:id="saveBtn" disable="true" mnemonicParsing="false" onAction="#onSave" prefWidth="60.0" text="Save" />
+                        <Button mnemonicParsing="false" onAction="#onExit" prefWidth="60.0" text="Cancel" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="88.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

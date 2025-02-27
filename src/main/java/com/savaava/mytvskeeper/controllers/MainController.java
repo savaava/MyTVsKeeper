@@ -504,15 +504,15 @@ public class MainController implements Initializable {
         if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
             videoSelected = tableViewMovies.getSelectionModel().getSelectedItem();
             title = "Movie details";
-            index = 1;
+            index = 0;
         }else if(tableViewTvs.getSelectionModel().getSelectedItem() != null){
             videoSelected = tableViewTvs.getSelectionModel().getSelectedItem();
             title = "TV Serie details";
-            index = 2;
+            index = 1;
         }else{ /* tableViewAnimes.getSelectionModel().getSelectedItem() != null */
             videoSelected = tableViewAnimes.getSelectionModel().getSelectedItem();
             title = "Anime details";
-            index = 3;
+            index = 2;
         }
 //        System.out.println(videoSelected);
         vdController.setVideoSelected(videoSelected);
@@ -522,11 +522,11 @@ public class MainController implements Initializable {
 
         showPopup(root, title);
 
-        if(index == 1) {
+        if(index == 0) {
             /* It's necessary to reinitialize the tables after changes because the TableView doesn't update itself */
             initMoviesTable();
             tableViewMovies.getSelectionModel().select((Movie)videoSelected);
-        }else if(index == 2) {
+        }else if(index == 1) {
             initTVsTable();
             tableViewTvs.getSelectionModel().select((TVSerie)videoSelected);
         }else {

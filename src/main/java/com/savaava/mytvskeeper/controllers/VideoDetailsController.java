@@ -7,6 +7,7 @@ import com.savaava.mytvskeeper.services.TMDatabase;
 import com.savaava.mytvskeeper.utility.Converter;
 import com.savaava.mytvskeeper.utility.FormatString;
 
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -19,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,15 +33,18 @@ public class VideoDetailsController implements Initializable {
 
     private ImagesCache imagesCache;
 
-    private String star = "🌟";
+    private final String star = "🌟";
 
     @FXML
-    public Label nameLbl, overviewLbl, genresLbl, rateLbl, ratingValueLbl;
+    public Label nameLbl, releaseDateLbl, durationLbl,directorAboveLbl, directorLbl, overviewLbl, genresLbl, ratingValueLbl;
 
     @FXML
     public CheckBox startedCheck, terminatedCheck;
     @FXML
     public ChoiceBox<String> choiceBoxRating;
+    @FXML
+    public TextArea notesTextArea;
+
     @FXML
     public Button saveBtn, decreaseRatingBtn, increaseRatingBtn;
 
@@ -65,7 +70,7 @@ public class VideoDetailsController implements Initializable {
             decreaseBinding();
             increaseBinding();
 
-            resizeScene();
+//            resizeScene();
 
             checkBoxBinding();
         });
@@ -92,9 +97,19 @@ public class VideoDetailsController implements Initializable {
             }
             videoImageView.setFitWidth(800);
             videoImageView.setFitHeight(500);
+            videoImageView.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0.3, 0, 5);");
+
+            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), videoImageView);
+            scaleUp.setToX(1.05); scaleUp.setToY(1.05);
+            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), videoImageView);
+            scaleDown.setToX(1.0); scaleDown.setToY(1.0);
+            videoImageView.setOnMouseEntered(event -> scaleUp.playFromStart());
+            videoImageView.setOnMouseExited(event -> scaleDown.playFromStart());
+
         }else{ /* Video has no image to search */
-            videoImageView.setFitWidth(200);
-            videoImageView.setFitHeight(200);
+            videoImageView.setFitWidth(800);
+            videoImageView.setFitHeight(350);
+            videoImageView.setOpacity(0.2);
         }
 
         /* initially is not visible to not show the default image before of the effectively one */
@@ -103,13 +118,24 @@ public class VideoDetailsController implements Initializable {
     private void initValues() {
         nameLbl.setText(FormatString.stringNormalize(videoSelected.getTitle()));
 
+        releaseDateLbl.setText(videoSelected.getReleaseDate());
+
+        String duration;
+        if(videoSelectedIndex == 0){
+            Movie movieSelected = (Movie)videoSelected;
+            duration = movieSelected.getDuration()/60+"h "+movieSelected.getDuration()%60+"min";
+            directorLbl.setText(movieSelected.getDirector());
+        }else{
+            TVSerie tvSelected = (TVSerie)videoSelected;
+            duration = tvSelected.getNumSeasons()+" Seasons, "+tvSelected.getNumEpisodes()+" Episodes";
+            directorAboveLbl.setVisible(false);
+        }
+        durationLbl.setText(duration);
+
         if(videoSelected.getDescription().isEmpty())
             overviewLbl.setText("No overview found");
         else
             overviewLbl.setText(videoSelected.getDescription());
-
-        startedCheck.setSelected(videoSelected.isStarted());
-        terminatedCheck.setSelected(videoSelected.isTerminated());
 
         choiceBoxRating.setValue(videoSelected.getRating());
 
@@ -133,15 +159,23 @@ public class VideoDetailsController implements Initializable {
         }
         genresLbl.setText(genres.toString());
 
-        if(videoSelectedIndex == 1){
-            rateLbl.setText("Rate the Movie");
-        }else if(videoSelectedIndex == 2) {
-            rateLbl.setText("Rate the TV Serie");
-        }else if(videoSelectedIndex == 3){
-            rateLbl.setText("Rate the Anime");
-        }
+        startedCheck.setSelected(videoSelected.isStarted());
+        terminatedCheck.setSelected(videoSelected.isTerminated());
 
-        initChoiceBoxRating();
+        /* notes */
+
+        choiceBoxRating.getItems().setAll(
+                "",
+                "1 "+star,
+                "2 "+star,
+                "3 "+star,
+                "4 "+star,
+                "5 "+star,
+                "6 "+star,
+                "7 "+star,
+                "8 "+star,
+                "9 "+star,
+                star+" 10 "+star);
 
         Platform.runLater(this::setImage);
     }
@@ -159,21 +193,6 @@ public class VideoDetailsController implements Initializable {
                 ratingValueLbl.setText("");
             }
         });
-    }
-
-    private void initChoiceBoxRating() {
-        choiceBoxRating.getItems().setAll(
-                "",
-                "1 "+star,
-                "2 "+star,
-                "3 "+star,
-                "4 "+star,
-                "5 "+star,
-                "6 "+star,
-                "7 "+star,
-                "8 "+star,
-                "9 "+star,
-                star+" 10 "+star);
     }
 
     private void onInputChange() {
@@ -206,8 +225,8 @@ public class VideoDetailsController implements Initializable {
 
         Stage stage = (Stage)saveBtn.getScene().getWindow();
 
-        stage.setHeight(0.77 * h);
-        stage.setWidth(0.52 * w);
+        stage.setHeight(0.58 * h);
+        stage.setWidth(0.60 * w);
     }
 
     private float ratingToFloat(String rating) {
@@ -296,10 +315,10 @@ public class VideoDetailsController implements Initializable {
             tvSelected.getGenres().forEach(gi -> tvToAdd.addGenre(gi.getId()) );
 
             try{
-                if(videoSelectedIndex == 2) {
+                if(videoSelectedIndex == 1) {
                     vk.removeTVSerie(tvSelected.getId());
                     vk.addTVSerie(tvToAdd);
-                }else if(videoSelectedIndex == 3){
+                }else if(videoSelectedIndex == 2){
                     vk.removeAnimeSerie(tvSelected.getId());
                     vk.addAnimeSerie(tvToAdd);
                 }
@@ -323,6 +342,7 @@ public class VideoDetailsController implements Initializable {
         }
     }
 
+    @FXML
     public void onExit() {
         Stage stage = (Stage)nameLbl.getScene().getWindow();
         stage.close();
