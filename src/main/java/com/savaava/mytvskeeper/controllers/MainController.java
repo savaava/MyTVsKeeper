@@ -46,10 +46,11 @@ public class MainController implements Initializable {
     @FXML
     public TableColumn<Movie, String>
             titleColumnMovie,
-            durationColumnMovie,
             releaseDateColumnMovie,
             directorColumnMovie,
             ratingColumnMovie;
+    @FXML
+    public TableColumn<Movie, Integer> durationColumnMovie;
     @FXML
     public TableColumn<Movie, Boolean>
             startedColumnMovie,
@@ -106,6 +107,7 @@ public class MainController implements Initializable {
             initMoviesTable();
             initTVsTable();
             initAnimesTable();
+
             bindingSearchField();
 
             //setHeightsCells();
@@ -131,47 +133,8 @@ public class MainController implements Initializable {
         terminatedColumnMovie.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnMovie.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
-        startedColumnMovie.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
-                    setGraphic(label);
-                    setAlignment(Pos.CENTER);
-                }
-            }
-        });
-        terminatedColumnMovie.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
-                    setGraphic(label);
-                    setAlignment(Pos.CENTER);
-                }
-            }
-        });
-
+        durationCellsUpdate();
+        startedTerminatedCellsUpdate();
     }
     private void initTVsTable() {
         //tableViewTvs.setItems(vk.getTvSeries());
@@ -183,23 +146,16 @@ public class MainController implements Initializable {
         startedColumnTv.setCellValueFactory(new PropertyValueFactory<>("started"));
         terminatedColumnTv.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnTv.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
         startedColumnTv.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
                     setGraphic(label);
-                    setAlignment(Pos.CENTER);
                 }
             }
         });
@@ -209,17 +165,9 @@ public class MainController implements Initializable {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
                     setGraphic(label);
-                    setAlignment(Pos.CENTER);
                 }
             }
         });
@@ -241,17 +189,9 @@ public class MainController implements Initializable {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
                     setGraphic(label);
-                    setAlignment(Pos.CENTER);
                 }
             }
         });
@@ -261,21 +201,69 @@ public class MainController implements Initializable {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setGraphic(null);
-                } else {
-                    Label label = new Label();
-                    if (item) {
-                        label.setText("✔");
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-                    } else {
-                        label.setText("✘");
-                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-                    }
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
                     setGraphic(label);
-                    setAlignment(Pos.CENTER);
                 }
             }
         });
     }
+
+    private void durationCellsUpdate() {
+        durationColumnMovie.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer duration, boolean empty) {
+                super.updateItem(duration, empty);
+
+                if(empty || duration == null){
+                    setText(null);
+                }else{
+                    int hours = duration / 60;
+                    int minutes = duration % 60;
+                    setText(hours>0 ? hours+"h "+minutes+"m" : minutes+"m");
+                }
+            }
+        });
+    }
+    private void startedTerminatedCellsUpdate() {
+        startedColumnMovie.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty || item == null){
+                    setGraphic(null);
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
+                    setGraphic(label);
+                }
+            }
+        });
+        terminatedColumnMovie.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty || item == null){
+                    setGraphic(null);
+                }else{
+                    Label label = generationStartedTerminatedLbl(item);
+                    setGraphic(label);
+                }
+            }
+        });
+    }
+    private Label generationStartedTerminatedLbl(Boolean item) {
+        Label label = new Label();
+        if(item){
+            label.setText("✔");
+            label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
+        }else{
+            label.setText("✘");
+            label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+        }
+        return label;
+    }
+
+
     private void bindingSearchField() {
         FilteredList<Movie> moviesFilteredList = new FilteredList<>(vk.getMovies(), b->true);
         FilteredList<TVSerie> tvsFilteredList = new FilteredList<>(vk.getTvSeries(), b->true);
@@ -345,16 +333,6 @@ public class MainController implements Initializable {
             videoNumLbl.setText("Number of Anime Series: "+vk.animesNumber());
     }
 
-    private void setNumMovieLbl() {
-        videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
-    }
-    private void setNumTVSerieLbl() {
-        videoNumLbl.setText("Number of TV Series: "+vk.tvsNumber());
-    }
-    private void setNumAnimeLbl() {
-        videoNumLbl.setText("Number of Anime Series: "+vk.animesNumber());
-    }
-
     /* To improve the cells' height, but it's obviously onerous */
     private void setHeightsCells() {
         tableViewMovies.setRowFactory(movie -> new TableRow<>() {
@@ -416,7 +394,6 @@ public class MainController implements Initializable {
                 Bindings.when(btnDisableCond).then(0.3).otherwise(1.0)
         );
     }
-
 
     private void clearAllSelection() {
         tableViewMovies.getSelectionModel().clearSelection();
@@ -636,6 +613,10 @@ public class MainController implements Initializable {
 
     }
 
+    @FXML
+    public void onShortcuts() {
+
+    }
     @FXML
     public void onAbout() {
 

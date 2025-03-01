@@ -52,7 +52,7 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <Label text="Or drag the csv file here">
+            <Label text="Or drag the .csv file here">
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>

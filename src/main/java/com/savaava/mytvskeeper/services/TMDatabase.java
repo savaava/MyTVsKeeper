@@ -65,27 +65,27 @@ public class TMDatabase {
         JSONArray jsonMovies = new JSONObject(response.body()).getJSONArray("results");
 
         for(int i=0; i<jsonMovies.length(); i++){
-            try {
-                JSONObject currMovie = jsonMovies.getJSONObject(i);
-                JSONArray genresVett = currMovie.getJSONArray("genre_ids");
+            JSONObject currMovie = jsonMovies.getJSONObject(i);
 
-                Object backdropPath = currMovie.get("poster_path");
-                if (!(backdropPath instanceof String))
-                    backdropPath = null;
+            JSONArray genresVett = new JSONArray();
+            try{
+                genresVett = currMovie.getJSONArray("genre_ids");
+            }catch(JSONException ex){System.err.println("Error finding genre_ids for current movie: "+ex.getMessage());}
 
-                Movie movie = new Movie(
-                        FormatString.compactTitle(currMovie.getString("title")),
-                        FormatString.compactDescription(currMovie.getString("overview")),
-                        currMovie.getString("release_date"),
-                        Integer.toString(currMovie.getInt("id")),
-                        (String) backdropPath);
-                for (int j = 0; j < genresVett.length(); j++)
-                    movie.addGenre(genresVett.getInt(j));
+            Object backdropPath = currMovie.get("poster_path");
+            if (!(backdropPath instanceof String))
+                backdropPath = null;
 
-                out.add(movie);
-            }catch(JSONException ex){
-                System.err.println("Error reading current movie: "+ex.getMessage());
-            }
+            Movie movie = new Movie(
+                    FormatString.compactTitle(currMovie.getString("title")),
+                    FormatString.compactDescription(currMovie.getString("overview")),
+                    currMovie.getString("release_date"),
+                    Integer.toString(currMovie.getInt("id")),
+                    (String) backdropPath);
+            for (int j = 0; j < genresVett.length(); j++)
+                movie.addGenre(genresVett.getInt(j));
+
+            out.add(movie);
         }
 
         return out;
@@ -103,27 +103,27 @@ public class TMDatabase {
         JSONArray jsonTVSeries = new JSONObject(response.body()).getJSONArray("results");
 
         for(int i=0; i<jsonTVSeries.length(); i++){
-            try {
-                JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
-                JSONArray genresVett = currTVSerie.getJSONArray("genre_ids");
+            JSONObject currTVSerie = jsonTVSeries.getJSONObject(i);
 
-                Object backdropPath = currTVSerie.get("poster_path");
-                if (!(backdropPath instanceof String))
-                    backdropPath = null;
+            JSONArray genresVett = new JSONArray();
+            try{
+                genresVett = currTVSerie.getJSONArray("genre_ids");
+            }catch(JSONException ex){System.err.println("Error finding genre_ids for current series: "+ex.getMessage());}
 
-                TVSerie tvSerie = new TVSerie(
-                        FormatString.compactTitle(currTVSerie.getString("name")),
-                        FormatString.compactDescription(currTVSerie.getString("overview")),
-                        currTVSerie.getString("first_air_date"),
-                        Integer.toString(currTVSerie.getInt("id")),
-                        (String) backdropPath);
-                for (int j = 0; j < genresVett.length(); j++)
-                    tvSerie.addGenre(genresVett.getInt(j));
+            Object backdropPath = currTVSerie.get("poster_path");
+            if (!(backdropPath instanceof String))
+                backdropPath = null;
 
-                out.add(tvSerie);
-            }catch(JSONException ex){
-                System.err.println("Error reading current tv series: "+ex.getMessage());
-            }
+            TVSerie tvSerie = new TVSerie(
+                    FormatString.compactTitle(currTVSerie.getString("name")),
+                    FormatString.compactDescription(currTVSerie.getString("overview")),
+                    currTVSerie.getString("first_air_date"),
+                    Integer.toString(currTVSerie.getInt("id")),
+                    (String) backdropPath);
+            for (int j = 0; j < genresVett.length(); j++)
+                tvSerie.addGenre(genresVett.getInt(j));
+
+            out.add(tvSerie);
         }
 
         return out;

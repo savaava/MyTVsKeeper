@@ -27,8 +27,8 @@
                   <Menu mnemonicParsing="false" text="New">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onNewMovie" text="New Movie" />
-                        <MenuItem mnemonicParsing="false" onAction="#onNewTv" text="New TV Serie" />
-                        <MenuItem mnemonicParsing="false" onAction="#onNewAnime" text="New Anime Serie" />
+                        <MenuItem mnemonicParsing="false" onAction="#onNewTv" text="New TV Series" />
+                        <MenuItem mnemonicParsing="false" onAction="#onNewAnime" text="New Anime Series" />
                     </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Statistics">
@@ -40,7 +40,8 @@
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="ℹ About" />
+                    <MenuItem mnemonicParsing="false" onAction="#onShortcuts" text="Shortcuts" />
+                        <MenuItem mnemonicParsing="false" onAction="#onAbout" text="ℹ About" />
                   </items>
                 </Menu>
               </menus>
