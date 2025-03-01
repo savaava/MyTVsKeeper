@@ -5,12 +5,12 @@ import com.savaava.mytvskeeper.main.StartApplication;
 import com.savaava.mytvskeeper.models.*;
 import com.savaava.mytvskeeper.alerts.AlertError;
 
+import com.savaava.mytvskeeper.utility.FormatString;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,6 +32,7 @@ import java.net.URL;
 import java.io.IOException;
 import java.io.File;
 
+import java.time.Month;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -47,21 +48,22 @@ public class MainController implements Initializable {
     public TableColumn<Movie, String>
             titleColumnMovie,
             releaseDateColumnMovie,
-            directorColumnMovie,
-            ratingColumnMovie;
+            directorColumnMovie;
     @FXML
     public TableColumn<Movie, Integer> durationColumnMovie;
     @FXML
     public TableColumn<Movie, Boolean>
             startedColumnMovie,
             terminatedColumnMovie;
+    @FXML
+    public TableColumn<Movie, Double> ratingColumnMovie;
 
     @FXML
     public TableView<TVSerie> tableViewTvs, tableViewAnimes;
     @FXML
     public TableColumn<TVSerie, String>
-            titleColumnTv,releaseDateColumnTv,ratingColumnTv,
-            titleColumnAnime,releaseDateColumnAnime,ratingColumnAnime;
+            titleColumnTv,releaseDateColumnTv,
+            titleColumnAnime,releaseDateColumnAnime;
     @FXML
     public TableColumn<TVSerie, Integer>
             seasonsColumnTv,episodesColumnTv,
@@ -70,6 +72,8 @@ public class MainController implements Initializable {
     public TableColumn<TVSerie,Boolean>
             startedColumnTv,terminatedColumnTv,
             startedColumnAnime,terminatedColumnAnime;
+    @FXML
+    public TableColumn<Movie, Double> ratingColumnTv, ratingColumnAnime;
 
     @FXML
     public TextField searchTfd;
@@ -108,6 +112,8 @@ public class MainController implements Initializable {
             initTVsTable();
             initAnimesTable();
 
+            customizeStyle();
+
             bindingSearchField();
 
             //setHeightsCells();
@@ -133,8 +139,16 @@ public class MainController implements Initializable {
         terminatedColumnMovie.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnMovie.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
-        durationCellsUpdate();
-        startedTerminatedCellsUpdate();
+        titleCellsUpdate(titleColumnMovie);
+
+        movieDurationCellsUpdate();
+
+        releaseDateCellsUpdate(releaseDateColumnMovie);
+
+        stateCellsUpdate(startedColumnMovie);
+        stateCellsUpdate(terminatedColumnMovie);
+
+        ratingCellsUpdate(ratingColumnMovie);
     }
     private void initTVsTable() {
         //tableViewTvs.setItems(vk.getTvSeries());
@@ -147,30 +161,17 @@ public class MainController implements Initializable {
         terminatedColumnTv.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnTv.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
-        startedColumnTv.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
-                }
-            }
-        });
-        terminatedColumnTv.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
-                }
-            }
-        });
+        titleCellsUpdate(titleColumnTv);
+
+        durationSeriesCellsUpdate(seasonsColumnTv);
+        durationSeriesCellsUpdate(episodesColumnTv);
+
+        releaseDateCellsUpdate(releaseDateColumnTv);
+
+        stateCellsUpdate(startedColumnTv);
+        stateCellsUpdate(terminatedColumnTv);
+
+        ratingCellsUpdate(ratingColumnTv);
     }
     private void initAnimesTable() {
         //tableViewAnimes.setItems(vk.getAnimeSeries());
@@ -183,33 +184,35 @@ public class MainController implements Initializable {
         terminatedColumnAnime.setCellValueFactory(new PropertyValueFactory<>("terminated"));
         ratingColumnAnime.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
-        startedColumnAnime.setCellFactory(column -> new TableCell<>() {
+        titleCellsUpdate(titleColumnAnime);
+
+        durationSeriesCellsUpdate(seasonsColumnAnime);
+        durationSeriesCellsUpdate(episodesColumnAnime);
+
+        releaseDateCellsUpdate(releaseDateColumnAnime);
+
+        stateCellsUpdate(startedColumnAnime);
+        stateCellsUpdate(terminatedColumnAnime);
+
+        ratingCellsUpdate(ratingColumnAnime);
+    }
+
+    private <T extends Video> void titleCellsUpdate(TableColumn<T, String> titleColumn) {
+        titleColumn.setCellFactory(column -> new TableCell<>() {
             @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
+            protected void updateItem(String titleCurr, boolean empty) {
+                super.updateItem(titleCurr, empty);
+
+                if (empty || titleCurr == null || titleCurr.isEmpty()) {
+                    setText(null);
                 }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
-                }
-            }
-        });
-        terminatedColumnAnime.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
+                    setText(FormatString.compactTitle(titleCurr));
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
     }
-
-    private void durationCellsUpdate() {
+    private void movieDurationCellsUpdate() {
         durationColumnMovie.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Integer duration, boolean empty) {
@@ -221,48 +224,102 @@ public class MainController implements Initializable {
                     int hours = duration / 60;
                     int minutes = duration % 60;
                     setText(hours>0 ? hours+"h "+minutes+"m" : minutes+"m");
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
     }
-    private void startedTerminatedCellsUpdate() {
-        startedColumnMovie.setCellFactory(column -> new TableCell<>() {
+    private <T extends Video> void durationSeriesCellsUpdate(TableColumn<T, Integer> durationColumn) {
+        durationColumn.setCellFactory(column -> new TableCell<>() {
             @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if(empty || item == null){
-                    setGraphic(null);
+            protected void updateItem(Integer num, boolean empty) { /* num can be #seasons or #episods */
+                super.updateItem(num, empty);
+
+                if(empty || num == null){
+                    setText(null);
                 }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
-                }
-            }
-        });
-        terminatedColumnMovie.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if(empty || item == null){
-                    setGraphic(null);
-                }else{
-                    Label label = generationStartedTerminatedLbl(item);
-                    setGraphic(label);
+                    setText(num.toString());
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
     }
-    private Label generationStartedTerminatedLbl(Boolean item) {
-        Label label = new Label();
-        if(item){
-            label.setText("✔");
-            label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
-        }else{
-            label.setText("✘");
-            label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
-        }
-        return label;
+    private <T extends Video> void releaseDateCellsUpdate(TableColumn<T, String> releaseDateColumn) {
+        releaseDateColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String releaseDateCurr, boolean empty) {
+                super.updateItem(releaseDateCurr, empty);
+
+                if(empty || releaseDateCurr == null || releaseDateCurr.isEmpty()){
+                    setText("");
+                }else{
+                    /* releaseDateCurr format: yyyy-MM-dd */
+                    String[] date = releaseDateCurr.split("-");
+
+                    if (date.length == 3) {
+                        String day = date[2].startsWith("0") ? date[2].substring(1) : date[2];
+                        String month = Month.of(Integer.parseInt(date[1])).toString().toLowerCase();
+                        month = month.substring(0, 1).toUpperCase() + month.substring(1);
+                        String year = date[0];
+
+                        setText(day+" "+month+" "+year);
+                    } else {
+                        setText(releaseDateCurr); /* If the format is wrong */
+                    }
+                }
+            }
+        });
+    }
+    private <T extends Video> void stateCellsUpdate(TableColumn<T, Boolean> stateColumn) {
+        stateColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean state, boolean empty) {
+                super.updateItem(state, empty);
+
+                if(empty || state == null){
+                    setGraphic(null);
+                }else{
+                    Label label = new Label();
+                    if(state){
+                        label.setText("✔");
+                        label.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
+                    }else{
+                        label.setText("✘");
+                        label.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+                    }
+                    setGraphic(label);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
+    }
+    private <T extends Video> void ratingCellsUpdate(TableColumn<T, Double> ratingColumn) {
+        String star = "🌟";
+
+        ratingColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double currRating, boolean empty) {
+                super.updateItem(currRating, empty);
+
+                if(empty || currRating == null){
+                    setText(null);
+                }else{
+                    if(currRating == 10)
+                        setText(star+" 10 "+star);
+                    else if(currRating.intValue() == currRating){
+                        setText(currRating.intValue()+" "+star);
+                    }else{
+                        setText(currRating+" "+star);
+                    }
+
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
     }
 
+    private void customizeStyle() {
+    }
 
     private void bindingSearchField() {
         FilteredList<Movie> moviesFilteredList = new FilteredList<>(vk.getMovies(), b->true);
@@ -273,28 +330,43 @@ public class MainController implements Initializable {
             if(newValue == null)
                 return;
 
-            String strSearched = newValue.toLowerCase();
+            String strSearched = newValue.toLowerCase().trim();
 
             moviesFilteredList.setPredicate(movie -> {/* here I set a filter=predicate */
-                if(newValue.isBlank())
+                if(newValue.isEmpty())
                     return true;
+
+                String year = "";
+                if(movie.getReleaseDate().split("-").length == 3)
+                    year = movie.getReleaseDate().split("-")[0];
+
                 return movie.getTitle().toLowerCase().contains(strSearched) ||
                         movie.getDirector().toLowerCase().contains(strSearched) || /* if user search by director */
-                        movie.getReleaseDate().contains(strSearched); /* if user search by release date */
+                        year.equals(strSearched); /* if user search by release date */
             });
 
             tvsFilteredList.setPredicate(tv -> {
-                if(newValue.isBlank())
+                if(newValue.isEmpty())
                     return true;
+
+                String year = "";
+                if(tv.getReleaseDate().split("-").length == 3)
+                    year = tv.getReleaseDate().split("-")[0];
+
                 return tv.getTitle().toLowerCase().contains(strSearched) ||
-                        tv.getReleaseDate().contains(strSearched);
+                        year.equals(strSearched);
             });
 
             animesFilteredList.setPredicate(anime -> {
-                if(newValue.isBlank())
+                if(newValue.isEmpty())
                     return true;
+
+                String year = "";
+                if(anime.getReleaseDate().split("-").length == 3)
+                    year = anime.getReleaseDate().split("-")[0];
+
                 return anime.getTitle().toLowerCase().contains(strSearched) ||
-                        anime.getReleaseDate().contains(strSearched);
+                        year.equals(strSearched);
             });
         });
 

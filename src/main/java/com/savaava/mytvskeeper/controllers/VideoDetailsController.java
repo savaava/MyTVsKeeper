@@ -80,6 +80,21 @@ public class VideoDetailsController implements Initializable {
     public void setVideoSelectedIndex(int i){ videoSelectedIndex = i; }
     public void setImagesCache(ImagesCache imagesCache){ this.imagesCache = imagesCache; }
 
+    private void updateRatingValueLbl(double rating) {
+        if((int)rating != rating){
+            ratingValueLbl.setText(
+                    rating+" "+star
+            );
+        }else{
+            if(rating == 10)
+                ratingValueLbl.setText(star+" 10 "+star);
+            else
+                ratingValueLbl.setText(
+                    (int)rating+" "+star
+                );
+        }
+    }
+
     private void setImage() {
         String pathImage = videoSelected.getPathImage();
 
@@ -147,10 +162,6 @@ public class VideoDetailsController implements Initializable {
         else
             overviewLbl.setText(videoSelected.getDescription());
 
-        choiceBoxRating.setValue(videoSelected.getRating());
-
-        ratingValueLbl.setText(videoSelected.getRating());
-
         StringBuilder genres = new StringBuilder();
         if(videoSelected instanceof Movie) {
             Movie movieSelected = (Movie)videoSelected;
@@ -173,6 +184,11 @@ public class VideoDetailsController implements Initializable {
         terminatedCheck.setSelected(videoSelected.isTerminated());
 
         notesTextArea.setText(videoSelected.getNotes());
+
+        ratingValueLbl.setText("");
+
+        if(videoSelected.getRating() != null)
+            updateRatingValueLbl(videoSelected.getRating());
 
         choiceBoxRating.getItems().setAll(
                 "",
@@ -241,46 +257,21 @@ public class VideoDetailsController implements Initializable {
         stage.setWidth(0.60 * w);
     }
 
-    private float ratingToFloat(String rating) {
-        return Float.parseFloat(
+    private double ratingToDouble(String rating) {
+        return Double.parseDouble(
                 rating.replaceAll(star,"").trim()
         );
     }
 
     @FXML
     public void onDecreaseRating() {
-        float rating = ratingToFloat(ratingValueLbl.getText());
-        if((int)rating == rating){
-            ratingValueLbl.setText(
-                    (rating - 0.5f)+" "+star
-            );
-        }else{
-            ratingValueLbl.setText(
-                    (int)(rating - 0.5f)+" "+star
-            );
-        }
-
-//        System.out.println(rating+" -> "+ratingValueLbl.getText());
-//        choiceBoxRating.getSelectionModel().select(0);
+        double rating = ratingToDouble(ratingValueLbl.getText());
+        updateRatingValueLbl(rating-0.5);
     }
     @FXML
     public void onIncreaseRating() {
-        float rating = ratingToFloat(ratingValueLbl.getText());
-
-        if(rating == 9.5f){
-            ratingValueLbl.setText(star+" 10 "+star);
-        }else if((int)rating == rating){
-            ratingValueLbl.setText(
-                    (rating + 0.5f)+" "+star
-            );
-        }else{
-            ratingValueLbl.setText(
-                    (int)(rating + 0.5f)+" "+star
-            );
-        }
-
-//        System.out.println(rating+" -> "+ratingValueLbl.getText());
-//        choiceBoxRating.getSelectionModel().select(0);
+        double rating = ratingToDouble(ratingValueLbl.getText());
+        updateRatingValueLbl(rating+0.5);
     }
 
     @FXML
@@ -294,7 +285,7 @@ public class VideoDetailsController implements Initializable {
                     movieSelected.getReleaseDate(),
                     startedCheck.isSelected(),
                     terminatedCheck.isSelected(),
-                    ratingValueLbl.getText(),
+                    ratingToDouble(ratingValueLbl.getText()),
                     movieSelected.getId(),
                     movieSelected.getPathImage(),
                     notesTextArea.getText(),
@@ -319,7 +310,7 @@ public class VideoDetailsController implements Initializable {
                     tvSelected.getReleaseDate(),
                     startedCheck.isSelected(),
                     terminatedCheck.isSelected(),
-                    ratingValueLbl.getText(),
+                    ratingToDouble(ratingValueLbl.getText()),
                     tvSelected.getId(),
                     tvSelected.getPathImage(),
                     notesTextArea.getText(),

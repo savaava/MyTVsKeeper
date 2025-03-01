@@ -25,7 +25,7 @@ public class StartApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(StartApplication.class.getResource("/views/Main.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add("/filesCSS/TableViewMain.css");
+//        scene.getStylesheets().add("/filesCSS/TableViewMain.css");
         stage.setMinHeight(400);
         stage.setMinWidth(1000);
         stage.setTitle("MyTVsKeeper");

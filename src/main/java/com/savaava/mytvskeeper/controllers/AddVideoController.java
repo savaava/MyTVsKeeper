@@ -7,6 +7,7 @@ import com.savaava.mytvskeeper.models.*;
 
 import com.savaava.mytvskeeper.services.TMDatabase;
 import com.savaava.mytvskeeper.utility.Converter;
+import com.savaava.mytvskeeper.utility.FormatString;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -154,6 +155,21 @@ public class AddVideoController implements Initializable {
         });
     }
 
+    private void titleCellsUpdate(TableColumn<Video, String> column) {
+        column.setCellFactory(cell -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(FormatString.compactTitle(item));
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
+    }
     private void centerCells(TableColumn<Video, String> column) {
         column.setCellFactory(cell -> new TableCell<>() {
             @Override
@@ -228,7 +244,7 @@ public class AddVideoController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        centerCells(titleColumn);
+        titleCellsUpdate(titleColumn);
         initPreviewColumn();
         centerCells(dateColumn);
     }

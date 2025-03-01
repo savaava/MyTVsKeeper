@@ -7,12 +7,12 @@ public abstract class Video implements java.io.Serializable {
     private final String description;
     private final String releaseDate;
     private final boolean started,terminated;
-    private final String rating;
+    private final Double rating;
     private final String id;
     private final String pathImage;
     private final String notes;
 
-    public Video(String title, String description, String releaseDate, boolean started, boolean terminated, String rating, String id, String pathImage, String notes) {
+    public Video(String title, String description, String releaseDate, boolean started, boolean terminated, Double rating, String id, String pathImage, String notes) {
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -29,7 +29,7 @@ public abstract class Video implements java.io.Serializable {
     public String getReleaseDate() {return releaseDate;}
     public boolean isStarted() {return started;}
     public boolean isTerminated() {return terminated;}
-    public String getRating() {return rating;}
+    public Double getRating() {return rating;}
     public String getId(){return id;}
     /**
      * @return the path of Video's image in the format: /xxxxxxxx.jpg, null if it doesn't have it.
