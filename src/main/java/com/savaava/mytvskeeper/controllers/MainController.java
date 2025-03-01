@@ -101,8 +101,7 @@ public class MainController implements Initializable {
                 onExit();
             }
 
-            /* for the initialization when the user open the application, and he hasn't chosen a Tab yet  */
-            setNumMovieLbl();
+            updateVideoNumberLbl();
 
             initMoviesTable();
             initTVsTable();
@@ -325,6 +324,27 @@ public class MainController implements Initializable {
         tableViewAnimes.setItems(sortedAnimesList);
     }
 
+    private void updatePromptSearchField() {
+        String prompt = "";
+
+        if(moviesTab.isSelected())
+            prompt = "Search your Movie title";
+        else if(tvsTab.isSelected())
+            prompt = "Search your TV Series title";
+        else if(animesTab.isSelected())
+            prompt = "Search your Anime Series title";
+
+        searchTfd.setPromptText(prompt);
+    }
+    private void updateVideoNumberLbl() {
+        if(moviesTab.isSelected())
+            videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
+        else if(tvsTab.isSelected())
+            videoNumLbl.setText("Number of TV Series: "+vk.tvsNumber());
+        else if(animesTab.isSelected())
+            videoNumLbl.setText("Number of Anime Series: "+vk.animesNumber());
+    }
+
     private void setNumMovieLbl() {
         videoNumLbl.setText("Number of Movies: "+vk.moviesNumber());
     }
@@ -405,26 +425,13 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void onTabViewSelection(Event event) {
+    public void onTabViewSelection() {
         /* Necessary condition because when the application starts a tab is automatically selected */
         if(! isInitialized)
             return;
 
-        Tab selectedTab = (Tab) event.getSource();
-        if (! selectedTab.isSelected())
-            return;
-
-        if(selectedTab == moviesTab){
-            searchTfd.setPromptText("Search Movie title");
-            setNumMovieLbl();
-        }else if(selectedTab == tvsTab){
-            searchTfd.setPromptText("Search TV Serie title");
-            setNumTVSerieLbl();
-        }else if(selectedTab == animesTab){
-            searchTfd.setPromptText("Search Anime Serie title");
-            setNumAnimeLbl();
-        }else /* caso non previsto */
-            System.err.println("Unexpected tab selected: "+selectedTab.getText());
+        updatePromptSearchField();
+        updateVideoNumberLbl();
 
         clearAllSelection();
     }
@@ -450,22 +457,22 @@ public class MainController implements Initializable {
         }else{
             tableViewAnimes.getSelectionModel().select((TVSerie)videoAdded);
         }
+
+        updateVideoNumberLbl();
+
         onDetailsClicked();
     }
     @FXML
     public void onNewMovie() throws IOException {
         onNewVideo(0, "New Movie");
-        setNumMovieLbl();
     }
     @FXML
     public void onNewTv() throws IOException {
         onNewVideo(1, "New TV Series");
-        setNumTVSerieLbl();
     }
     @FXML
     public void onNewAnime() throws IOException {
         onNewVideo(2, "New Anime Series");
-        setNumAnimeLbl();
     }
 
     private boolean noVideoSelected() {
@@ -558,34 +565,33 @@ public class MainController implements Initializable {
 
         String header = "Are you sure to delete ";
         try {
-            if (tableViewMovies.getSelectionModel().getSelectedItem() != null) {
+            if(tableViewMovies.getSelectionModel().getSelectedItem() != null){
 
                 videoToDelete = tableViewMovies.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeMovie(videoToDelete.getId());
-                    setNumMovieLbl();
                     clearAllSelection();
                 }
 
-            } else if (tableViewTvs.getSelectionModel().getSelectedItem() != null) {
+            }else if(tableViewTvs.getSelectionModel().getSelectedItem() != null){
 
                 videoToDelete = tableViewTvs.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeTVSerie(videoToDelete.getId());
-                    setNumTVSerieLbl();
                     clearAllSelection();
                 }
 
-            } else if (tableViewAnimes.getSelectionModel().getSelectedItem() != null) {
+            }else if(tableViewAnimes.getSelectionModel().getSelectedItem() != null){
 
                 videoToDelete = tableViewAnimes.getSelectionModel().getSelectedItem();
                 if (new AlertConfirmation(header+videoToDelete.getTitle()+" ?").getResultConfirmation()){
                     vk.removeAnimeSerie(videoToDelete.getId());
-                    setNumAnimeLbl();
                     clearAllSelection();
                 }
 
             }
+
+            updateVideoNumberLbl();
         } catch (Exception ex) {
             new AlertError("Error deleting the Video","Error's details: "+ex.getMessage());
         }
@@ -612,10 +618,9 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Import.fxml"));
         Parent root = loader.load();
 
-//        scene.getStylesheets().add("/filesCSS/PaneDragAndDrop.css");
-
         showPopup(root, "Import Videos");
 
+        updateVideoNumberLbl();
     }
 
     @FXML
