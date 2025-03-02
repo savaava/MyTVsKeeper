@@ -29,7 +29,7 @@
 - ~~in Import → Or drag the .csv file here~~
 - bottone in programma da vedere 
 - ordinare correttamente i video per rating (rating come float)
-- colorare la cella del rating in base al punteggio scelto
+- migliorare le colorazioni delle celle del rating
 - studio che si è occupato dell'anime (da vedere se è presente nel db)
 - creatore manga per anime (da vedere se è presente nel db)
 - pulsante aggiorna per le serie o anime
