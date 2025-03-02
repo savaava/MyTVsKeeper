@@ -294,7 +294,6 @@ public class VideoDetailsController implements Initializable {
 
         try {
             String videoUrl = TMDatabase.buildVideoUrl(videoSelected.getId(), videoSelectedIndex==0);
-            System.out.println(videoUrl);
             URI uri = new URI(videoUrl);
 
             Desktop desktop = Desktop.getDesktop();
