@@ -10,11 +10,11 @@ MyTVsKeeper is a java application to keep your favorite movies and series.
 6. To launch the application, double-click `MyTVsKeeper.exe`
 
 ## Update to new Version 🆕
-1. From the previous version application: File → Export to export all your Movies and Series, generating from 1 to 3 file `.csv` basing on
+1. **EXPORT**: From the previous version application `File → Export` to export all your Movies and Series, generating from 1 to 3 file `.csv` basing on
 which type of videos you want to export (Movies, TV Series, Anime Series) and transfer to the new application
 2. Download `MyTVsKeeper.zip` of the new version from [Releases page](https://github.com/savaava/MyTVsKeeper/releases)
 and follow the above [Installation Guide ⚙️](#installation-guide-) to install the new version
-3. From the new version application: File → Import to import all your Movies and Series selecting the three files `.csv` in the Import screen
+3. **IMPORT**: From the new version application `File → Import` to import all your Movies and Series selecting the three files `.csv` in the Import screen
 4. If a problem occurs delete the new version application continuing to use the previous version application.
 If it's not a bother for you, please let the developer know the issue specifying the number of previous and the new version.
 5. If there were no problems, now you can delete the previous version application therefore the directory containing `MyTVsKeeper.exe` file and `jre` and `bin` directories

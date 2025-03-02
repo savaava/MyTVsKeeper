@@ -49,7 +49,7 @@
     - sfono colorato sfumato tipo intellij
     - font Lora
 
-## 1.4
+## 1.5
 - Imbuto per i Tab → filtri
 - Se il video è solo started -> checkpoint dove è stato interrotto (Lippy)
 - Readme da migliorare
