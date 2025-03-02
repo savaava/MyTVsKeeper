@@ -9,7 +9,7 @@ MyTVsKeeper is a java application to keep your favorite movies and series.
 5. Now you can delete `MyTVsKeeper.zip`
 6. To launch the application, double-click `MyTVsKeeper.exe`
 
-## Update to new Version
+## Update to new Version 🆕
 1. From the previous version application: File → Export to export all your Movies and Series, generating from 1 to 3 file `.csv` basing on
 which type of videos you want to export (Movies, TV Series, Anime Series) and transfer to the new application
 2. Download `MyTVsKeeper.zip` of the new version from [Releases page](https://github.com/savaava/MyTVsKeeper/releases)
@@ -22,7 +22,7 @@ If it's not a bother for you, please let the developer know the issue specifying
 For example from the `MyTVsKeeper.exe` of [Release Version 1.2](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.2)
 to the `MyTVsKeeper.exe` of [Release Version 1.3](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.3)
 
-## Source code
+## Source code ☕
 The source code for this Java application is available in the repository at [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
 
 ## Software Used 🛠️
