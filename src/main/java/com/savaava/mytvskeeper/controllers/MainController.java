@@ -266,6 +266,7 @@ public class MainController implements Initializable {
                     } else {
                         setText(releaseDateCurr); /* If the format is wrong */
                     }
+                    setAlignment(Pos.CENTER_LEFT);
                 }
             }
         });
