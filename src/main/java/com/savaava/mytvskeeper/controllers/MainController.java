@@ -303,6 +303,7 @@ public class MainController implements Initializable {
 
                 if(empty || currRating == null){
                     setText(null);
+                    setStyle("");
                 }else{
                     if(currRating == 10)
                         setText(star+" 10 "+star);
@@ -313,6 +314,11 @@ public class MainController implements Initializable {
                     }
 
                     setAlignment(Pos.CENTER);
+
+                    int green = (int) ((currRating - 0.5) / (10 - 0.5) * 255);
+                    setStyle(
+                            "-fx-background-color: rgba(255, "+green+", 0, 0.3);"
+                    );
                 }
             }
         });
