@@ -22,11 +22,8 @@ If it's not a bother for you, please let the developer know the issue specifying
 For example from the `MyTVsKeeper.exe` of [Release Version 1.2](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.2)
 to the `MyTVsKeeper.exe` of [Release Version 1.3](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.3)
 
-## Running the Application 🚀
-After extracting the application following the instructions above, run the `MyTVsKeeper.exe` file to start the app.
-
 ## Source code
-The source code for this Java application is available in the repository: [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
+The source code for this Java application is available in the repository at [savaava/MyTVsKeeper/src](https://github.com/savaava/MyTVsKeeper/tree/main/src)
 
 ## Software Used 🛠️
 This application was developed using the following tools:
