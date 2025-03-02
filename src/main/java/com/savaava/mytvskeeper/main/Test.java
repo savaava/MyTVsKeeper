@@ -15,7 +15,7 @@ public class Test {
         VideoKeeper.CsvHandler vkCsv = vk.new CsvHandler();
         TMDatabase tmdb = new TMDatabase();
 
-        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/csvFiles/MyTvsKeeper1.3_Movies.csv"));
+//        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/csvFiles/MyTvsKeeper1.3_Movies.csv"));
     }
 
     private static void addVideosMarco(int index, String[] videos) throws Exception {
