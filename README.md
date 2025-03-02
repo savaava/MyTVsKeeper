@@ -16,7 +16,7 @@ which type of videos you want to export (Movies, TV Series, Anime Series) and tr
 and follow the above [Installation Guide ⚙️](#installation-guide-) to install the new version
 3. From the new version application: File → Import to import all your Movies and Series selecting the three files `.csv` in the Import screen
 4. If a problem occurs delete the new version application continuing to use the previous version application.
-If it's not an bother for you, please let the developer know the issue specifying the number of previous and the new version.
+If it's not a bother for you, please let the developer know the issue specifying the number of previous and the new version.
 5. If there were no problems, now you can delete the previous version application therefore the directory containing `MyTVsKeeper.exe` file and `jre` and `bin` directories
 
 For example from the `MyTVsKeeper.exe` of [Release Version 1.2](https://github.com/savaava/MyTVsKeeper/releases/tag/v1.2)
