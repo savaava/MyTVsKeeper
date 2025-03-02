@@ -91,7 +91,7 @@ public class AddVideoController implements Initializable {
             list = FXCollections.observableArrayList();
             imagesCache = new Hashtable<>();
 
-            resizeScene();
+//            resizeScene();
 
             initComboBox();
 

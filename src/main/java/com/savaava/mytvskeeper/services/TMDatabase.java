@@ -214,6 +214,10 @@ public class TMDatabase {
         return response.body();
     }
 
+    public static String buildVideoUrl(String id, boolean isMovie) {
+        return "https://www.themoviedb.org/"+(isMovie ? "movie" : "tv")+"/"+id;
+    }
+
     public void saveConfig() throws IOException {
         try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileConfig)))){
             oos.writeObject(apiKey);

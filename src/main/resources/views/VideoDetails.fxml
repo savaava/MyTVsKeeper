@@ -23,10 +23,13 @@
       </VBox>
       <HBox layoutX="400.0" layoutY="40.0" spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
          <children>
-            <ImageView fx:id="videoImageView" fitHeight="338.0" fitWidth="334.0" pickOnBounds="true" preserveRatio="true" visible="false">
+            <ImageView fx:id="videoImageView" fitHeight="338.0" fitWidth="334.0" onMouseClicked="#onVideoImageClicked" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
                   <Image url="@../images/noImageFound.png" />
                </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </ImageView>
             <VBox>
                <children>

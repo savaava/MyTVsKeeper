@@ -14,14 +14,23 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -272,6 +281,31 @@ public class VideoDetailsController implements Initializable {
     public void onIncreaseRating() {
         double rating = ratingToDouble(ratingValueLbl.getText());
         updateRatingValueLbl(rating+0.5);
+    }
+
+    @FXML
+    public void onVideoImageClicked(MouseEvent event) {
+        if (event.getButton() != MouseButton.PRIMARY) {
+            return;
+        }
+
+        if(! Desktop.isDesktopSupported())
+            return;
+
+        try {
+            String videoUrl = TMDatabase.buildVideoUrl(videoSelected.getId(), videoSelectedIndex==0);
+            System.out.println(videoUrl);
+            URI uri = new URI(videoUrl);
+
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                desktop.browse(uri);
+            }
+
+        }catch(IOException | URISyntaxException ex) {
+            new AlertError("Error browsing to video page",
+                    "browse manually at link \nError's details: "+ex.getMessage());
+        }
     }
 
     @FXML

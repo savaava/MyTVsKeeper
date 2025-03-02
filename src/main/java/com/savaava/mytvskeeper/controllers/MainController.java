@@ -145,12 +145,13 @@ public class MainController implements Initializable {
 
         releaseDateCellsUpdate(releaseDateColumnMovie);
 
+        movieDirectorCellsUpdate(directorColumnMovie);
+
         stateCellsUpdate(startedColumnMovie);
         stateCellsUpdate(terminatedColumnMovie);
 
         ratingCellsUpdate(ratingColumnMovie);
     }
-
     private void initTVsTable() {
         //tableViewTvs.setItems(vk.getTvSeries());
 
@@ -174,7 +175,6 @@ public class MainController implements Initializable {
 
         ratingCellsUpdate(ratingColumnTv);
     }
-
     private void initAnimesTable() {
         //tableViewAnimes.setItems(vk.getAnimeSeries());
 
@@ -214,7 +214,6 @@ public class MainController implements Initializable {
             }
         });
     }
-
     private void movieDurationCellsUpdate() {
         durationColumnMovie.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -232,7 +231,6 @@ public class MainController implements Initializable {
             }
         });
     }
-
     private <T extends Video> void durationSeriesCellsUpdate(TableColumn<T, Integer> durationColumn) {
         durationColumn.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -248,7 +246,6 @@ public class MainController implements Initializable {
             }
         });
     }
-
     private <T extends Video> void releaseDateCellsUpdate(TableColumn<T, String> releaseDateColumn) {
         releaseDateColumn.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -276,7 +273,21 @@ public class MainController implements Initializable {
             }
         });
     }
+    private <T extends Video> void movieDirectorCellsUpdate(TableColumn<T, String> directorColumn) {
+        directorColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String directorCurr, boolean empty) {
+                super.updateItem(directorCurr, empty);
 
+                if (empty || directorCurr == null || directorCurr.isEmpty()) {
+                    setText(null);
+                }else{
+                    setText(directorCurr);
+                    setAlignment(Pos.CENTER_LEFT);
+                }
+            }
+        });
+    }
     private <T extends Video> void stateCellsUpdate(TableColumn<T, Boolean> stateColumn) {
         stateColumn.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -300,7 +311,6 @@ public class MainController implements Initializable {
             }
         });
     }
-
     private <T extends Video> void ratingCellsUpdate(TableColumn<T, Double> ratingColumn) {
         String star = "🌟";
 
@@ -323,14 +333,19 @@ public class MainController implements Initializable {
 
                     setAlignment(Pos.CENTER);
 
-                    int green = (int) ((currRating - 0.5) / (10 - 0.5) * 255);
+                    double normalizedRating = (currRating - 0.5) / (10 - 0.5);
+                    int red = (int) (200 * (1 - normalizedRating));
+                    int green = (int) (255 * normalizedRating * 0.7);
+                    double transparency = 0.3 + 0.3 * Math.abs(normalizedRating - 0.5) * 2;
+
                     setStyle(
-                            "-fx-background-color: rgba(255, " + green + ", 0, 0.3);"
+                            "-fx-background-color: rgba("+red+", "+green+", 0, "+transparency+");"
                     );
                 }
             }
         });
     }
+
 
     private void customizeStyle() {
     }
