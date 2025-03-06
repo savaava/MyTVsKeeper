@@ -480,16 +480,25 @@ public class VideoKeeper {
                             "\nVideo type of file:  "+versionAndType[1]);
 
                 String version = versionAndType[0];
-                if(version.equals(CURRENT_VERSION))
-                    return csvImportMoviesCurrentVersion(scanner);
-                else if(version.equals("1.3"))
-                    return csvImportMoviesVersion13(scanner);
-                else if(version.equals("1.2"))
-                    return csvImportMoviesVersion12(scanner);
-                else{
-                    System.err.println("Version not found");
-                    return 0;
-                }
+                return switch(version){
+                    case CURRENT_VERSION -> csvImportMoviesCurrentVersion(scanner);
+                    case "1.3" -> csvImportMoviesVersion13(scanner);
+                    case "1.2" -> csvImportMoviesVersion12(scanner);
+                    default -> {
+                        System.err.println("Version not found");
+                        yield 0;
+                    }
+                };
+//                if(version.equals(CURRENT_VERSION))
+//                    return csvImportMoviesCurrentVersion(scanner);
+//                else if(version.equals("1.3"))
+//                    return csvImportMoviesVersion13(scanner);
+//                else if(version.equals("1.2"))
+//                    return csvImportMoviesVersion12(scanner);
+//                else{
+//                    System.err.println("Version not found");
+//                    return 0;
+//                }
             }
         }
 
