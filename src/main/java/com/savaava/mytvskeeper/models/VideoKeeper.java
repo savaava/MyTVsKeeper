@@ -489,16 +489,6 @@ public class VideoKeeper {
                         yield 0;
                     }
                 };
-//                if(version.equals(CURRENT_VERSION))
-//                    return csvImportMoviesCurrentVersion(scanner);
-//                else if(version.equals("1.3"))
-//                    return csvImportMoviesVersion13(scanner);
-//                else if(version.equals("1.2"))
-//                    return csvImportMoviesVersion12(scanner);
-//                else{
-//                    System.err.println("Version not found");
-//                    return 0;
-//                }
             }
         }
 
@@ -699,16 +689,15 @@ public class VideoKeeper {
                             "\nVideo type of file: "+versionAndType[1]);
 
                 String version = versionAndType[0];
-                if(version.equals(CURRENT_VERSION))
-                    return csvImportTVSerieCurrentVersion(scanner);
-                else if(version.equals("1.3"))
-                    return csvImportTVSerieVersion13(scanner);
-                else if(version.equals("1.2"))
-                    return csvImportTVSerieVersion12(scanner);
-                else{
-                    System.err.println("Version not found");
-                    return 0;
-                }
+                return switch(version){
+                    case CURRENT_VERSION -> csvImportTVSerieCurrentVersion(scanner);
+                    case "1.3" -> csvImportTVSerieVersion13(scanner);
+                    case "1.2" -> csvImportTVSerieVersion12(scanner);
+                    default -> {
+                        System.err.println("Version not found");
+                        yield 0;
+                    }
+                };
             }
         }
 
@@ -778,17 +767,15 @@ public class VideoKeeper {
                             "\nVideo type of file: "+versionAndType[1]);
 
                 String version = versionAndType[0];
-
-                if(version.equals(CURRENT_VERSION))
-                    return csvImportAnimeSerieCurrentVersion(scanner);
-                else if(version.equals("1.3"))
-                    return csvImportAnimeSerieVersion13(scanner);
-                else if(version.equals("1.2"))
-                    return csvImportAnimeSerieVersion12(scanner);
-                else{
-                    System.err.println("Version not found");
-                    return 0;
-                }
+                return switch(version){
+                    case CURRENT_VERSION -> csvImportAnimeSerieCurrentVersion(scanner);
+                    case "1.3" -> csvImportAnimeSerieVersion13(scanner);
+                    case "1.2" -> csvImportAnimeSerieVersion12(scanner);
+                    default -> {
+                        System.err.println("Version not found");
+                        yield 0;
+                    }
+                };
             }
         }
     }
