@@ -221,7 +221,7 @@ public class VideoKeeper {
                     pw.append(mi.getDirector()).append(CSV_DELIMITER);
                     pw.append(mi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
                     pw.append(mi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
-                    pw.append(Double.toString(mi.getRating())).append(CSV_DELIMITER);
+                    pw.append(mi.getRating()==null ? null:Double.toString(mi.getRating())).append(CSV_DELIMITER);
                     pw.append(FormatString.stringNormalize(mi.getNotes())).append(CSV_DELIMITER);
 
                     int i = 0;
@@ -254,7 +254,7 @@ public class VideoKeeper {
                 pw.append(tvi.getReleaseDate()).append(CSV_DELIMITER);
                 pw.append(tvi.isStarted()?"Started":"Not Started").append(CSV_DELIMITER);
                 pw.append(tvi.isTerminated()?"Terminated":"Not Terminated").append(CSV_DELIMITER);
-                pw.append(Double.toString(tvi.getRating())).append(CSV_DELIMITER);
+                pw.append(tvi.getRating()==null ? null:Double.toString(tvi.getRating())).append(CSV_DELIMITER);
                 pw.append(FormatString.stringNormalize(tvi.getNotes())).append(CSV_DELIMITER);
 
                 int i = 0;
