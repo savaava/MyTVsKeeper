@@ -1,14 +1,17 @@
-# dirs to ignore:
-.idea/
-.mvn/
-html/
-target/
-bin/
+*
 
-# files to ignore:
-mvnw
-mvnw.cmd
-MyTVsKeeper.ico
+!.gitignore
 
-# Da commentare quando l'applicazione è pronta:
-executables/
+!src/
+!src/**
+!pom.xml
+
+!Doxyfile
+
+!README.md
+!AFEV.md
+!FtA.md
+!LICENSE.md
+
+# Da scommentare quando l'applicazione è pronta:
+#executables/
