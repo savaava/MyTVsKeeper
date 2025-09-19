@@ -6,6 +6,9 @@
 !src/**
 !pom.xml
 
+!libs/
+!libs/**
+
 !Doxyfile
 
 !README.md
