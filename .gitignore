@@ -9,8 +9,6 @@
 !libs/
 !libs/**
 
-!Doxyfile
-
 !README.md
 !AFEV.md
 !FtA.md
