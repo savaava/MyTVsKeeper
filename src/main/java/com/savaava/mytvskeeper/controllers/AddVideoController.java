@@ -5,7 +5,7 @@ import com.savaava.mytvskeeper.alerts.AlertWarning;
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
 
-import com.savaava.mytvskeeper.services.TMDatabase;
+import com.savaava.mytvskeeper.services.TMDatabaseManager;
 import com.savaava.mytvskeeper.utility.Converter;
 import com.savaava.mytvskeeper.utility.FormatString;
 import javafx.application.Platform;
@@ -40,7 +40,7 @@ import static java.lang.System.*;
 
 public class AddVideoController implements Initializable {
     private VideoKeeper vk;
-    private TMDatabase tmdb;
+    private TMDatabaseManager tmdb;
 
     private ObservableList<Video> list;
     private int videoIndex;
@@ -81,7 +81,7 @@ public class AddVideoController implements Initializable {
                 onExit();
             }
 
-            tmdb = new TMDatabase();
+            tmdb = new TMDatabaseManager();
             if(! tmdb.hasConfiguration()) {
                 new AlertWarning("Config file doesn't Exists !",
                         "Please configure the application clicking: \nFile -> Configure application");

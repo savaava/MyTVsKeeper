@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-public class TMDatabase {
+public class TMDatabaseManager {
     private static final String CONFIG_PATH = "./bin/Config";
 
     private final File fileConfig = new File(CONFIG_PATH);
@@ -27,7 +27,7 @@ public class TMDatabase {
     private HttpRequest request;
     private HttpResponse<String> response;
 
-    public TMDatabase() {
+    public TMDatabaseManager() {
         if(hasConfiguration())
             loadConfig();
 

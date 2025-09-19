@@ -3,7 +3,7 @@ package com.savaava.mytvskeeper.controllers;
 import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.models.*;
-import com.savaava.mytvskeeper.services.TMDatabase;
+import com.savaava.mytvskeeper.services.TMDatabaseManager;
 import com.savaava.mytvskeeper.utility.Converter;
 import com.savaava.mytvskeeper.utility.FormatString;
 
@@ -113,7 +113,7 @@ public class VideoDetailsController implements Initializable {
                 videoImageView.setImage(imagesCache.getImageFromPath(pathImage));
             }else{ /* The image has not been saved in cache yet */
                 try {
-                    Image videoImage = Converter.bytesToImage(TMDatabase.getBackdrop(pathImage));
+                    Image videoImage = Converter.bytesToImage(TMDatabaseManager.getBackdrop(pathImage));
                     videoImageView.setImage(videoImage);
 //                    System.out.println("image not in cache yet -> "+videoImage);
                     imagesCache.addImage(pathImage,videoImage);
@@ -293,7 +293,7 @@ public class VideoDetailsController implements Initializable {
             return;
 
         try {
-            String videoUrl = TMDatabase.buildVideoUrl(videoSelected.getId(), videoSelectedIndex==0);
+            String videoUrl = TMDatabaseManager.buildVideoUrl(videoSelected.getId(), videoSelectedIndex==0);
             URI uri = new URI(videoUrl);
 
             Desktop desktop = Desktop.getDesktop();

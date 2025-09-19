@@ -3,7 +3,7 @@ package com.savaava.mytvskeeper.controllers;
 import com.savaava.mytvskeeper.alerts.AlertConfirmation;
 import com.savaava.mytvskeeper.alerts.AlertError;
 import com.savaava.mytvskeeper.alerts.AlertInfo;
-import com.savaava.mytvskeeper.services.TMDatabase;
+import com.savaava.mytvskeeper.services.TMDatabaseManager;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class ConfigController implements Initializable {
     private final StringProperty strBindingCheck = new SimpleStringProperty("");
     private final StringProperty strBindingConfirm = new SimpleStringProperty("");
-    private TMDatabase tmdb;
+    private TMDatabaseManager tmdb;
 
     @FXML
     public TextField tfd;
@@ -39,7 +39,7 @@ public class ConfigController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            tmdb = new TMDatabase();
+            tmdb = new TMDatabaseManager();
 
             try {
                 if(tmdb.hasConfiguration()) {
