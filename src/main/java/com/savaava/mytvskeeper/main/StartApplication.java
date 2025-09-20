@@ -17,6 +17,7 @@ public class StartApplication extends Application {
 
     @Override
     public void init() throws Exception {
+        System.out.println("Starting the application ...\n"+"-".repeat(80)+"\n");
         super.init();
     }
 
@@ -37,6 +38,7 @@ public class StartApplication extends Application {
 
     @Override
     public void stop() throws Exception {
+        System.out.println("-".repeat(80)+"\nBye Bye !");
         super.stop();
     }
 }
