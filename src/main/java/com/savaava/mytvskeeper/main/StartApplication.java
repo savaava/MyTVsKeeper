@@ -17,7 +17,7 @@ public class StartApplication extends Application {
 
     @Override
     public void init() throws Exception {
-        System.out.println("Starting the application ...\n"+"-".repeat(80)+"\n");
+        System.out.println("\nStarting the application ...\n"+"-".repeat(80)+"\n");
         super.init();
     }
 
