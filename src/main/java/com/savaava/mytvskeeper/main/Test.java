@@ -2,6 +2,8 @@ package com.savaava.mytvskeeper.main;
 
 import com.savaava.mytvskeeper.exceptions.VideoAlreadyExistsException;
 import com.savaava.mytvskeeper.models.*;
+import com.savaava.mytvskeeper.services.AccessProvider;
+import com.savaava.mytvskeeper.services.SupabaseClient;
 import com.savaava.mytvskeeper.services.TMDatabaseManager;
 
 import java.util.ArrayList;
@@ -15,6 +17,10 @@ public class Test {
         TMDatabaseManager tmdb = new TMDatabaseManager();
 
 //        vkCsv.csvImportMovies(new File("C:/Users/andre/Desktop/csvFiles/MyTvsKeeper1.3_Movies.csv"));
+
+        SupabaseClient supabaseClient = new SupabaseClient();
+        supabaseClient.signInOAuth(AccessProvider.GITHUB);
+        System.out.println(supabaseClient.get.getUserId());
     }
 
     private static void addVideosMarco(int index, String[] videos) throws Exception {
